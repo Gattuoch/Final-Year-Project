@@ -20,8 +20,9 @@ const campsData = [
     price: 85,
     amenities: ["WiFi", "Parking", "Restaurant", "Guided Tours"],
     badge: "Popular",
-    statusColor: "bg-green-900",
-    image:Camp1 ,
+    statusColor: "bg-green-50",
+    TextColor: "text-green-800",   // correct
+    image: Camp1,
   },
   {
     id: 2,
@@ -35,7 +36,8 @@ const campsData = [
     amenities: ["Kayaking", "Fishing", "WiFi", "Boat Tours"],
     badge: "Available",
     statusColor: "bg-green-100",
-    image:Camp2
+    TextColor: "#97C93D",          // hex value – correct
+    image: Camp2,
   },
   {
     id: 3,
@@ -48,8 +50,9 @@ const campsData = [
     price: 75,
     amenities: ["Hiking", "Wildlife Tours", "Eco-Lodge"],
     badge: "Limited Spots",
-    statusColor: "bg-orange-500",
-    image:Camp3,
+    statusColor: "bg-orange-100",
+    TextColor: "text-orange-500",  // FIXED
+    image: Camp3,
   },
   {
     id: 4,
@@ -62,8 +65,9 @@ const campsData = [
     price: 95,
     amenities: ["Cultural Tours", "Traditional Food", "Local Guide"],
     badge: "Cultural",
-    statusColor: "bg-orange-500",
-    image:Camp1,
+    statusColor: "bg-green-50",
+    TextColor: "text-green-800",   // correct
+    image: Camp1,
   },
   {
     id: 5,
@@ -76,8 +80,9 @@ const campsData = [
     price: 145,
     amenities: ["Volcano Tours", "Salt Mining", "Expert Guide"],
     badge: "Adventure",
-    statusColor: "bg-orange-500",
-    image:Camp2,
+    statusColor: "bg-yellow-50",
+    TextColor: "text-red-500",     // FIXED
+    image: Camp2,
   },
   {
     id: 6,
@@ -90,13 +95,106 @@ const campsData = [
     price: 225,
     amenities: ["Spa Services", "Fine Dining", "Butler Service"],
     badge: "Luxury",
-    statusColor: "bg-orange-500",
-    image:Camp3,
+    statusColor: "bg-gray-50",
+    TextColor: "text-purple-500",  // FIXED
+    image: Camp3,
   },
+  {
+    id: 7,
+    name: "Omo Valley Cultural Camp",
+    location: "Omo Valley, Southern Ethiopia",
+    rating: 4.6,
+    reviews: 94,
+    description:
+      "Immersive cultural experience with local tribes, ceremonies, and traditional hospitality.",
+    price: 95,
+    amenities: ["Cultural Tours", "Traditional Food", "Local Guide"],
+    badge: "Cultural",
+    statusColor: "bg-green-50",
+    TextColor: "text-green-800",   // correct
+    image: Camp1,
+  },
+  {
+    id: 8,
+    name: "Danakil Desert Expedition",
+    location: "Danakil Depression, Afar Region",
+    rating: 4.9,
+    reviews: 67,
+    description:
+      "Extreme camping in one of Earth's most unique volcanic landscapes.",
+    price: 145,
+    amenities: ["Volcano Tours", "Salt Mining", "Expert Guide"],
+    badge: "Adventure",
+    statusColor: "bg-yellow-50",
+    TextColor: "text-red-500",     // FIXED
+    image: Camp2,
+  },
+  {
+    id: 9,
+    name: "Highland Glamping Resort",
+    location: "Ethiopian Highlands, Amhara Region",
+    rating: 5.0,
+    reviews: 43,
+    description:
+      "Luxury glamping with spa, dining, and panoramic mountain views.",
+    price: 225,
+    amenities: ["Spa Services", "Fine Dining", "Butler Service"],
+    badge: "Luxury",
+    statusColor: "bg-gray-50",
+    TextColor: "text-purple-500",  // FIXED
+    image: Camp3,
+  },
+  {
+    id: 10,
+    name: "Omo Valley Cultural Camp",
+    location: "Omo Valley, Southern Ethiopia",
+    rating: 4.6,
+    reviews: 94,
+    description:
+      "Immersive cultural experience with local tribes, ceremonies, and traditional hospitality.",
+    price: 95,
+    amenities: ["Cultural Tours", "Traditional Food", "Local Guide"],
+    badge: "Cultural",
+    statusColor: "bg-green-50",
+    TextColor: "text-green-800",   // correct
+    image: Camp1,
+  },
+  {
+    id: 11,
+    name: "Danakil Desert Expedition",
+    location: "Danakil Depression, Afar Region",
+    rating: 4.9,
+    reviews: 67,
+    description:
+      "Extreme camping in one of Earth's most unique volcanic landscapes.",
+    price: 145,
+    amenities: ["Volcano Tours", "Salt Mining", "Expert Guide"],
+    badge: "Adventure",
+    statusColor: "bg-yellow-50",
+    TextColor: "text-red-500",     // FIXED
+    image: Camp2,
+  },
+  {
+    id: 12,
+    name: "Highland Glamping Resort",
+    location: "Ethiopian Highlands, Amhara Region",
+    rating: 5.0,
+    reviews: 43,
+    description:
+      "Luxury glamping with spa, dining, and panoramic mountain views.",
+    price: 225,
+    amenities: ["Spa Services", "Fine Dining", "Butler Service"],
+    badge: "Luxury",
+    statusColor: "bg-gray-50",
+    TextColor: "text-purple-500",  // FIXED
+    image: Camp3,
+  },
+
 ];
 
+
 // ------------ Pagination ------------
-const ITEMS_PER_PAGE = 3;
+const ITEMS_PER_PAGE = 6;
 
 export default function BrowseALLCamps() {
   const [page, setPage] = useState(1);
@@ -117,7 +215,7 @@ export default function BrowseALLCamps() {
       </p>
 
       {/* Filters */}
-      <div className="bg-gray-50 p-6 rounded-xl mb-10 border">
+      <div className="bg-gray-50 p-6 rounded-xl mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
 
           <select className="p-3 border rounded-lg">
@@ -153,13 +251,13 @@ export default function BrowseALLCamps() {
           </select>
         </div>
 
-        <button className="mt-4 flex items-center gap-2 bg-green-700 text-white px-6 py-3 rounded-lg">
+        <button className="mt-4 flex items-center  bg-green-700 text-white px-6 py-3 rounded-lg">
           <FiFilter /> Apply Filters
         </button>
       </div>
 
       {/* Camp Cards */}
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-8">
         {paginated.map((camp) => (
           <div key={camp.id} className="bg-white  rounded-xl shadow-sm overflow-hidden">
             <div className="relative">
@@ -191,18 +289,26 @@ export default function BrowseALLCamps() {
               </div>
 
               <p className="text-gray-600 text-sm mt-3">{camp.description}</p>
-
               <div className="flex flex-wrap gap-2 mt-3">
-                {camp.amenities.map((a, i) => (
-                  <span key={i} className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                    {a}
-                  </span>
-                ))}
-              </div>
+  {camp.amenities.map((a, i) => (
+    <span
+      key={i}
+      className={`px-3 py-1 rounded-full text-sm ${camp.statusColor}`}
+      style={{
+        color: camp.TextColor?.includes("#") ? camp.TextColor : undefined,
+      }}
+    >
+      {/* If TextColor is Tailwind, apply here */}
+      <span className={camp.TextColor?.includes("#") ? "" : camp.TextColor}>
+        {a}
+      </span>
+    </span>
+  ))}
+</div>
 
               <div className="flex items-center justify-between mt-5">
                 <p className="text-lg font-bold text-green-900">
-                  ${camp.price}
+                  ETB{camp.price}
                   <span className="text-gray-500 text-sm">/night</span>
                 </p>
 
