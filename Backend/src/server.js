@@ -12,6 +12,8 @@ import campRoutes from "./routes/camp.routes.js";
 import tentRoutes from "./routes/tent.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
+import contactRoutes from "./routes/contactRoutes.js";
+import CampRoutes from "./routes/campRoutes.js";
 
 // Seeder utility
 import { createSuperAdmin } from "./utils/createSuperAdmin.js";
@@ -33,6 +35,8 @@ app.use("/api/camps", campRoutes);
 app.use("/api/tents", tentRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/camps", CampRoutes);
 
 // ====== DATABASE CONNECTION ======
 const PORT = process.env.PORT || 5000;
