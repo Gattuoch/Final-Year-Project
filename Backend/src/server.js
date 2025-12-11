@@ -16,6 +16,7 @@ import contactRoutes from "./routes/contactRoutes.js";
 import CampRoutes from "./routes/campRoutes.js";
 import campHomeRoutes from "./routes/campHomeRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
+import managerRoutes from "./routes/manager.routes.js";
 
 import auth1Routes from './routes/auth.js';
 import  admin1Routes from './routes/admin.js';
@@ -46,7 +47,7 @@ app.use("/api/campHomeRoutes", campHomeRoutes);
 app.use("/api/search", searchRoutes);
 app.use('/api/auth', auth1Routes);
 app.use('/api/admin', admin1Routes);
-
+app.use("/api/manager", managerRoutes);
 // static images (optional) - serve images placed under ./public/images
 app.use("/images", express.static("public/images"));
 

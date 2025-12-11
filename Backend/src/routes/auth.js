@@ -43,10 +43,10 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    // Normalize phone BEFORE saving or checking
+    // Normalize phone BEFORE checking or saving
     const normalizedPhone = normalizePhone(phone);
 
-    // ------------------ UNIQUE CHECK ------------------
+    // ------------------ UNIQUE CHECKS ------------------
     if (email) {
       const exists = await User.findOne({ email });
       if (exists) return res.status(409).json({ message: 'Email already used' });
@@ -74,16 +74,14 @@ router.post('/signup', async (req, res) => {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = new Date(Date.now() + 1000 * 60 * 15); // 15 minutes
 
-    // Decide where OTP should go
-    const targetValue = normalizedPhone || email;
-
     await OTP.create({
-      target: targetValue,
-      code:code,
+      target: normalizedPhone || email,
+      code,
       type: 'verification',
       expiresAt,
       used: false
     });
+
     // ------------------ SEND EMAIL OR SMS ------------------
     if (email) {
       const transporter = nodemailer.createTransport({
@@ -91,7 +89,7 @@ router.post('/signup', async (req, res) => {
         port: 587,
         secure: false,
         auth: {
-          user: process.env.BREVO_USER,
+          user: process.env.BREVO_USER,  // must end with @smtp-brevo.com
           pass: process.env.BREVO_PASS,
         },
       });
@@ -100,7 +98,7 @@ router.post('/signup', async (req, res) => {
         from: `"EthioCampGround Support" <${process.env.BREVO_USER}>`,
         to: email,
         subject: "Confirm Your Registration - EthioCampGround",
-        html: `
+         html: `
           <div style="font-family: Arial, sans-serif; line-height: 1.5;">
             <h2>EthioCampGround - Email Verification</h2>
             <p>Hello ${fullName},</p>
@@ -115,14 +113,16 @@ router.post('/signup', async (req, res) => {
       });
     }
 
-    if (normalizedPhone || email) {
-      await sendSMS(normalizedPhone, `Your EthioCampGround verification code is ${code}`);
-      await sendEmail(email, `Your EthioCampGround verification code is ${code}`);
+    if (normalizedPhone) {
+      await sendSMS(
+        normalizedPhone,
+        `Your EthioCampGround verification code is ${code}`
+      );
     }
 
     // ------------------ SUCCESS ------------------
     return res.status(201).json({
-      message: "Account created. Verification code sent to email/phone."
+      message: "Account created. Verification code sent."
     });
 
   } catch (error) {
@@ -133,6 +133,7 @@ router.post('/signup', async (req, res) => {
     });
   }
 });
+
 
 
 /**
@@ -235,7 +236,7 @@ router.post('/login', async (req, res) => {
     // 4️⃣ Compare passwords
     const ok = await bcrypt.compare(password, user.passwordHash);
     if (!ok) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid   credentials' });
     }
 
     // 5️⃣ Create tokens

@@ -31,6 +31,9 @@ import GetInTouch from "./Component/Home/Contact/GetIntouch";
 import FormContact from "./Component/Home/Contact/FormContact";
 import { Login } from "./Component/Auth/Login";
 import SignUp from "./Component/Auth/SignUp";
+import OTPVerification from "./Component/Auth/OTPVerification";
+import { RequestPasswordReset } from "./Component/Auth/RequestPasswordReset";
+import { ResetPassword } from "./Component/Auth/ResetPassword";
 
 function App() {
   return (
@@ -113,6 +116,10 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/signUp" element={<SignUp />} />
+        <Route path="/verify" element={<OTPVerification />} />
+        <Route path="/forgot-password" element={<RequestPasswordReset />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
       </Routes>
 
       

@@ -1,29 +1,81 @@
-import React from "react";
-import { HiMail, HiLockClosed, HiEye, HiPhone } from "react-icons/hi";
-import { HiUser } from "react-icons/hi";
-import Logo from "../../assets/login-image.png";
+import React, { useState } from "react";
+import axios from "axios";
+import { 
+  HiMail, 
+  HiLockClosed, 
+  HiEye, 
+  HiEyeOff, 
+  HiPhone, 
+  HiUser 
+} from "react-icons/hi";
 
-const SignUpformUser = () => {
+export const SignUpformUser = () => {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/signup", {
+        fullName,
+        email,
+        phone,
+        password,
+        confirmPassword,
+      });
+
+      setSuccess("Account created! Please verify your email/phone.");
+      console.log("Signup response:", res.data);
+
+      setTimeout(() => {
+        window.location.href = "/verify";
+      }, 1500);
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Signup failed");
+    }
+
+    setLoading(false);
+  };
+
   return (
-    <div className="w-full h-screen ">
-
-      {/* ------------ RIGHT SIDE (LOGIN FORM) ------------ */}
+    <div className="w-full h-screen">
       <div className="flex items-center justify-center bg-gray-50 px-6">
         <div className="bg-white shadow-xl rounded-2xl p-5 w-full max-w-md">
 
-          {/* Form */}
-          <form className="mt-8 flex flex-col gap-4">
+          <form onSubmit={handleSignup} className="mt-8 flex flex-col gap-4">
 
-            {/* Email */}
+            {/* Full Name */}
             <label className="text-sm font-medium">Full Name</label>
-            <div className="relative ">
+            <div className="relative">
               <HiUser className="absolute left-3 top-3.5 text-gray-400 text-lg" />
               <input
-                type="email"
+                type="text"
                 placeholder="Enter your full name"
                 className="w-full border rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-[#097D5A]"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
               />
             </div>
+
             {/* Email */}
             <label className="text-sm font-medium">Email Address</label>
             <div className="relative">
@@ -32,6 +84,8 @@ const SignUpformUser = () => {
                 type="email"
                 placeholder="Enter your email"
                 className="w-full border rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-[#097D5A]"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -43,6 +97,8 @@ const SignUpformUser = () => {
                 type="tel"
                 placeholder="Enter your phone number"
                 className="w-full border rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-[#097D5A]"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
               />
             </div>
 
@@ -51,31 +107,68 @@ const SignUpformUser = () => {
             <div className="relative">
               <HiLockClosed className="absolute left-3 top-3.5 text-gray-400 text-lg" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Create a password"
                 className="w-full border rounded-xl pl-10 pr-10 py-3 outline-none focus:ring-2 focus:ring-[#097D5A]"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              <HiEye className="absolute right-3 top-3.5 text-gray-400 text-lg cursor-pointer" />
+
+              {/* Eye Icon */}
+              {showPassword ? (
+                <HiEyeOff
+                  className="absolute right-3 top-3.5 text-gray-400 text-lg cursor-pointer"
+                  onClick={() => setShowPassword(false)}
+                />
+              ) : (
+                <HiEye
+                  className="absolute right-3 top-3.5 text-gray-400 text-lg cursor-pointer"
+                  onClick={() => setShowPassword(true)}
+                />
+              )}
             </div>
-            {/* Password */}
+
+            {/* Confirm Password */}
             <label className="text-sm font-medium mt-2">Confirm Password</label>
             <div className="relative">
               <HiLockClosed className="absolute left-3 top-3.5 text-gray-400 text-lg" />
               <input
-                type="password"
-                placeholder="confirm your password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Confirm your password"
                 className="w-full border rounded-xl pl-10 pr-10 py-3 outline-none focus:ring-2 focus:ring-[#097D5A]"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <HiEye className="absolute right-3 top-3.5 text-gray-400 text-lg cursor-pointer" />
+
+              {/* Eye Icon */}
+              {showPassword ? (
+                <HiEyeOff
+                  className="absolute right-3 top-3.5 text-gray-400 text-lg cursor-pointer"
+                  onClick={() => setShowPassword(false)}
+                />
+              ) : (
+                <HiEye
+                  className="absolute right-3 top-3.5 text-gray-400 text-lg cursor-pointer"
+                  onClick={() => setShowPassword(true)}
+                />
+              )}
             </div>
 
-            {/* Button */}
+            {/* Error Message */}
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
+            {/* Success Message */}
+            {success && <p className="text-green-600 text-sm text-center">{success}</p>}
+
+            {/* Submit Button */}
             <button
               type="submit"
               className="w-full bg-[#097D5A] text-white py-3 rounded-xl mt-4 hover:bg-green-800 transition"
+              disabled={loading}
             >
-              Create a Camper Account 
+              {loading ? "Creating..." : "Create a Camper Account"}
             </button>
+
           </form>
 
           {/* Footer */}
@@ -90,9 +183,6 @@ const SignUpformUser = () => {
 
         </div>
       </div>
-
     </div>
   );
 };
-
-export { SignUpformUser };

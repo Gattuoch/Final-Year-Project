@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { HiMail, HiPhone, HiLockClosed, HiUser } from "react-icons/hi";
 
 const ManagerSignUpForm = ({ onSignUp }) => {
@@ -12,6 +13,8 @@ const ManagerSignUpForm = ({ onSignUp }) => {
     businessLicense: null,
   });
 
+  const [message, setMessage] = useState("");
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -20,10 +23,38 @@ const ManagerSignUpForm = ({ onSignUp }) => {
     setFormData({ ...formData, [e.target.name]: e.target.files[0] });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Manager Signup Data:", formData);
-    onSignUp && onSignUp();
+
+    try {
+      const data = new FormData();
+      data.append("fullName", formData.fullName);
+      data.append("email", formData.email);
+      data.append("phone", formData.phone);
+      data.append("password", formData.password);
+      data.append("confirmPassword", formData.confirmPassword);
+
+      if (formData.govId) data.append("govId", formData.govId);
+      if (formData.businessLicense)
+        data.append("businessLicense", formData.businessLicense);
+
+      const res = await axios.post(
+        "http://localhost:5000/api/manager/signup",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setMessage(res.data.message);
+
+      if (onSignUp) onSignUp();
+    } catch (err) {
+      console.error(err);
+      setMessage(err.response?.data?.message || "Signup failed");
+    }
   };
 
   return (
@@ -163,6 +194,12 @@ const ManagerSignUpForm = ({ onSignUp }) => {
           </a>
         </p>
       </form>
+
+      {message && (
+        <p className="text-center mt-4 text-green-600 font-semibold">
+          {message}
+        </p>
+      )}
     </div>
   );
 };
