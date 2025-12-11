@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { HiStar } from "react-icons/hi";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 // IMAGES
 import Camp1 from "../../assets/camp1.png";
@@ -38,10 +39,48 @@ const camps = [
 ];
 
 const FeaturedCamps = () => {
+  const [exploreResults, setExploreResults] = useState([]);
+
+  const loadAllCamps = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/campHomeRoutes/all");
+      const data = await res.json();
+
+      if (!data.success) {
+        toast.error(data.message);
+        return;
+      }
+
+      setExploreResults(data.data);
+      toast.success("Loaded all camps!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load camps.");
+    }
+  };
+
+  const handleLearnMore = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/campHomeRoutes/${id}`);
+      const data = await res.json();
+
+      if (!data.success) {
+        toast.error(data.message);
+        return;
+      }
+
+      console.log("Camp details:", data.data);
+      toast.success("Loaded camp details!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to fetch camp details.");
+    }
+  };
+
   return (
     <section className="w-full py-20 bg-white">
       <div className="container mx-auto px-6 lg:px-16">
-
+        
         {/* TITLE */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -57,7 +96,7 @@ const FeaturedCamps = () => {
           </p>
         </motion.div>
 
-        {/* CARDS */}
+        {/* FEATURED CARDS */}
         <div className="grid md:grid-cols-3 gap-10">
           {camps.map((camp, index) => (
             <motion.div
@@ -68,7 +107,6 @@ const FeaturedCamps = () => {
               whileHover={{ scale: 1.03 }}
               className="bg-white shadow-xl rounded-3xl overflow-hidden cursor-pointer"
             >
-              {/* IMAGE */}
               <motion.img
                 src={camp.image}
                 alt={camp.title}
@@ -77,7 +115,6 @@ const FeaturedCamps = () => {
                 transition={{ duration: 0.4 }}
               />
 
-              {/* CONTENT */}
               <div className="p-6">
                 <div className="flex justify-between items-center">
                   <h3 className="text-xl font-semibold text-gray-900">
@@ -98,20 +135,22 @@ const FeaturedCamps = () => {
                     <span className="text-gray-500 text-sm">/night</span>
                   </p>
 
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-green-700 hover:bg-green-800 text-white px-5 py-2 rounded-xl shadow-md transition cursor-pointer"
-                  >
-                    Book Now
-                  </motion.button>
+                  <a href="/login">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="bg-green-700 hover:bg-green-800 text-white px-5 py-2 rounded-xl shadow-md"
+                    >
+                      Book Now
+                    </motion.button>
+                  </a>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* VIEW ALL */}
+        {/* VIEW ALL CAMPS BUTTON */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -121,12 +160,45 @@ const FeaturedCamps = () => {
           <motion.button
             whileHover={{ scale: 1.07 }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-3 border border-green-700 text-green-700 rounded-xl text-lg hover:bg-green-50 transition cursor-pointer"
+            onClick={loadAllCamps}
+            className="px-8 py-3 border border-green-700 text-green-700 rounded-xl text-lg hover:bg-green-50"
           >
             View All Camps
           </motion.button>
         </motion.div>
 
+        {/* EXPLORE RESULTS SECTION */}
+        {exploreResults.length > 0 && (
+          <div className="mt-10 bg-white p-6 rounded-xl shadow border border-gray-200">
+            <h3 className="text-2xl font-bold text-green-700 mb-4">
+              All Camps
+            </h3>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {exploreResults.map((camp) => (
+                <div
+                  key={camp._id}
+                  className="border rounded-xl p-4 shadow hover:shadow-lg transition"
+                >
+                  <h4 className="text-lg font-semibold">{camp.name}</h4>
+                  <p className="text-gray-600">{camp.location}</p>
+                  <p className="text-green-700 font-bold mt-2">
+                    ${camp.price}
+                  </p>
+
+                  <motion.button
+                    whileHover={{ scale: 1.07 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleLearnMore(camp._id)}
+                    className="mt-4 w-full border border-green-700 text-green-700 font-medium px-6 py-3 rounded-xl hover:bg-green-50"
+                  >
+                    Learn More
+                  </motion.button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

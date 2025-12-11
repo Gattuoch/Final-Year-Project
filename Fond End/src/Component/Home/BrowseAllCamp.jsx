@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaStar, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiMapPin, FiFilter } from "react-icons/fi";
 import { motion } from "framer-motion";
@@ -7,6 +7,7 @@ import Camp1 from "../../assets/camp1.png";
 import Camp2 from "../../assets/camp2.png";
 import Camp3 from "../../assets/camp3.png";
 
+// ---------- fallback local data (unchanged UI) ----------
 const campsData = [
   {
     id: 1,
@@ -23,7 +24,6 @@ const campsData = [
     TextColor: "text-green-800",
     image: Camp1,
   },
-
   {
     id: 2,
     name: "Lake Tana Paradise",
@@ -39,7 +39,6 @@ const campsData = [
     TextColor: "#97C93D",
     image: Camp2,
   },
-
   {
     id: 3,
     name: "Bale Forest Haven",
@@ -55,7 +54,6 @@ const campsData = [
     TextColor: "text-orange-500",
     image: Camp3,
   },
-
   {
     id: 4,
     name: "Omo Valley Cultural Camp",
@@ -71,7 +69,6 @@ const campsData = [
     TextColor: "text-green-800",
     image: Camp1,
   },
-
   {
     id: 5,
     name: "Danakil Desert Expedition",
@@ -87,7 +84,6 @@ const campsData = [
     TextColor: "text-red-500",
     image: Camp2,
   },
-
   {
     id: 6,
     name: "Highland Glamping Resort",
@@ -105,33 +101,139 @@ const campsData = [
   },
 ];
 
-// ---------------------------------------------------------
-
 const ITEMS_PER_PAGE = 6;
+const API_URL = "http://localhost:5000/api/campHomeRoutes";
 
 export default function BrowseALLCamps() {
-  const [camps, setCamps] = useState([]);
+  const [camps, setCamps] = useState(campsData); // initial UI
+  const [filteredCamps, setFilteredCamps] = useState(campsData);
   const [page, setPage] = useState(1);
 
-  // ------------ FETCH CAMPS FROM BACKEND WITH FALLBACK ------------
-  useEffect(() => {
-    fetch("http://localhost:5000/api/camps")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setCamps(data);
-        } else {
-          setCamps(campsData); // fallback if backend is empty
-        }
-      })
-      .catch(() => setCamps(campsData)); // fallback if fetch fails
-  }, []);
+  const [filters, setFilters] = useState({
+    location: "", // empty means no filter
+    priceRange: "", // format: "min-max" or "min+"
+    rating: "", // numeric string or empty
+    amenity: "", // substring
+  });
 
-  const totalPages = Math.ceil(camps.length / ITEMS_PER_PAGE);
-  const paginated = camps.slice(
-    (page - 1) * ITEMS_PER_PAGE,
-    page * ITEMS_PER_PAGE
-  );
+  // Utility: normalize a camp object (safe defaults)
+  const normalize = (raw) => {
+    return {
+      ...raw,
+      location: (raw.location || raw.locationName || "").toString(),
+      price: Number(raw.price ?? 0),
+      rating: Number(raw.rating ?? 0),
+      amenities: Array.isArray(raw.amenities) ? raw.amenities : [],
+      // keep other fields as-is
+    };
+  };
+
+  // parse priceRange value robustly
+  const parsePriceRange = (val) => {
+    if (!val) return null;
+    const v = val.replace(/\s/g, ""); // remove spaces
+    // handle formats: "0-50", "$0-50", "200+", "$200+"
+    const noDollar = v.replace(/\$/g, "");
+    if (noDollar.includes("-")) {
+      const [a, b] = noDollar.split("-");
+      const min = Number(a) || 0;
+      const max = Number(b) || Infinity;
+      return { min, max };
+    }
+    if (noDollar.endsWith("+")) {
+      const a = noDollar.replace("+", "");
+      const min = Number(a) || 0;
+      return { min, max: Infinity };
+    }
+    // single number fallback
+    const n = Number(noDollar);
+    if (!Number.isNaN(n)) return { min: n, max: n };
+    return null;
+  };
+
+  // MAIN: called when user clicks Apply Filters
+  const applyFilters = async () => {
+    try {
+      // fetch backend data once when apply is clicked
+      const res = await fetch(API_URL);
+      const json = await res.json();
+      // support either array or {success:true,data:[]}
+      const rawArray = Array.isArray(json) ? json : json?.data ?? [];
+
+      const data = rawArray.length ? rawArray.map(normalize) : campsData.map(normalize);
+      setCamps(data); // update source data
+
+      // Build result starting from backend data
+      let result = data.slice();
+
+      // Location filter (empty -> no filter)
+      if (filters.location) {
+        const locFilter = filters.location.trim().toLowerCase();
+        result = result.filter((c) =>
+          (c.location || "").toLowerCase().includes(locFilter)
+        );
+      }
+
+      // Price filter
+      if (filters.priceRange) {
+        const pr = parsePriceRange(filters.priceRange);
+        if (pr) {
+          result = result.filter((c) => c.price >= pr.min && c.price <= pr.max);
+        }
+      }
+
+      // Rating filter
+      if (filters.rating) {
+        const minR = Number(filters.rating);
+        if (!Number.isNaN(minR)) {
+          result = result.filter((c) => Number(c.rating || 0) >= minR);
+        }
+      }
+
+      // Amenity filter (substring match)
+      if (filters.amenity) {
+        const aFilter = filters.amenity.trim().toLowerCase();
+        result = result.filter((c) =>
+          (c.amenities || []).some((a) => (a || "").toString().toLowerCase().includes(aFilter))
+        );
+      }
+
+      setFilteredCamps(result);
+      setPage(1);
+    } catch (err) {
+      console.error("Apply Filters fetch error:", err);
+      // fallback to local data on error
+      const local = campsData.map(normalize);
+      setCamps(local);
+      // apply same filters on local data so behavior consistent
+      let result = local.slice();
+      if (filters.location) {
+        const locFilter = filters.location.trim().toLowerCase();
+        result = result.filter((c) =>
+          (c.location || "").toLowerCase().includes(locFilter)
+        );
+      }
+      if (filters.priceRange) {
+        const pr = parsePriceRange(filters.priceRange);
+        if (pr) result = result.filter((c) => c.price >= pr.min && c.price <= pr.max);
+      }
+      if (filters.rating) {
+        const minR = Number(filters.rating);
+        if (!Number.isNaN(minR)) result = result.filter((c) => Number(c.rating || 0) >= minR);
+      }
+      if (filters.amenity) {
+        const aFilter = filters.amenity.trim().toLowerCase();
+        result = result.filter((c) =>
+          (c.amenities || []).some((a) => (a || "").toString().toLowerCase().includes(aFilter))
+        );
+      }
+      setFilteredCamps(result);
+      setPage(1);
+    }
+  };
+
+  const totalPages = Math.max(1, Math.ceil(filteredCamps.length / ITEMS_PER_PAGE));
+  const paginated = filteredCamps.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
   return (
     <div className="px-6 py-12 max-w-7xl mx-auto">
@@ -141,44 +243,63 @@ export default function BrowseALLCamps() {
         Discover unique camping experiences across Ethiopia’s most beautiful landscapes.
       </p>
 
-      {/* Filters */}
+      {/* Filters (UI unchanged visually) */}
       <div className="bg-gray-50 p-6 rounded-xl mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
 
-          <select className="p-3 border rounded-lg">
-            <option>All Locations</option>
-            <option>Simien Mountains</option>
-            <option>Lake Tana</option>
-            <option>Bale Mountains</option>
-            <option>Omo Valley</option>
-            <option>Danakil Depression</option>
+          <select
+            className="p-3 border rounded-lg"
+            value={filters.location}
+            onChange={(e) => setFilters({ ...filters, location: e.target.value })}
+          >
+            <option value="">All Locations</option>
+            <option value="Simien Mountains">Simien Mountains</option>
+            <option value="Lake Tana">Lake Tana</option>
+            <option value="Bale Mountains">Bale Mountains</option>
+            <option value="Omo Valley">Omo Valley</option>
+            <option value="Danakil Depression">Danakil Depression</option>
           </select>
 
-          <select className="p-3 border rounded-lg">
-            <option>Any Price</option>
-            <option>$0 - $50</option>
-            <option>$50 - $100</option>
-            <option>$100 - $200</option>
-            <option>$200+</option>
+          <select
+            className="p-3 border rounded-lg"
+            value={filters.priceRange}
+            onChange={(e) => setFilters({ ...filters, priceRange: e.target.value })}
+          >
+            <option value="">Any Price</option>
+            <option value="0-50">0 - 50</option>
+            <option value="50-100">50 - 100</option>
+            <option value="100-200">100 - 200</option>
+            <option value="200+">$200+</option>
           </select>
 
-          <select className="p-3 border rounded-lg">
-            <option>All Amenities</option>
-            <option>WiFi</option>
-            <option>Hiking</option>
-            <option>Guided Tours</option>
-            <option>Restaurant</option>
+          <select
+            className="p-3 border rounded-lg"
+            value={filters.amenity}
+            onChange={(e) => setFilters({ ...filters, amenity: e.target.value })}
+          >
+            <option value="">All Amenities</option>
+            <option value="WiFi">WiFi</option>
+            <option value="Hiking">Hiking</option>
+            <option value="Guided Tours">Guided Tours</option>
+            <option value="Restaurant">Restaurant</option>
           </select>
 
-          <select className="p-3 border rounded-lg">
-            <option>Any Rating</option>
-            <option>4.0+</option>
-            <option>4.5+</option>
-            <option>5.0</option>
+          <select
+            className="p-3 border rounded-lg"
+            value={filters.rating}
+            onChange={(e) => setFilters({ ...filters, rating: e.target.value })}
+          >
+            <option value="">Any Rating</option>
+            <option value="4">4.0+</option>
+            <option value="4.5">4.5+</option>
+            <option value="5">5.0</option>
           </select>
         </div>
 
-        <button className="mt-4 flex items-center bg-green-700 text-white px-6 py-3 rounded-lg">
+        <button
+          onClick={applyFilters}
+          className="mt-4 flex items-center bg-green-700 text-white px-6 py-3 rounded-lg"
+        >
           <FiFilter /> Apply Filters
         </button>
       </div>
@@ -186,13 +307,13 @@ export default function BrowseALLCamps() {
       {/* Camp Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-8">
         {paginated.map((camp) => (
-          <div key={camp.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div key={camp._id || camp.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
 
             <div className="relative">
               <motion.img
                 whileHover={{ scale: 1.1 }}
                 transition={{ duration: 0.5 }}
-                src={camp.image}
+                src={typeof camp.image === "string" && camp.image.startsWith("/") ? `${window.location.origin}${camp.image}` : camp.image}
                 alt={camp.name}
                 className="w-full h-full object-cover"
               />
@@ -208,7 +329,7 @@ export default function BrowseALLCamps() {
               <div className="flex items-center gap-1 text-yellow-500 mt-1">
                 <FaStar />
                 <span className="font-bold">{camp.rating}</span>
-                <span className="text-sm text-gray-500">({camp.reviews})</span>
+                <span className="text-sm text-gray-500">({camp.reviews ?? 0})</span>
               </div>
 
               <div className="flex items-center gap-2 text-gray-600 text-sm mt-2">
@@ -220,15 +341,15 @@ export default function BrowseALLCamps() {
 
               {/* Amenities with dynamic colors */}
               <div className="flex flex-wrap gap-2 mt-3">
-                {camp.amenities.map((a, i) => (
+                {(camp.amenities || []).map((a, i) => (
                   <span
                     key={i}
-                    className={`px-3 py-1 rounded-full text-sm ${camp.statusColor}`}
+                    className={`px-3 py-1 rounded-full text-sm ${camp.statusColor ?? ""}`}
                     style={{
-                      color: camp.TextColor.includes("#") ? camp.TextColor : undefined,
+                      color: (camp.TextColor ?? "").includes("#") ? camp.TextColor : undefined,
                     }}
                   >
-                    <span className={!camp.TextColor.includes("#") ? camp.TextColor : ""}>
+                    <span className={!(camp.TextColor ?? "").includes("#") ? camp.TextColor : ""}>
                       {a}
                     </span>
                   </span>
@@ -241,9 +362,9 @@ export default function BrowseALLCamps() {
                   <span className="text-gray-500 text-sm">/night</span>
                 </p>
 
-                <button className="bg-green-700 text-white px-5 py-2 rounded-lg">
+               <a href="/login"> <button className="bg-green-700 text-white px-5 py-2 rounded-lg cursor-pointer hover:bg-green-800 transition">
                   Book Now
-                </button>
+                </button></a>
               </div>
 
             </div>
@@ -265,9 +386,7 @@ export default function BrowseALLCamps() {
           <button
             key={i}
             onClick={() => setPage(i + 1)}
-            className={`px-4 py-2 rounded-lg border ${
-              page === i + 1 ? "bg-green-700 text-white" : ""
-            }`}
+            className={`px-4 py-2 rounded-lg border ${page === i + 1 ? "bg-green-700 text-white" : ""}`}
           >
             {i + 1}
           </button>

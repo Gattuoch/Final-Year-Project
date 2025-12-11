@@ -6,14 +6,19 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 
 // Routes
-import authRoutes from "./routes/auth.routes.js";
-import adminRoutes from "./routes/admin.routes.js";
+// import authRoutes from "./routes/auth.routes.js";
+// import adminRoutes from "./routes/admin.routes.js";
 import campRoutes from "./routes/camp.routes.js";
 import tentRoutes from "./routes/tent.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import CampRoutes from "./routes/campRoutes.js";
+import campHomeRoutes from "./routes/campHomeRoutes.js";
+import searchRoutes from "./routes/searchRoutes.js";
+
+import auth1Routes from './routes/auth.js';
+import  admin1Routes from './routes/admin.js';
 
 // Seeder utility
 import { createSuperAdmin } from "./utils/createSuperAdmin.js";
@@ -29,14 +34,22 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 // ====== ROUTES ======
-app.use("/api/auth", authRoutes);
-app.use("/api/admin", adminRoutes);
+// app.use("/api/auth", authRoutes);
+// app.use("/api/admin", adminRoutes);
 app.use("/api/camps", campRoutes);
 app.use("/api/tents", tentRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/contact", contactRoutes);
-app.use("/api/camps", CampRoutes);
+app.use("/api/CampRoutes", CampRoutes);
+app.use("/api/campHomeRoutes", campHomeRoutes);
+app.use("/api/search", searchRoutes);
+app.use('/api/auth', auth1Routes);
+app.use('/api/admin', admin1Routes);
+
+// static images (optional) - serve images placed under ./public/images
+app.use("/images", express.static("public/images"));
+
 
 // ====== DATABASE CONNECTION ======
 const PORT = process.env.PORT || 5000;

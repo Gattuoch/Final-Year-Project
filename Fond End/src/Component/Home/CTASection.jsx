@@ -17,7 +17,7 @@ const CTASection = () => {
         <div className="flex items-center justify-center gap-8 flex-wrap">
 
           {/* Get Started Button (White) */}
-          <button className="
+         <a href="/login">  <button className="
             bg-white 
             text-green-800 
             font-semibold 
@@ -29,10 +29,10 @@ const CTASection = () => {
             transition cursor-pointer
           ">
             Get Started
-          </button>
+          </button></a>
 
           {/* Contact Us Button (White Border) */}
-          <button className="
+          <a href="/contact"> <button className="
             border-2 
             border-white 
             text-white 
@@ -45,7 +45,7 @@ const CTASection = () => {
             transition cursor-pointer
           ">
             Contact Us
-          </button>
+          </button></a>
 
         </div>
       </div>

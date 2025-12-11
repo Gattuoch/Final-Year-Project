@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-
 // Home Components
 import Navbar from "./Component/Home/Navar";
 import Footer from "./Component/Home/Footer";
@@ -30,11 +29,13 @@ import { GrowingCommunity } from "./Component/Home/GrowingCommunity";
 // Contact Page Components
 import GetInTouch from "./Component/Home/Contact/GetIntouch";
 import FormContact from "./Component/Home/Contact/FormContact";
+import { Login } from "./Component/Auth/Login";
+import SignUp from "./Component/Auth/SignUp";
 
 function App() {
   return (
     <>
-      <Navbar />
+      
 
       <Routes>
         {/* HOME */}
@@ -42,6 +43,7 @@ function App() {
           path="/"
           element={
             <>
+            <Navbar />
               <Home />
               <Hero />
               <WhyChoose />
@@ -49,6 +51,7 @@ function App() {
               <HowItWorks />
               <Testimonials />
               <CTASection />
+              <Footer />
             </>
           }
         />
@@ -58,10 +61,12 @@ function App() {
           path="/features"
           element={
             <>
-              <FeatureHome />
+            <Navbar />
+              <Hero />
               <PlatformFeatures />
               <Experience />
               <BrowseCamps />
+              <Footer />
             </>
           }
         />
@@ -71,9 +76,11 @@ function App() {
           path="/camps"
           element={
             <>
-              <CampHome />
+            <Navbar />
+              <Hero />
               <BrowseALLCamps />
               <CampBrowse />
+              <Footer />
             </>
           }
         />
@@ -83,9 +90,11 @@ function App() {
           path="/about"
           element={
             <>
+            <Navbar />
               <About />
               <CoreValues />
               <GrowingCommunity />
+              <Footer />
             </>
           }
         />
@@ -95,14 +104,18 @@ function App() {
           path="/contact"
           element={
             <>
+            <Navbar />
               <GetInTouch />
               <FormContact />
+              <Footer />
             </>
           }
         />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signUp" element={<SignUp />} />
       </Routes>
 
-      <Footer />
+      
     </>
   );
 }

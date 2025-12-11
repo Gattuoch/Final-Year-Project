@@ -38,6 +38,31 @@ const SearchBar = () => {
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(1);
 
+  const handleSearch = async () => {
+    const data = { location, checkIn, checkOut, guests };
+
+    try {
+      const response = await fetch("http://localhost:5000/api/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      console.log("Search Result:", result);
+
+      if (!result.success) {
+        alert("Error: " + result.message);
+        return;
+      }
+
+      alert("Search Results:\n" + JSON.stringify(result.results, null, 2));
+    } catch (err) {
+      console.error("Error searching:", err);
+      alert("Failed to connect to backend.");
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -115,7 +140,10 @@ const SearchBar = () => {
 
         {/* SEARCH BUTTON */}
         <motion.div whileHover={{ scale: 1.05 }}>
-          <button className="w-full bg-green-700 hover:bg-green-800 text-white font-medium text-lg px-6 py-4 rounded-xl flex items-center justify-center gap-2 transition">
+          <button
+            onClick={handleSearch}
+            className="w-full bg-green-700 hover:bg-green-800 text-white font-medium text-lg px-6 py-4 rounded-xl flex items-center justify-center gap-2 transition"
+          >
             <HiSearch className="w-5 h-5" />
             Search
           </button>
@@ -151,7 +179,6 @@ const CampHome = () => {
             lakeside havens, find your next adventure with ease.
           </p>
 
-          {/* BUTTONS */}
           <div className="flex gap-4 pt-4">
             <motion.button
               whileHover={{ scale: 1.07 }}
@@ -170,35 +197,30 @@ const CampHome = () => {
             </motion.button>
           </div>
 
-          {/* 🔥 STATS WITH ANIMATED COUNTER */}
+          {/* STATS */}
           <div className="flex gap-10 pt-8">
-            {/* Active Camps */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
               <p className="text-3xl font-bold text-green-700">
-                <Counter end={500} />
-                +
+                <Counter end={500} />+
               </p>
               <p className="text-gray-500 text-sm">Active Camps</p>
             </motion.div>
 
-            {/* Happy Campers */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
               <p className="text-3xl font-bold text-green-700">
-                <Counter end={10} />
-                k+
+                <Counter end={10} />k+
               </p>
               <p className="text-gray-500 text-sm">Happy Campers</p>
             </motion.div>
 
-            {/* Rating */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -229,10 +251,10 @@ const CampHome = () => {
         </motion.div>
       </div>
 
-      {/* SEARCH BAR BELOW HERO
+      {/* ENABLED SEARCH BAR */}
       <div className="container mx-auto px-6 lg:px-12">
         <SearchBar />
-      </div> */}
+      </div>
     </section>
   );
 };
