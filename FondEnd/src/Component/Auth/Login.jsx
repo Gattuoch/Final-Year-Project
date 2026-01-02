@@ -21,7 +21,7 @@ export const Login = () => {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+      const res = await axios.post("https://ethio-camp-ground-backend-lega.onrender.com/api/auth/login", {
         identifier: formData.identifier,
         password: formData.password,
       });
