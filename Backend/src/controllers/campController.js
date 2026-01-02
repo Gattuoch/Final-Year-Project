@@ -1,22 +1,75 @@
 import Camp from "../models/Camp.js";
 
 // GET ALL CAMPS
-export const getCamps = async (req, res) => {
+export const getAllCamps = async (req, res) => {
   try {
-    const camps = await Camp.find();
-    res.status(200).json(camps);
+    const camps = await Camp.find().sort({ createdAt: -1 });
+    res.status(200).json({
+      message: "Camps retrieved successfully",
+      camps,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch camps" });
+    res.status(500).json({ error: error.message });
   }
 };
 
-// ADD NEW CAMP
-export const addCamp = async (req, res) => {
+// CREATE CAMP
+export const createCamp = async (req, res) => {
   try {
-    const camp = new Camp(req.body);
-    await camp.save();
-    res.status(201).json(camp);
+    const { name, location, capacity } = req.body;
+
+    const camp = await Camp.create({
+      name,
+      location,
+      capacity,
+      createdBy: req.user._id, // from protect middleware
+      status: "Active",
+    });
+
+    res.status(201).json({
+      message: "Camp created successfully",
+      camp,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Failed to add camp" });
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// UPDATE CAMP
+export const updateCamp = async (req, res) => {
+  try {
+    const camp = await Camp.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!camp) {
+      return res.status(404).json({ message: "Camp not found" });
+    }
+
+    res.status(200).json({
+      message: "Camp updated successfully",
+      camp,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// DELETE CAMP
+export const deleteCamp = async (req, res) => {
+  try {
+    const camp = await Camp.findByIdAndDelete(req.params.id);
+
+    if (!camp) {
+      return res.status(404).json({ message: "Camp not found" });
+    }
+
+    res.status(200).json({
+      message: "Camp deleted successfully",
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };

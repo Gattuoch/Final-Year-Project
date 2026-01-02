@@ -21,6 +21,7 @@ const UserSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: false }, // email/phone verified
   isBanned: { type: Boolean, default: false },
   metadata: {}, // store additional info (country, docs, uploads refs)
+   isActive: { type: Boolean, default: true },
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);

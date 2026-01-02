@@ -1,30 +1,36 @@
-import bcrypt from "bcryptjs";
 import User from "../models/User.model.js";
+import bcrypt from "bcryptjs";
 
-export const createSuperAdmin = async () => {
+const createSuperAdmin = async () => {
   try {
-    // Check if a Super Admin already exists
-    const existing = await User.findOne({ role: "superadmin" });
-    if (existing) {
-      console.log("✅ Super Admin already exists.");
+    const exists = await User.findOne({ role: "super_admin" });
+
+    if (exists) {
+      console.log("Super admin already exists");
       return;
     }
 
-    // Define default Super Admin credentials
-    const superAdminData = {
-      fullName: "Mr SuperAdmin",
-      email: "superadmin@gmail.com",
-      password: await bcrypt.hash("MrSuperAdminpassw0rd@", 12),
-      role: "superadmin",
-      status: "active",
-    };
+    if (!process.env.SUPER_ADMIN_EMAIL || !process.env.SUPER_ADMIN_PASSWORD) {
+      console.error("❌ Missing SUPER_ADMIN_EMAIL or SUPER_ADMIN_PASSWORD in .env");
+      return;
+    }
 
-    // Create Super Admin
-    await User.create(superAdminData);
-    console.log("🚀 Super Admin created successfully:");
-    console.log("   Email: superadmin@gmail.com");
-    console.log("   Password: MrSuperAdminpassw0rd@");
+    const passwordHash = await bcrypt.hash(process.env.SUPER_ADMIN_PASSWORD, 10);
+
+    await User.create({
+      fullName: "Platform Super Admin",
+      email: process.env.SUPER_ADMIN_EMAIL,
+      passwordHash,
+      role: "super_admin",
+      isInternal: true,
+      isEmailVerified: true,
+      mustResetPassword: true,
+    });
+
+    console.log("✅ Super admin created");
   } catch (err) {
-    console.error("❌ Error creating Super Admin:", err);
+    console.error("❌ Super admin creation failed:", err.message);
   }
 };
+
+export default createSuperAdmin;

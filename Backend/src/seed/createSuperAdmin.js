@@ -1,31 +1,36 @@
-require('dotenv').config();
-const connectDB = require('../config/db');
-const User = require('../models/User');
-const bcrypt = require('bcrypt');
+import User from "../models/User.js";
+import bcrypt from "bcryptjs";
 
-(async () => {
+const createSuperAdmin = async () => {
   try {
-    await connectDB(process.env.MONGO_URI || 'mongodb://localhost:27017/camp-auth');
-    const existing = await User.findOne({ role: 'super_admin' });
-    if (existing) {
-      console.log('Super admin already exists:', existing.email || existing.phone);
-      process.exit(0);
+    const exists = await User.findOne({ role: "super_admin" });
+
+    if (exists) {
+      console.log("Super admin already exists");
+      return;
     }
-    const pw = process.env.SUPERADMIN_PW || 'SuperAdmin123!';
-    const hash = await bcrypt.hash(pw, 12);
-    const sa = await User.create({
-      fullName: 'Super Admin',
-      email: process.env.SUPERADMIN_EMAIL || 'superadmin@example.com',
-      passwordHash: hash,
-      role: 'super_admin',
+
+    if (!process.env.SUPER_ADMIN_EMAIL || !process.env.SUPER_ADMIN_PASSWORD) {
+      console.error("❌ Missing SUPER_ADMIN_EMAIL or SUPER_ADMIN_PASSWORD in .env");
+      return;
+    }
+
+    const passwordHash = await bcrypt.hash(process.env.SUPER_ADMIN_PASSWORD, 10);
+
+    await User.create({
+      fullName: "Platform Super Admin",
+      email: process.env.SUPER_ADMIN_EMAIL,
+      passwordHash,
+      role: "super_admin",
       isInternal: true,
-      mustResetPassword: false,
-      isVerified: true
+      isEmailVerified: true,
+      mustResetPassword: true,
     });
-    console.log('Created super admin:', sa.email, 'password:', pw);
-    process.exit(0);
+
+    console.log("✅ Super admin created");
   } catch (err) {
-    console.error(err);
-    process.exit(1);
+    console.error("❌ Super admin creation failed:", err.message);
   }
-})();
+};
+
+export default createSuperAdmin;

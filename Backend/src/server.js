@@ -4,7 +4,6 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import mongoose from "mongoose";
-
 // Routes
 // import authRoutes from "./routes/auth.routes.js";
 // import adminRoutes from "./routes/admin.routes.js";
@@ -17,12 +16,14 @@ import CampRoutes from "./routes/campRoutes.js";
 import campHomeRoutes from "./routes/campHomeRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
 import managerRoutes from "./routes/manager.routes.js";
-
+import userRoutes from "./routes/userRoutes.js";
 import auth1Routes from './routes/auth.js';
 import  admin1Routes from './routes/admin.js';
-
+import dashboardRoutes from "./controllers/dashboardController.js";
+import camproutes from "./routes/camp.routes.js";
+// import dashboardRoutes from "./routes/dashboard.routes.js";
 // Seeder utility
-import { createSuperAdmin } from "./utils/createSuperAdmin.js";
+import  seedSuperAdmin  from "./utils/createSuperAdmin.js";
 
 dotenv.config();
 
@@ -44,16 +45,19 @@ app.use(morgan("dev"));
 // app.use("/api/auth", authRoutes);
 // app.use("/api/admin", adminRoutes);
 app.use("/api/camps", campRoutes);
+app.use("/api/campsRoutes", camproutes);
 app.use("/api/tents", tentRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/contact", contactRoutes);
-app.use("/api/CampRoutes", CampRoutes);
+// app.use("/api/CampRoutes", CampRoutes);
 app.use("/api/campHomeRoutes", campHomeRoutes);
 app.use("/api/search", searchRoutes);
 app.use('/api/auth', auth1Routes);
 app.use('/api/admin', admin1Routes);
 app.use("/api/manager", managerRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 // static images (optional) - serve images placed under ./public/images
 app.use("/images", express.static("public/images"));
 
@@ -70,8 +74,8 @@ mongoose
   .then(async () => {
     console.log("✅ MongoDB connected successfully");
 
-    // Create Super Admin if not exists
-    await createSuperAdmin();
+   // Seed Super Admin automatically
+    seedSuperAdmin();
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);

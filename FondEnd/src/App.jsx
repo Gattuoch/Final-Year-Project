@@ -34,6 +34,9 @@ import SignUp from "./Component/Auth/SignUp";
 import OTPVerification from "./Component/Auth/OTPVerification";
 import { RequestPasswordReset } from "./Component/Auth/RequestPasswordReset";
 import { ResetPassword } from "./Component/Auth/ResetPassword";
+import Dashboard from "./Component/SuperAdmin/pages/Dashboard.jsx";
+import CampManagement from "./Component/SuperAdmin/Camps/CampManagement.jsx";
+import UserManagement from "./Component/SuperAdmin/Users/UserManagement.jsx";
 
 function App() {
   return (
@@ -119,6 +122,15 @@ function App() {
         <Route path="/verify" element={<OTPVerification />} />
         <Route path="/forgot-password" element={<RequestPasswordReset />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/super-admin" element={<Dashboard />} />
+        <Route path="/super-admin/camps" element={<CampManagement />} />
+         <Route path="/super-admin/users" element={<UserManagement />} />
+        {/* <Route path="/super-admin/events" element={<Events />} />
+        <Route path="/super-admin/bookings" element={<Bookings />} />
+       
+        <Route path="/super-admin/finance" element={<Finance />} />
+        <Route path="/super-admin/analytics" element={<Analytics />} />
+        <Route path="/super-admin/settings" element={<Settings />} /> */}
 
       </Routes>
 
