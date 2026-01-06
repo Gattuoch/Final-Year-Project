@@ -57,7 +57,7 @@ const SearchBar = () => {
     });
 
     const res = await fetch(
-      `http://localhost:5000/api/campHomeRoutes/search?${query.toString()}`
+      `https://ethio-camp-ground-backend-lega.onrender.com/api/campHomeRoutes/search?${query.toString()}`
     );
 
     const data = await res.json();
