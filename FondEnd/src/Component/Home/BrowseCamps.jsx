@@ -45,7 +45,7 @@ const localCamps = [
   },
 ];
 
-const API_URL = "http://localhost:5000/api/campHomeRoutes";
+const API_URL = "https://ethio-camp-ground-backend-lega.onrender.com/api/campHomeRoutes";
 const ITEMS_PER_PAGE = 6;
 
 const BrowseCamp= () => {
