@@ -39,7 +39,7 @@ const ManagerSignUpForm = ({ onSignUp }) => {
         data.append("businessLicense", formData.businessLicense);
 
       const res = await axios.post(
-        "http://localhost:5000/api/manager/signup",
+        "https://ethio-camp-ground-backend-lega.onrender.com/api/manager/signup",
         data,
         {
           headers: {
