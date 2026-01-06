@@ -24,7 +24,7 @@ export const ResetPassword = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/reset-password",
+        "https://ethio-camp-ground-backend-lega.onrender.com/api/auth/reset-password",
         formData
       );
       setMessage(res.data.message);
