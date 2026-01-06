@@ -42,7 +42,7 @@ const SearchBar = () => {
     const data = { location, checkIn, checkOut, guests };
 
     try {
-      const response = await fetch("http://localhost:5000/api/search", {
+      const response = await fetch("https://ethio-camp-ground-backend-lega.onrender.com/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
