@@ -43,7 +43,7 @@ const FeaturedCamps = () => {
 
   const loadAllCamps = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/campHomeRoutes/all");
+      const res = await fetch("https://ethio-camp-ground-backend-lega.onrender.com/api/campHomeRoutes/all");
       const data = await res.json();
 
       if (!data.success) {
