@@ -37,6 +37,11 @@ import { ResetPassword } from "./Component/Auth/ResetPassword";
 import Dashboard from "./Component/SuperAdmin/pages/Dashboard.jsx";
 import CampManagement from "./Component/SuperAdmin/Camps/CampManagement.jsx";
 import UserManagement from "./Component/SuperAdmin/Users/UserManagement.jsx";
+import EmailSettings from "./Component/SuperAdmin/Setting/SettingsHome.jsx";
+import PlatformSettings from "./Component/SuperAdmin/Setting/PlatformSettings.jsx";
+import PaymentSettings from "./Component/SuperAdmin/Setting/PaymentSettings.jsx";
+import NotificationSettings from "./Component/SuperAdmin/Setting/NotificationSettings.jsx";
+import GeneralSettings from "./Component/SuperAdmin/Setting/GeneralSettings.jsx";
 
 function App() {
   return (
@@ -125,12 +130,18 @@ function App() {
         <Route path="/super-admin" element={<Dashboard />} />
         <Route path="/super-admin/camps" element={<CampManagement />} />
          <Route path="/super-admin/users" element={<UserManagement />} />
+         {/* setting */}
+          <Route path="/super-admin/settings" element={<GeneralSettings />} /> payment
+          <Route path="/super-admin/settings/platform" element={<PlatformSettings />} /> 
+          <Route path="/super-admin/settings/payment" element={<PaymentSettings />} /> 
+          <Route path="/super-admin/settings/notifications" element={<NotificationSettings />} /> 
+
         {/* <Route path="/super-admin/events" element={<Events />} />
         <Route path="/super-admin/bookings" element={<Bookings />} />
        
         <Route path="/super-admin/finance" element={<Finance />} />
         <Route path="/super-admin/analytics" element={<Analytics />} />
-        <Route path="/super-admin/settings" element={<Settings />} /> */}
+       */}
 
       </Routes>
 
