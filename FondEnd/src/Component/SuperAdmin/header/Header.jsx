@@ -7,15 +7,17 @@ import {
   Repeat,
   Key,
   ChevronDown,
+  Menu,
 } from "lucide-react";
 import ViewProfile from "./ViewProfile";
 import ChangePassword from "./ChangePassword";
 import SwitchRole from "./SwitchRole";
 import GeneralPreferences  from "./GeneralPreferences";
 import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 
-export default function Header() {
+export default function Header({ setSidebarOpen }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -24,6 +26,7 @@ export default function Header() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const navigate = useNavigate();
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const [user, setUser] = useState(null);
 
 
 
@@ -38,16 +41,70 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Load profile from API or localStorage
+  useEffect(() => {
+    const loadProfile = async () => {
+      // try localStorage first (fast)
+      try {
+        const cached = localStorage.getItem("profile");
+        if (cached) {
+          setUser(JSON.parse(cached));
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      // then try API to ensure fresh data
+      try {
+        const res = await API.get("/auth/profile");
+        const profile = res.data?.user || null;
+        if (profile) {
+          setUser(profile);
+          try {
+            localStorage.setItem("profile", JSON.stringify(profile));
+          } catch (e) {}
+        }
+      } catch (err) {
+        // not authenticated or network error - ignore here
+        // console.debug("Could not fetch profile", err);
+      }
+    };
+
+    loadProfile();
+
+    // Listen for profile changes emitted by ViewProfile
+    const handler = (e) => {
+      const p = e.detail;
+      if (p) {
+        setUser(p);
+        try {
+          localStorage.setItem("profile", JSON.stringify(p));
+        } catch (err) {}
+      }
+    };
+    window.addEventListener("profileUpdated", handler);
+    return () => window.removeEventListener("profileUpdated", handler);
+  }, []);
+
   return (
     <header className="flex justify-between items-center bg-white px-8 py-5 shadow-sm">
       {/* Left */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800">
-          Super Admin Dashboard
-        </h1>
-        <p className="text-sm text-gray-500">
-          Global system overview and analytics
-        </p>
+      <div className="flex items-center gap-4">
+        {/* Mobile menu button */}
+        <button
+          onClick={() => setSidebarOpen && setSidebarOpen(true)}
+          className="md:hidden p-2 rounded-md bg-gray-100 hover:bg-gray-200 flex items-center gap-2"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <Menu size={20} />
+          <span className="text-sm font-medium">Menu</span>
+        </button>
+
+        <div className="hidden md:block">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Super Admin Dashboard</h1>
+          <p className="text-xs sm:text-sm text-gray-500">Global system overview and analytics</p>
+        </div>
       </div>
 
       {/* Right */}
@@ -61,16 +118,18 @@ export default function Header() {
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             <img
-              src="https://i.pravatar.cc/40"
+              src={
+                user?.avatar || (user?.email ? `https://i.pravatar.cc/40?u=${user.email}` : "https://i.pravatar.cc/40")
+              }
               className="w-10 h-10 rounded-full border"
               alt="admin"
             />
             <div>
               <p className="text-sm font-medium text-gray-800">
-                Admin User
+                {user?.fullName || user?.full_name || user?.name || user?.email || "Admin User"}
               </p>
               <p className="text-xs text-gray-500">
-                Super Administrator
+                {user?.role ? user.role.replace(/_/g, " ") : "Super Administrator"}
               </p>
             </div>
             <ChevronDown
@@ -85,10 +144,8 @@ export default function Header() {
           {dropdownOpen && (
             <div className="absolute right-0 mt-4 w-64 bg-white rounded-xl shadow-xl border animate-slide-fade z-50">
               <div className="px-5 py-4 border-b">
-                <p className="text-sm font-semibold">Admin User</p>
-                <p className="text-xs text-gray-500">
-                  Super Administrator
-                </p>
+                <p className="text-sm font-semibold">{user?.fullName || user?.email || 'Admin User'}</p>
+                <p className="text-xs text-gray-500">{user?.role ? user.role.replace(/_/g, ' ') : 'Super Administrator'}</p>
               </div>
 
               <div className="flex flex-col">

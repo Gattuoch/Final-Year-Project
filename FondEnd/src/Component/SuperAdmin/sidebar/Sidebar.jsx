@@ -112,7 +112,7 @@ function NavItem({ icon, label, active, onClick }) {
       onClick={onClick}
       className={`
         w-full flex items-center gap-3
-        px-4 py-2 rounded-lg text-sm transition
+        px-4 py-2 rounded-lg text-sm md:text-base transition
         ${
           active
             ? "bg-green-50 text-green-700 font-medium"

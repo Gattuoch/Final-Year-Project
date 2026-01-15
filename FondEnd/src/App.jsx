@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 // Home Components
 import Navbar from "./Component/Home/Navar";
 import Footer from "./Component/Home/Footer";
@@ -28,7 +29,7 @@ import { GrowingCommunity } from "./Component/Home/GrowingCommunity";
 
 // Contact Page Components
 import GetInTouch from "./Component/Home/Contact/GetIntouch";
-import FormContact from "./Component/Home/Contact/FormContact";
+import FormContact from "./Component/Home/Contact/FormContact2";
 import { Login } from "./Component/Auth/Login";
 import SignUp from "./Component/Auth/SignUp";
 import OTPVerification from "./Component/Auth/OTPVerification";
@@ -37,24 +38,26 @@ import { ResetPassword } from "./Component/Auth/ResetPassword";
 import Dashboard from "./Component/SuperAdmin/pages/Dashboard.jsx";
 import CampManagement from "./Component/SuperAdmin/Camps/CampManagement.jsx";
 import UserManagement from "./Component/SuperAdmin/Users/UserManagement.jsx";
-import EmailSettings from "./Component/SuperAdmin/Setting/SettingsHome.jsx";
+// import EmailSettings from "./Component/SuperAdmin/Setting/SettingsHome.jsx";
 import PlatformSettings from "./Component/SuperAdmin/Setting/PlatformSettings.jsx";
 import PaymentSettings from "./Component/SuperAdmin/Setting/PaymentSettings.jsx";
 import NotificationSettings from "./Component/SuperAdmin/Setting/NotificationSettings.jsx";
 import GeneralSettings from "./Component/SuperAdmin/Setting/GeneralSettings.jsx";
+import SecuritySettings from "./Component/SuperAdmin/Setting/SecuritySettings.jsx";
+import EmailSettings from "./Component/SuperAdmin/Setting/EmailSettings.jsx";
+import CreateSystemAdmin from "./Component/SuperAdmin/CreateSystemAdmin/CreateSystemAdmin.jsx";
 
 function App() {
   return (
     <>
-      
-
+      <Toaster />
       <Routes>
         {/* HOME */}
         <Route
           path="/"
           element={
             <>
-            <Navbar />
+              <Navbar />
               <Home />
               <Hero />
               <WhyChoose />
@@ -66,13 +69,12 @@ function App() {
             </>
           }
         />
-
         {/* FEATURES */}
         <Route
           path="/features"
           element={
             <>
-            <Navbar />
+              <Navbar />
               <Hero />
               <PlatformFeatures />
               <Experience />
@@ -81,13 +83,12 @@ function App() {
             </>
           }
         />
-
         {/* CAMPS */}
         <Route
           path="/camps"
           element={
             <>
-            <Navbar />
+              <Navbar />
               <Hero />
               <BrowseALLCamps />
               <CampBrowse />
@@ -95,13 +96,12 @@ function App() {
             </>
           }
         />
-
         {/* ABOUT */}
         <Route
           path="/about"
           element={
             <>
-            <Navbar />
+              <Navbar />
               <About />
               <CoreValues />
               <GrowingCommunity />
@@ -109,13 +109,12 @@ function App() {
             </>
           }
         />
-
         {/* CONTACT */}
         <Route
           path="/contact"
           element={
             <>
-            <Navbar />
+              <Navbar />
               <GetInTouch />
               <FormContact />
               <Footer />
@@ -129,23 +128,41 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/super-admin" element={<Dashboard />} />
         <Route path="/super-admin/camps" element={<CampManagement />} />
-         <Route path="/super-admin/users" element={<UserManagement />} />
-         {/* setting */}
-          <Route path="/super-admin/settings" element={<GeneralSettings />} /> payment
-          <Route path="/super-admin/settings/platform" element={<PlatformSettings />} /> 
-          <Route path="/super-admin/settings/payment" element={<PaymentSettings />} /> 
-          <Route path="/super-admin/settings/notifications" element={<NotificationSettings />} /> 
-
+        <Route path="/super-admin/users" element={<UserManagement />} />
+        {/* setting */}
+        <Route
+          path="/super-admin/settings"
+          element={<GeneralSettings />}
+        />{" "}
+        payment
+        <Route
+          path="/super-admin/settings/platform"
+          element={<PlatformSettings />}
+        />
+        <Route
+          path="/super-admin/settings/payment"
+          element={<PaymentSettings />}
+        />
+        <Route
+          path="/super-admin/settings/notifications"
+          element={<NotificationSettings />}
+        />
+        <Route
+          path="/super-admin/settings/security"
+          element={<SecuritySettings />}
+        />
+        <Route path="/super-admin/settings/email" element={<EmailSettings />} />
+        <Route
+          path="/super-admin/create-system-admin"
+          element={<CreateSystemAdmin />}
+        />
         {/* <Route path="/super-admin/events" element={<Events />} />
         <Route path="/super-admin/bookings" element={<Bookings />} />
        
         <Route path="/super-admin/finance" element={<Finance />} />
         <Route path="/super-admin/analytics" element={<Analytics />} />
        */}
-
       </Routes>
-
-      
     </>
   );
 }

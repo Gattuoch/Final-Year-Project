@@ -43,6 +43,7 @@ const bookingSchema = new mongoose.Schema(
     graceExpiry: { type: Date },
     autoCancelAt: { type: Date },
     cancelReason: { type: String },
+    createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );

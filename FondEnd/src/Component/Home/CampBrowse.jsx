@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { HiStar, HiOutlineLocationMarker } from "react-icons/hi";
 import { motion } from "framer-motion";
 
-import Camp1 from "../../assets/camp1.png";
-import Camp2 from "../../assets/camp2.png";
-import Camp3 from "../../assets/camp3.png";
+import Camp1 from "../../assets/Simien-mountain.png";
+import Camp2 from "../../assets/Lake-tana.png";
+import Camp3 from "../../assets/Bale-forest.png";
 
 const localCamps = [
   {

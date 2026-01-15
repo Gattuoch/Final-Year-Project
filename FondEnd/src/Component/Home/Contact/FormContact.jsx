@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
 import contactImage from "../../../assets/Contact-image.png";
 
 export default function ContactFormSection() {
@@ -13,146 +15,72 @@ export default function ContactFormSection() {
 
   const [loading, setLoading] = useState(false);
 
-  // Handle input change
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // Submit form to backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    const loadingToast = toast.loading("Sending message...");
+
     try {
-      const res = await fetch("https://ethio-camp-ground-backend-lega.onrender.com/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const res = await axios.post(
+        "https://ethio-camp-ground-backend-lega.onrender.com/api/contact",
+        formData,
+        { headers: { "Content-Type": "application/json" } }
+      );
 
-      const data = await res.json();
+      const data = res?.data;
 
-      if (data.success) {
-        alert("Message sent successfully!");
-
-        // Reset form
-        setFormData({
-          firstName: "",
-          lastName: "",
-          email: "",
-          phone: "",
-          subject: "General Inquiry",
-          message: "",
-        });
+      if (data?.success) {
+        toast.success(data.message || "Message sent successfully!", { id: loadingToast });
+        setFormData({ firstName: "", lastName: "", email: "", phone: "", subject: "General Inquiry", message: "" });
       } else {
-        alert("Something went wrong. Try again.");
+        toast.error(data?.message || "Something went wrong. Try again.", { id: loadingToast });
       }
     } catch (error) {
-      alert("Server error: " + error.message);
+      toast.error(error?.response?.data?.message || error.message || "Server error. Please try again later.", { id: loadingToast });
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
     <div className="w-full bg-white py-20 px-6">
-      {/* SECTION TITLE */}
-      <h2 className="text-center text-4xl md:text-5xl font-extrabold text-gray-900 mb-16">
-        Send Us a Message
-      </h2>
+      <h2 className="text-center text-4xl md:text-5xl font-extrabold text-gray-900 mb-16">Send Us a Message</h2>
 
-      {/* MAIN GRID */}
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12">
-        {/* LEFT — IMAGE */}
         <div>
-          <img
-            src={contactImage}
-            alt="Office Building"
-            className="rounded-2xl shadow-xl w-full object-cover"
-          />
+          <img src={contactImage} alt="Office Building" className="rounded-2xl shadow-xl w-full object-cover" />
         </div>
 
-        {/* RIGHT — FORM */}
         <div className="bg-gray-50 p-10 rounded-2xl shadow-md">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* NAME FIELDS */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-gray-700 font-medium mb-1">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  placeholder="John"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-700 focus:outline-none"
-                  required
-                />
+                <label className="block text-gray-700 font-medium mb-1">First Name</label>
+                <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="John" className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-700 focus:outline-none" required />
               </div>
 
               <div>
-                <label className="block text-gray-700 font-medium mb-1">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  placeholder="Doe"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-700 focus:outline-none"
-                  required
-                />
+                <label className="block text-gray-700 font-medium mb-1">Last Name</label>
+                <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Doe" className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-700 focus:outline-none" required />
               </div>
             </div>
 
-            {/* EMAIL */}
             <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Email Address
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="john.doe@example.com"
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-700 focus:outline-none"
-                required
-              />
+              <label className="block text-gray-700 font-medium mb-1">Email Address</label>
+              <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="john.doe@example.com" className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-700 focus:outline-none" required />
             </div>
 
-            {/* PHONE */}
             <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Phone Number
-              </label>
-              <input
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="+251 912 345 678"
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-700 focus:outline-none"
-              />
+              <label className="block text-gray-700 font-medium mb-1">Phone Number</label>
+              <input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="+251 912 345 678" className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-700 focus:outline-none" />
             </div>
 
-            {/* SUBJECT */}
             <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Subject
-              </label>
-              <select
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-700 focus:outline-none"
-              >
+              <label className="block text-gray-700 font-medium mb-1">Subject</label>
+              <select name="subject" value={formData.subject} onChange={handleChange} className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-700 focus:outline-none">
                 <option>General Inquiry</option>
                 <option>Booking Support</option>
                 <option>Camp Partnership</option>
@@ -161,30 +89,12 @@ export default function ContactFormSection() {
               </select>
             </div>
 
-            {/* MESSAGE */}
             <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Message
-              </label>
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                rows="5"
-                placeholder="Tell us how we can help you..."
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-700 focus:outline-none"
-                required
-              ></textarea>
+              <label className="block text-gray-700 font-medium mb-1">Message</label>
+              <textarea name="message" value={formData.message} onChange={handleChange} rows="5" placeholder="Tell us how we can help you..." className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-700 focus:outline-none" required />
             </div>
 
-            {/* SUBMIT BUTTON */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-green-800 text-white py-4 rounded-lg font-semibold text-lg hover:bg-green-900 transition"
-            >
-              {loading ? "Sending..." : "Send Message"}
-            </button>
+            <button type="submit" disabled={loading} className="w-full bg-green-800 text-white py-4 rounded-lg font-semibold text-lg hover:bg-green-900 transition">{loading ? "Sending..." : "Send Message"}</button>
           </form>
         </div>
       </div>

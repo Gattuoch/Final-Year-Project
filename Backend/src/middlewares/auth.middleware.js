@@ -97,8 +97,32 @@ export const protect = (roles = []) => {
   ];
 };
 
+<<<<<<< HEAD
 // Also exporting verifyToken as an alias for authenticateJWT to prevent breaking other files
 export const verifyToken = authenticateJWT;
+=======
+
+/* ================= ADMIN ONLY ================= */
+export const adminOnly = (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const allowedRoles = ["admin", "super_admin"];
+
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        message: "Access denied: Admins only",
+      });
+    }
+
+    next();
+  } catch (error) {
+    return res.status(403).json({ message: "Admin access failed" });
+  }
+};
+>>>>>>> all change here
 
 export default {
   authenticateJWT,

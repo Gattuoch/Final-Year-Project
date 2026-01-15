@@ -1,5 +1,6 @@
 import React from "react";
 import { FaStar } from "react-icons/fa";
+import dawit from "../../assets/Dawit.png"
 
 const Testimonials = () => {
   return (
@@ -56,12 +57,12 @@ const Testimonials = () => {
 
           <div className="flex items-center gap-4">
             <img
-              src="https://i.pravatar.cc/80?img=12"
-              alt="David Kebede"
+              src={dawit}
+              alt="Dawit Kebede"
               className="w-12 h-12 rounded-full"
             />
             <div>
-              <h4 className="font-semibold text-gray-900">David Kebede</h4>
+              <h4 className="font-semibold text-gray-900">Dawit Kebede</h4>
               <p className="text-gray-500 text-sm">Nature Photographer</p>
             </div>
           </div>

@@ -3,9 +3,12 @@ import { FaStar, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiMapPin, FiFilter } from "react-icons/fi";
 import { motion } from "framer-motion";
 
-import Camp1 from "../../assets/camp1.png";
-import Camp2 from "../../assets/camp2.png";
-import Camp3 from "../../assets/camp3.png";
+import Camp1 from "../../assets/Simien-mountain.png";
+import Camp2 from "../../assets/Lake-tana.png";
+import Camp3 from "../../assets/Bale-forest.png";
+import Omo from "../../assets/Omo.png"
+import Danakil from "../../assets/Danakil-desert.png"
+import HighLand from "../../assets/Highland-Glamping.png"
 
 // ---------- fallback local data (unchanged UI) ----------
 const campsData = [
@@ -67,7 +70,7 @@ const campsData = [
     badge: "Cultural",
     statusColor: "bg-green-50",
     TextColor: "text-green-800",
-    image: Camp1,
+    image: Omo,
   },
   {
     id: 5,
@@ -82,7 +85,7 @@ const campsData = [
     badge: "Adventure",
     statusColor: "bg-yellow-50",
     TextColor: "text-red-500",
-    image: Camp2,
+    image: Danakil,
   },
   {
     id: 6,
@@ -97,7 +100,7 @@ const campsData = [
     badge: "Luxury",
     statusColor: "bg-gray-50",
     TextColor: "text-purple-500",
-    image: Camp3,
+    image: HighLand,
   },
 ];
 

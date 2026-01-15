@@ -14,7 +14,28 @@ import tentRoutes from "./routes/tent.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import contactRoutes from "./routes/contactRoutes.js";
+<<<<<<< HEAD
 import dashboardRoutes from "./routes/dashboardRoutes.js";
+=======
+import CampRoutes from "./routes/campRoutes.js";
+import campHomeRoutes from "./routes/campHomeRoutes.js";
+import searchRoutes from "./routes/searchRoutes.js";
+import managerRoutes from "./routes/manager.routes.js";
+import userRoutes from "./routes/userRoutes.js";
+import auth1Routes from './routes/auth.js';
+import  admin1Routes from './routes/admin.js';
+import dashboardRoutes from "./controllers/dashboardController.js";
+import camproutes from "./routes/camp.routes.js";
+// import dashboardRoutes from "./routes/dashboard.routes.js";
+// Seeder utility
+import  seedSuperAdmin  from "./utils/createSuperAdmin.js";
+import  createSystemAdmin  from "./routes/createSystemAdmin.js";
+import usersuperadmindashboard from "./routes/dashboard.routes.js";
+import adminuser  from "./routes/admin.user.routes.js"
+import createuserRoutes from "./routes/createuser.controller.js";
+
+
+>>>>>>> all change here
 
 // --- UTILS ---
 import seedSuperAdmin from "./utils/createSuperAdmin.js";
@@ -23,6 +44,7 @@ dotenv.config();
 const app = express();
 
 // ====== MIDDLEWARES ======
+<<<<<<< HEAD
 // Set CORS to be permissive for testing
 app.use(cors({ 
   origin: "*", 
@@ -31,10 +53,24 @@ app.use(cors({
   credentials: true,
 }));
 
+=======
+app.use(cors(
+  { 
+    origin: "http://localhost:5173", // your React frontend
+    methods: ["GET","POST","PUT","DELETE","PATCH","OPTIONS"],
+    allowedHeaders: ["Content-Type","Authorization"],
+    credentials:true,
+  }
+));
+>>>>>>> all change here
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet({ contentSecurityPolicy: false })); // Helmet can sometimes block cross-origin requests
 app.use(morgan("dev"));
+
+// Disable ETag/conditional GET responses for API endpoints to avoid 304
+// responses with empty bodies. APIs typically should return fresh JSON.
+app.disable("etag");
 
 // ====== ROUTES ======
 // These MUST come before the 404/Not Found middleware
@@ -47,8 +83,25 @@ app.use("/api/tents", tentRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/contact", contactRoutes);
+<<<<<<< HEAD
 app.use("/api/dashboard", dashboardRoutes);
 
+=======
+// app.use("/api/CampRoutes", CampRoutes);
+app.use("/api/campHomeRoutes", campHomeRoutes);
+app.use("/api/search", searchRoutes);
+app.use('/api/auth', auth1Routes);
+app.use('/api/admin', admin1Routes);
+app.use("/api/manager", managerRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/usersuperadmindashboard", usersuperadmindashboard);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/system-admin", createSystemAdmin);
+app.use("/api/adminuser", adminuser)
+app.use("/api/usersadmin", adminuser)
+app.use("/api/createusers", createuserRoutes);
+// static images (optional) - serve images placed under ./public/images
+>>>>>>> all change here
 app.use("/images", express.static("public/images"));
 
 // ====== ERROR HANDLING ======

@@ -43,34 +43,34 @@ export const Login = () => {
         password: formData.password,
       });
 
-      const { accessToken, refreshToken, user } = res.data;
-      const role = user.role;
+      // Save tokens
+      localStorage.setItem("accessToken", res.data.accessToken);
+      localStorage.setItem("refreshToken", res.data.refreshToken);
+      localStorage.setItem("role", res.data.role);
 
-      // --- LOGICAL UPDATE: PERSISTENCE ---
-      // We save the full user object as a string so the Navbar can retrieve fullName/Email
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("user", JSON.stringify(user)); 
-      localStorage.setItem("role", role);
-
-      // Trigger a custom event so the Navbar updates its state instantly
-      window.dispatchEvent(new Event("storage"));
-
-      setLoading(false);
-      setSuccess(true);
-      setAttempts(0);
-
-      setTimeout(() => {
-  // We use the exact URL you requested: /super-admin
-  if (role === "super_admin" || role === "admin" || role === "system_admin") {
-    console.log("Redirecting to Super Admin...");
-    window.location.href = "http://localhost:5173/super-admin";
-  } else if (role === "camp_manager") {
-    window.location.href = "http://localhost:5173/manager-dashboard";
-  } else {
-    window.location.href = "http://localhost:5173/";
-  }
-}, 2000);
+      // Redirect based on role
+      switch (res.data.role) {
+        case "camper":
+          window.location.href = "/camper-dashboard";
+          break;
+        case "camp_manager":
+          window.location.href = "/manager-dashboard";
+          break;
+        case "ticket_officer":
+          window.location.href = "/ticket-dashboard";
+          break;
+        case "system_admin":
+          window.location.href = "/admin-dashboard";
+          break;
+        case "super_admin":
+          window.location.href = "/super-admin";
+          break;
+        case "security_officer":
+          window.location.href = "/security_officer";
+          break;
+        default:
+          window.location.href = "/";
+      }
 
     } catch (err) {
       setLoading(false);

@@ -1,5 +1,6 @@
 import Camp from "../models/Camp.model.js";
 import User from "../models/User.model.js";
+<<<<<<< HEAD
 import Booking from "../models/Booking.model.js";
 
 // ✅ 1. SYSTEM ADMINISTRATOR STATS
@@ -35,6 +36,47 @@ export const getManagerStats = async (req, res) => {
 
     const totalMyCamps = myCamps.length;
     const activeBookings = await Booking.countDocuments({ tentId: { $in: campIds }, status: "confirmed" });
+=======
+import Booking from "../models/Booking.js";
+import  {protect}  from "../middlewares/authMiddleware.js";
+import  {authorizeRoles } from "../middlewares/roleMiddleware.js";
+
+const router = express.Router();
+
+// GET dashboard stats (SUPER ADMIN ONLY)
+router.get(
+  "/",
+  protect,
+  authorizeRoles("super_admin"),
+  async (req, res) => {
+    try {
+      const totalCamps = await Camp.countDocuments();
+      const activeCamps = await Camp.countDocuments({ status: "Active" });
+      const pendingCamps = await Camp.countDocuments({ status: "Pending" });
+
+      const totalUsers = await User.countDocuments();
+      const activeUsers = await User.countDocuments({ isEmailVerified: true });
+
+      const totalBookings = await Booking.countDocuments();
+      const totalRevenueAgg = await Booking.aggregate([
+        { $group: { _id: null, total: { $sum: "$amount" } } },
+      ]);
+
+      res.json({
+        totalCamps,
+        activeCamps,
+        pendingCamps,
+        totalUsers,
+        activeUsers,
+        totalBookings,
+        totalRevenue: totalRevenueAgg[0]?.total || 0,
+      });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
+>>>>>>> all change here
 
     res.json({
       success: true,

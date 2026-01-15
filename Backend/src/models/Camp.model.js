@@ -1,12 +1,8 @@
 import mongoose from "mongoose";
 
-const upgradeHistorySchema = new mongoose.Schema({
-  date: { type: Date, default: Date.now },
-  changes: { type: String, required: true },
-});
-
-const campSchema = new mongoose.Schema(
+const CampSchema = new mongoose.Schema(
   {
+<<<<<<< HEAD
     managerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -47,8 +43,39 @@ const campSchema = new mongoose.Schema(
     
     upgradeHistory: [upgradeHistorySchema],
     deletedAt: { type: Date, default: null },
+=======
+    name: { type: String, required: true },
+    description: String,
+
+    location: {
+      region: String,
+      description: String,
+      address: String,
+    },
+
+    status: {
+      type: String,
+      enum: ["Active", "Pending", "Inactive"],
+      default: "Active",
+    },
+
+    capacity: {
+      current: { type: Number, default: 0 },
+      total: Number,
+    },
+
+    price: Number,
+    revenue: { type: Number, default: 0 },
+
+    images: [String],
+>>>>>>> all change here
   },
   { timestamps: true }
 );
 
+<<<<<<< HEAD
 export default mongoose.models.Camp || mongoose.model("Camp", campSchema);
+=======
+export default mongoose.models.Camp ||
+  mongoose.model("Camp", CampSchema);
+>>>>>>> all change here

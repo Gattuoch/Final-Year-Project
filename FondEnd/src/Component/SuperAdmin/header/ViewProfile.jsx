@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import API from "../services/api";
 
 const ViewProfile = () => {
   const fileInputRef = useRef(null);
@@ -6,10 +7,11 @@ const ViewProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   const [profile, setProfile] = useState({
-    name: "Alex Morgan",
-    email: "alex@saascorp.com",
-    role: "Administrator",
-    memberSince: "March 12, 2023",
+    name: "",
+    fullName: "",
+    email: "",
+    role: "",
+    memberSince: "",
     avatar: "https://i.pravatar.cc/150?img=12",
   });
 
@@ -31,8 +33,23 @@ const ViewProfile = () => {
     setProfile(tempProfile);
     setIsEditing(false);
 
-    // TODO: API call
-    // updateProfile(tempProfile)
+    // Persist to localStorage and notify header to update immediately
+    try {
+      const data = {
+        fullName: tempProfile.name || tempProfile.fullName || tempProfile.name,
+        email: tempProfile.email,
+        role: tempProfile.role,
+        avatar: tempProfile.avatar,
+        memberSince: tempProfile.memberSince,
+      };
+      localStorage.setItem("profile", JSON.stringify(data));
+      window.dispatchEvent(new CustomEvent("profileUpdated", { detail: data }));
+    } catch (err) {
+      console.error("Failed to save profile to storage", err);
+    }
+
+    // Optional: if you later implement a backend update endpoint, call it here
+    // API.put('/users/profile', data).catch(e => console.error(e));
   };
 
   const handleChange = (e) => {
@@ -51,6 +68,48 @@ const ViewProfile = () => {
     const preview = URL.createObjectURL(file);
     setTempProfile((prev) => ({ ...prev, avatar: preview }));
   };
+
+  // Fetch profile from API on mount
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const cached = localStorage.getItem("profile");
+        if (cached) {
+          const p = JSON.parse(cached);
+          setProfile({
+            name: p.fullName || p.name || "",
+            fullName: p.fullName || p.name || "",
+            email: p.email || "",
+            role: p.role || "",
+            memberSince: p.memberSince || "",
+            avatar: p.avatar || "https://i.pravatar.cc/150?img=12",
+          });
+          setTempProfile((prev) => ({ ...prev, ...p }));
+        }
+      } catch (e) {}
+
+      try {
+        const res = await API.get("/auth/profile");
+        const u = res.data?.user;
+        if (u) {
+          const p = {
+            name: u.fullName || u.name || "",
+            fullName: u.fullName || u.name || "",
+            email: u.email || "",
+            role: u.role || "",
+            memberSince: new Date(u.createdAt).toLocaleDateString(),
+            avatar: u.avatar || (u.email ? `https://i.pravatar.cc/150?u=${u.email}` : "https://i.pravatar.cc/150?img=12"),
+          };
+          setProfile(p);
+          setTempProfile(p);
+        }
+      } catch (err) {
+        // ignore - user might be unauthenticated
+      }
+    };
+
+    load();
+  }, []);
 
   /* ---------------- UI ---------------- */
 

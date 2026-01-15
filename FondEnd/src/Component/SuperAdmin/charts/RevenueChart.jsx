@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -5,29 +6,43 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from "recharts";
-
-import { revenueData } from "../data/dashboardData"; // ✅ FIX
-import Card from "../ui/Card";
+import { fetchRevenueChart } from "../services/api.js";
 
 export default function RevenueChart() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetchRevenueChart().then(({ data }) => {
+      const months = [
+        "Jan","Feb","Mar","Apr","May","Jun",
+        "Jul","Aug","Sep","Oct","Nov","Dec",
+      ];
+
+      setData(
+        data.map(d => ({
+          month: months[d._id - 1],
+          value: d.revenue,
+        }))
+      );
+    });
+  }, []);
+
   return (
-    <Card title="Revenue Trends">
-      <ResponsiveContainer width="100%" height={260}>
-        <LineChart data={revenueData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip />
-          <Line
-            type="monotone"
-            dataKey="value"
-            stroke="#22c55e"
-            strokeWidth={3}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </Card>
+    <ResponsiveContainer width="100%" height={260}>
+      <LineChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="month" />
+        <YAxis />
+        <Tooltip />
+        <Line
+          type="monotone"
+          dataKey="value"
+          stroke="#22c55e"
+          strokeWidth={3}
+        />
+      </LineChart>
+    </ResponsiveContainer>
   );
 }

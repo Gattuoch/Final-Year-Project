@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import CampVeiw from "../../assets/Camp.png";
+import CampVeiw from "../../assets/Hero-image.png";
 import toast from "react-hot-toast";
 import { HiLocationMarker, HiCalendar, HiUser, HiSearch } from "react-icons/hi";
 
@@ -94,7 +94,7 @@ const SearchBar = () => {
         className="w-full bg-white shadow-lg rounded-3xl p-6 mt-10 border border-gray-100"
       >
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-          Find Your Perfect Camp
+          Where do you want to camp?
         </h2>
 
         <div className="grid md:grid-cols-5 gap-4 items-end">
@@ -155,7 +155,7 @@ const SearchBar = () => {
                 <option value="2">2 Guests</option>
                 <option value="3">3 Guests</option>
                 <option value="4">4 Guests</option>
-                <option value="5">5 Guests</option>
+                <option value="5">5 Guests +</option>
               </select>
             </div>
           </motion.div>
