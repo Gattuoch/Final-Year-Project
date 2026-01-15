@@ -1,7 +1,7 @@
 import  express from 'express';
 import  bcrypt from 'bcrypt';
 import User from "../models/User.model.js";
-import { authenticateJWT, authorizeRoles } from '../middlewares/auth.js';
+import { authenticateJWT, authorizeRoles } from '../middlewares/auth.middleware.js';
 import { sendEmail, sendSMS } from '../models/OTP.js';
 import { v4 as uuidv4 } from 'uuid';
 

@@ -1,14 +1,6 @@
-import  mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
-const roles = [
-  'camper',
-  'camp_manager',
-  'event_manager',
-  'ticket_officer',
-  'security_officer',
-  'system_admin',
-  'super_admin'
-];
+const roles = ['camper', 'camp_manager', 'super_admin'];
 
 const UserSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
@@ -17,13 +9,23 @@ const UserSchema = new mongoose.Schema({
   passwordHash: { type: String, required: true },
   role: { type: String, enum: roles, default: 'camper' },
   isInternal: { type: Boolean, default: false },
-  mustResetPassword: { type: Boolean, default: false }, // for temp passwords
-  isVerified: { type: Boolean, default: false }, // email/phone verified
+  mustResetPassword: { type: Boolean, default: false }, 
+  isVerified: { type: Boolean, default: false }, 
   isBanned: { type: Boolean, default: false },
-  metadata: {}, // store additional info (country, docs, uploads refs)
-   isActive: { type: Boolean, default: true },
+  isActive: { type: Boolean, default: true },
+  metadata: {}, 
+  // ADDED: Logic to support the business info sent by the controller
+  businessInfo: {
+    businessName: String,
+    description: String,
+    location: String,
+    licenseUrl: String,
+    contactEmail: String,
+    status: { type: String, default: 'pending' },
+    govId: String,          // Added to support manager.controller logic
+    businessLicense: String // Added to support manager.controller logic
+  }
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
-
 export default User;

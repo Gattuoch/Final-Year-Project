@@ -12,54 +12,43 @@ const campSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      minlength: 3,
-      maxlength: 100,
-    },
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 2000,
-    },
+    name: { type: String, required: true, trim: true },
+    description: { type: String, required: true },
+    
+    // Combined Location
     location: {
       address: { type: String, required: true },
+      region: String,
       coordinates: {
-        lat: { type: Number, required: true },
-        lng: { type: Number, required: true },
+        lat: Number,
+        lng: Number,
       },
     },
-    amenities: {
-      type: [String],
-      default: [],
-    },
-    basePrice: {
-      type: Number,
-      required: true,
-      min: 50,
-    },
-    images: {
-      type: [String], // Cloudinary URLs
-      default: [],
-    },
-    videoLink: {
-      type: String,
-    },
+
+    // Combined Display & Status
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
+      enum: ["pending", "approved", "rejected", "inactive"],
       default: "pending",
     },
+    statusColor: String,
+    textColor: String,
+    badge: String,
+
+    // Stats
+    rating: { type: Number, default: 0 },
+    reviews: { type: Number, default: 0 },
+    basePrice: { type: Number, required: true }, // ETB price
+    revenue: { type: Number, default: 0 },
+
+    amenities: [String],
+    images: [String], // Array of URLs
+    videoLink: String,
+    
     upgradeHistory: [upgradeHistorySchema],
-    deletedAt: {
-      type: Date,
-      default: null,
-    },
+    deletedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Camp", campSchema);
+export default mongoose.models.Camp || mongoose.model("Camp", campSchema);

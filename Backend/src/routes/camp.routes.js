@@ -1,30 +1,34 @@
 import express from "express";
 import {
   createCamp,
-  getAllApprovedCamps,
-  getCampById,
-  editCamp,
-  softDeleteCamp,
-  getPendingCamps,
+  listCamps,        // Combined search, list, and getAll
+  getCampDetails,   // Replaces getCampById
+  updateCamp,       // Replaces editCamp
+  deleteCamp,       // Replaces softDeleteCamp
   approveCamp,
-  rejectCamp,
-} from "../controllers/camp.controller.js";
+} from "../controllers/campController.js";
 import { verifyToken, isAdmin } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-// ===== PUBLIC ROUTES =====
-router.get("/", getAllApprovedCamps);
-router.get("/:id", getCampById);
+/* ============================================================
+    1. PUBLIC ROUTES
+   ============================================================ */
+// This handles "/" (all camps) AND "/?search=...&location=..."
+router.get("/", listCamps);
+router.get("/:id", getCampDetails);
 
-// ===== MANAGER ROUTES =====
+/* ============================================================
+    2. MANAGER ROUTES
+   ============================================================ */
 router.post("/", verifyToken, createCamp);
-router.patch("/:id", verifyToken, editCamp);
-router.delete("/:id", verifyToken, softDeleteCamp);
+router.patch("/:id", verifyToken, updateCamp);
+router.delete("/:id", verifyToken, deleteCamp);
 
-// ===== ADMIN ROUTES =====
-router.get("/admin/pending", verifyToken, isAdmin, getPendingCamps);
+/* ============================================================
+    3. ADMIN & MODERATION ROUTES
+   ============================================================ */
+// To see pending camps, use: GET /api/camps?status=pending
 router.patch("/admin/:id/approve", verifyToken, isAdmin, approveCamp);
-router.patch("/admin/:id/reject", verifyToken, isAdmin, rejectCamp);
 
 export default router;

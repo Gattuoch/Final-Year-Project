@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const OTPVerification = () => {
-  const [target, setTarget] = useState("");
+  const [target, setTarget] = useState(localStorage.getItem("pendingTarget") || "");
   const [code, setCode] = useState("");
   const [type, setType] = useState("verification");
   const [loading, setLoading] = useState(false);
@@ -17,89 +17,131 @@ const OTPVerification = () => {
     setMessage("");
 
     try {
-      const res = await axios.post("https://ethio-camp-ground-backend-lega.onrender.com/api/auth/verify-otp", {
+      const res = await axios.post("http://localhost:5000/api/auth/verify-otp", {
         target,
         code,
         type,
       });
 
-      setMessage(res.data.message);
+      if (res.data.success) {
+        setMessage("Verification successful! Redirecting...");
 
-      // ---- Redirect after 1 second ----
-      if (res.data.isVerified) {
+        // --- CRITICAL UPDATE: SESSION PERSISTENCE ---
+        // 1. Save the tokens and user object (Sent from your MongoDB/Backend)
+        if (res.data.accessToken) {
+          localStorage.setItem("accessToken", res.data.accessToken);
+        }
+        
+        if (res.data.user) {
+          // This is what the Navbar uses to show the account name
+          localStorage.setItem("user", JSON.stringify(res.data.user));
+          localStorage.setItem("role", res.data.user.role);
+        }
+
+        // 2. Trigger a storage event so the Navbar updates IMMEDIATELY
+        window.dispatchEvent(new Event("storage"));
+
+        // 3. Clean up the pending target
+        localStorage.removeItem("pendingTarget");
+
+        // 4. Conditional Redirection based on Role
+        const userRole = res.data.user?.role || res.data.role;
+        
         setTimeout(() => {
-          navigate("/login");
-        }, 1000);
+          if (userRole === "camp_manager") {
+            navigate("/manager-dashboard");
+          } else if (["super_admin", "admin", "system_admin"].includes(userRole)) {
+            navigate("/admin-dashboard");
+          } else {
+            navigate("/"); // Home for campers
+          }
+        }, 1500);
       }
 
     } catch (err) {
-      setMessage(err.response?.data?.message || "Verification failed");
+      console.error("Verification Error:", err);
+      setMessage(err.response?.data?.error || "Verification failed");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-200">
+    <div className="h-screen flex items-center justify-center bg-gray-200 p-4">
       <form
         onSubmit={handleVerify}
-        className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl"
+        className="w-full max-w-md bg-white p-8 rounded-3xl shadow-2xl border border-gray-100"
       >
-        <h2 className="text-2xl font-bold text-center mb-6 text-blue-700">
+        <h2 className="text-3xl font-black text-center mb-2 text-[#007ba7]">
           Verify OTP
         </h2>
+        <p className="text-center text-gray-500 mb-8 text-sm">
+          Secure your account to start your adventure.
+        </p>
 
-        {/* TARGET INPUT */}
-        <label className="block mb-2 font-semibold">Target (Phone or Email)</label>
-        <input
-          type="text"
-          placeholder="0912345678 or email@example.com"
-          className="w-full p-3 border rounded-lg mb-4"
-          value={target}
-          onChange={(e) => setTarget(e.target.value)}
-          required
-        />
+        <div className="space-y-4">
+          <div>
+            <label className="block mb-1.5 text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">
+              Target (Phone or Email)
+            </label>
+            <input
+              type="text"
+              placeholder="Not found, please enter manually"
+              className="w-full p-4 border border-gray-200 rounded-2xl bg-gray-50 outline-none focus:ring-2 focus:ring-[#007ba7] focus:border-transparent transition-all font-medium"
+              value={target}
+              onChange={(e) => setTarget(e.target.value)}
+              required
+            />
+          </div>
 
-        {/* OTP INPUT */}
-        <label className="block mb-2 font-semibold">OTP Code</label>
-        <input
-          type="text"
-          placeholder="Enter OTP"
-          className="w-full p-3 border rounded-lg mb-4"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          required
-        />
+          <div>
+            <label className="block mb-1.5 text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">
+              6-Digit OTP Code
+            </label>
+            <input
+              type="text"
+              placeholder="0 0 0 0 0 0"
+              maxLength="6"
+              className="w-full p-4 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-[#007ba7] focus:border-transparent transition-all text-center text-2xl font-black tracking-[0.5em] text-[#007ba7]"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              required
+            />
+          </div>
 
-        {/* TYPE SELECT */}
-        <label className="block mb-2 font-semibold">Type</label>
-        <select
-          className="w-full p-3 border rounded-lg mb-6"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-        >
-          <option value="verification">verification</option>
-          <option value="reset">reset</option>
-        </select>
+          <div>
+            <label className="block mb-1.5 text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">
+              Verification Type
+            </label>
+            <select
+              className="w-full p-4 border border-gray-200 rounded-2xl bg-white outline-none focus:ring-2 focus:ring-[#007ba7] font-medium transition-all"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+            >
+              <option value="verification">Account Verification</option>
+              <option value="reset">Password Reset</option>
+            </select>
+          </div>
+        </div>
 
-        {/* SUBMIT BUTTON */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-700 text-white py-3 rounded-lg hover:bg-blue-800 transition"
+          className="w-full bg-[#007ba7] text-white py-4 rounded-2xl hover:bg-[#005f82] transition-all disabled:bg-gray-300 font-black mt-8 shadow-lg shadow-blue-200 uppercase tracking-widest text-sm"
         >
-          {loading ? "Verifying..." : "Verify OTP"}
+          {loading ? "Processing..." : "Verify & Continue"}
         </button>
 
-        {/* MESSAGE */}
         {message && (
-          <p
-            className={`mt-4 text-center font-semibold ${
-              message.includes("success") ? "text-green-600" : "text-red-500"
+          <div
+            className={`mt-6 text-center text-xs font-bold p-4 rounded-2xl border ${
+              message.toLowerCase().includes("successful") 
+                ? "text-green-700 bg-green-50 border-green-100" 
+                : "text-red-600 bg-red-50 border-red-100"
             }`}
           >
             {message}
-          </p>
+          </div>
         )}
       </form>
     </div>

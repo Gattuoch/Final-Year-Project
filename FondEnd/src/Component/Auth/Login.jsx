@@ -1,16 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { HiMail, HiLockClosed, HiEye, HiEyeOff } from "react-icons/hi";
-import Logo from "../../assets/login-image.png";
+import { HiMail, HiLockClosed, HiEye, HiEyeOff, HiCheckCircle, HiExclamationCircle } from "react-icons/hi";
+import { motion, AnimatePresence } from "framer-motion";
+import { TypeAnimation } from "react-type-animation";
+
+// Image Assets
+import camp0 from "../../assets/camp.png";
+import camp1 from "../../assets/camp1.png";
+import camp2 from "../../assets/camp2.png";
+import Navbar from "../Home/Navar";
 
 export const Login = () => {
-  const [formData, setFormData] = useState({
-    identifier: "",
-    password: ""
-  });
+  const images = [camp0, camp1, camp2];
+  const [currentImg, setCurrentImg] = useState(0);
 
+  const [formData, setFormData] = useState({ identifier: "", password: "" });
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // << FIXED
+  const [attempts, setAttempts] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImg((prev) => (prev + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [images.length]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,142 +35,215 @@ export const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     try {
-      const res = await axios.post("https://ethio-camp-ground-backend-lega.onrender.com/api/auth/login", {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
         identifier: formData.identifier,
         password: formData.password,
       });
 
-      // Save tokens
-      localStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
-      localStorage.setItem("role", res.data.role);
+      const { accessToken, refreshToken, user } = res.data;
+      const role = user.role;
 
-      // Redirect based on role
-      switch (res.data.role) {
-        case "camper":
-          window.location.href = "/camper-dashboard";
-          break;
-        case "camp_manager":
-          window.location.href = "/manager-dashboard";
-          break;
-        case "ticket_officer":
-          window.location.href = "/ticket-dashboard";
-          break;
-        case "system_admin":
-          window.location.href = "/admin-dashboard";
-          break;
-        case "super_admin":
-          window.location.href = "/super-admin";
-          break;
-        case "security_officer":
-          window.location.href = "/security_officer";
-          break;
-        default:
-          window.location.href = "/";
-      }
+      // --- LOGICAL UPDATE: PERSISTENCE ---
+      // We save the full user object as a string so the Navbar can retrieve fullName/Email
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("user", JSON.stringify(user)); 
+      localStorage.setItem("role", role);
+
+      // Trigger a custom event so the Navbar updates its state instantly
+      window.dispatchEvent(new Event("storage"));
+
+      setLoading(false);
+      setSuccess(true);
+      setAttempts(0);
+
+      setTimeout(() => {
+  // We use the exact URL you requested: /super-admin
+  if (role === "super_admin" || role === "admin" || role === "system_admin") {
+    console.log("Redirecting to Super Admin...");
+    window.location.href = "http://localhost:5173/super-admin";
+  } else if (role === "camp_manager") {
+    window.location.href = "http://localhost:5173/manager-dashboard";
+  } else {
+    window.location.href = "http://localhost:5173/";
+  }
+}, 2000);
 
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed!");
+      setLoading(false);
+      const status = err.response?.status;
+      
+      if (status === 404) {
+        setError("Account does not exist. Please check your identifier.");
+      } else if (status === 401) {
+        const nextAttempts = attempts + 1;
+        setAttempts(nextAttempts);
+        setError(`Wrong password. Failed attempts: ${nextAttempts}`);
+      } else if (status === 403) {
+        setError(err.response?.data?.error || "Access denied.");
+      } else {
+        setError("Unable to reach server. Please try again later.");
+      }
     }
   };
 
   return (
-    <div className="w-full h-screen grid grid-cols-1 md:grid-cols-2">
-
-      {/* LEFT SIDE */}
-      <div className="bg-blue-800 text-white flex items-center justify-center overflow-hidden">
-        <img src={Logo} alt="login" className="w-full h-full object-cover" />
-      </div>
-
-      {/* RIGHT SIDE */}
-      <div className="flex items-center justify-center bg-gray-50 px-6">
-        <div className="bg-white shadow-xl rounded-2xl p-10 w-full max-w-md">
-
-          <h1 className="text-3xl font-semibold text-center">Welcome Back</h1>
-          <p className="text-center text-gray-500 mt-1">Sign in to your account</p>
-
-          {error && (
-            <p className="bg-red-100 text-red-700 p-2 rounded-xl text-center mt-4">
-              {error}
-            </p>
-          )}
-
-          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
-
-            <label className="text-sm font-medium">Email or Phone</label>
-            <div className="relative">
-              <HiMail className="absolute left-3 top-3.5 text-gray-400 text-lg" />
-              <input
-                type="text"
-                name="identifier"
-                placeholder="Email or Phone"
-                value={formData.identifier}
-                onChange={handleChange}
-                className="w-full border rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-
-            <label className="text-sm font-medium mt-2">Password</label>
-            <div className="relative">
-              <HiLockClosed className="absolute left-3 top-3.5 text-gray-400 text-lg" />
-              <input
-                type={showPassword ? "text" : "password"}    // << TOGGLE
-                name="password"
-                placeholder="Enter your password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full border rounded-xl pl-10 pr-10 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-
-              {/* Eye Icon */}
-              {showPassword ? (
-                <HiEyeOff
-                  className="absolute right-3 top-3.5 text-gray-400 text-lg cursor-pointer"
-                  onClick={() => setShowPassword(false)}
-                />
-              ) : (
-                <HiEye
-                  className="absolute right-3 top-3.5 text-gray-400 text-lg cursor-pointer"
-                  onClick={() => setShowPassword(true)}
-                />
-              )}
-            </div>
-
-            {/* Remember / Forgot */}
-            <div className="flex justify-between items-center mt-2">
-              <label className="flex items-center gap-2">
-                <input type="checkbox" />
-                <span className="text-sm">Remember me</span>
-              </label>
-
-              <a href="/forgot-password" className="text-sm text-blue-600 cursor-pointer hover:underline">
-                Forgot password?
-              </a>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-xl mt-4 hover:bg-blue-700 transition"
+    <>
+      <Navbar />
+    <div className="w-full h-screen flex items-center justify-center bg-white p-4 selection:bg-blue-100">
+      
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex w-full max-w-5xl h-[650px] bg-white rounded-[48px]
+        shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15),0_30px_60px_-30px_rgba(0,123,167,0.3)] 
+        border border-slate-100 overflow-hidden relative"
+      >
+        <AnimatePresence>
+          {success && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="absolute inset-0 z-50 bg-white flex flex-col items-center justify-center text-center p-10"
             >
-              Sign In
-            </button>
-          </form>
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", damping: 12 }}>
+                <HiCheckCircle className="text-[#007ba7] text-[120px] mb-6 drop-shadow-xl" />
+              </motion.div>
+              <h1 className="text-4xl font-black text-slate-900 tracking-tight">Warm Welcome!</h1>
+              <p className="text-slate-500 mt-3 text-lg font-medium">Synchronizing your adventure...</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-          <p className="text-center mt-6 text-gray-600">
-            Don't have an account?{" "}
-            <a href="/signUp">
-              <span className="text-blue-600 cursor-pointer hover:underline">
-                Sign up
-              </span>
-            </a>
-          </p>
-
+        {/* LEFT PANEL */}
+        <div className="relative hidden md:flex w-1/2 h-full bg-slate-900 overflow-hidden">
+          {images.map((img, index) => (
+            <motion.img
+            key={index}
+              src={img}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: currentImg === index ? 1 : 0 }}
+              transition={{ duration: 1.2, ease: "easeInOut" }}
+              className="absolute inset-0 w-full h-full object-cover scale-105"
+              alt="Camping"
+              />
+          ))}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/20" />
+          <div className="absolute bottom-20 left-12 right-12 text-white z-10">
+            <TypeAnimation
+              sequence={["Your journey begins here.", 1500, "The ultimate camping experience awaits.", 1500]}
+              wrapper="h2"
+              speed={50}
+              className="text-3xl font-extrabold tracking-tight leading-tight"
+              repeat={Infinity}
+              />
+          </div>
         </div>
-      </div>
+
+        {/* RIGHT PANEL - CERULEAN BLUE */}
+        <div className="w-full md:w-1/2 h-full flex flex-col justify-center px-12 lg:px-24 bg-[#007ba7] relative">
+          <div className="w-full max-w-sm mx-auto">
+            <header className="mb-10">
+              <TypeAnimation
+                sequence={["Welcome Back", 2000]}
+                wrapper="h1"
+                className="text-4xl font-black text-white tracking-[ -0.05em]"
+                cursor={false}
+              />
+              <div className="h-1.5 w-14 bg-white/30 mt-4 rounded-full overflow-hidden">
+                <motion.div 
+                  initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 1.5 }}
+                  className="h-full bg-white" 
+                />
+              </div>
+              
+              <AnimatePresence mode="wait">
+                {error && (
+                  <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="mt-6 p-3 bg-white/10 backdrop-blur-sm border-l-4 border-white rounded-r-lg flex items-center gap-2 text-white text-xs font-bold"
+                  >
+                    <HiExclamationCircle className="text-lg shrink-0" />
+                    {error}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {!error && (
+                <p className="text-blue-50/80 mt-6 font-medium text-lg leading-relaxed">
+                  Enter your credentials to access your portal.
+                </p>
+              )}
+            </header>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-white/60 uppercase tracking-widest ml-1">Account Identifier</label>
+                <div className="relative">
+                  <HiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-sky-300 text-xl z-10 pointer-events-none" />
+                  <input
+                    type="text" name="identifier" placeholder="Email or Phone"
+                    value={formData.identifier} onChange={handleChange}
+                    className="w-full bg-white/5 border border-white/20 rounded-2xl pl-12 py-4 text-white placeholder:text-white/30 outline-none focus:bg-white/10 focus:border-sky-400 transition-all font-medium"
+                    required
+                    />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-white/60 uppercase tracking-widest ml-1">Password</label>
+                <div className="relative">
+                  <HiLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-sky-300 text-xl z-10 pointer-events-none" />
+                  <input
+                    type={showPassword ? "text" : "password"} name="password" placeholder="••••••••"
+                    value={formData.password} onChange={handleChange}
+                    className="w-full bg-white/5 border border-white/20 rounded-2xl pl-12 pr-12 py-4 text-white placeholder:text-white/30 outline-none focus:bg-white/10 focus:border-sky-400 transition-all font-medium"
+                    required
+                  />
+                  <button
+                    type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors z-10"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <HiEyeOff size={20} /> : <HiEye size={20} />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex justify-end pb-2">
+                <a href="/forgot" className="text-xs font-bold text-white/70 hover:text-white transition-colors uppercase tracking-wider">
+                  Reset Password?
+                </a>
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit" disabled={loading}
+                className="w-full bg-white text-[#007ba7] font-black py-4 rounded-2xl shadow-xl shadow-black/10 flex items-center justify-center gap-3 transition-all hover:shadow-white/20"
+                >
+                {loading ? (
+                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                  className="w-5 h-5 border-[3px] border-[#007ba7] border-t-transparent rounded-full" />
+                ) : (
+                  "AUTHENTICATE"
+                )}
+              </motion.button>
+            </form>
+
+            <footer className="mt-10 text-center">
+              <p className="text-blue-50/60 text-sm font-medium">
+                New explorer? <a href="/signUp" className="text-white font-black ml-1 hover:underline underline-offset-4 tracking-tight">Create an Account</a>
+              </p>
+            </footer>
+          </div>
+        </div>
+      </motion.div>
     </div>
+  </>
   );
 };

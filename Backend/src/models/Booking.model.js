@@ -17,7 +17,7 @@ const bookingSchema = new mongoose.Schema(
     guests: { type: Number, min: 1, required: true },
     totalPrice: { type: Number, required: true },
 
-    // 🟢 Payment Info
+    // Payment Info
     paymentOption: {
       type: String,
       enum: ["prepaid", "postpaid", "cash_on_arrival"],
@@ -29,31 +29,31 @@ const bookingSchema = new mongoose.Schema(
       default: "unpaid",
     },
 
-    // 🟣 Booking Progress
+    // Booking Progress
     status: {
       type: String,
       enum: ["pending", "confirmed", "cancelled", "completed"],
       default: "pending",
     },
-    idDocumentUrl: { type: String, required: true },
+    idDocumentUrl: { type: String }, // Optional for some roles
     noShow: { type: Boolean, default: false },
     cancelledAt: { type: Date },
 
-    // 🕒 Automation Fields
-    graceExpiry: { type: Date }, // end of grace period
-    autoCancelAt: { type: Date }, // when system cancels unpaid bookings
+    // Automation
+    graceExpiry: { type: Date },
+    autoCancelAt: { type: Date },
     cancelReason: { type: String },
   },
   { timestamps: true }
 );
 
-// 🧠 Calculate grace window based on stay timing
+// Calculate grace window based on stay timing
 bookingSchema.methods.setGracePeriods = function () {
   const start = new Date(this.startDate);
   const now = new Date();
   const diffDays = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
 
-  let graceHours = 8; // default for short notice
+  let graceHours = 8;
   if (diffDays >= 2 && diffDays <= 3) graceHours = 24;
   if (diffDays > 3) graceHours = 48;
 
@@ -62,5 +62,4 @@ bookingSchema.methods.setGracePeriods = function () {
   this.autoCancelAt = graceExpiry;
 };
 
-const Booking = mongoose.model("Booking", bookingSchema);
-export default Booking;
+export default mongoose.models.Booking || mongoose.model("Booking", bookingSchema);

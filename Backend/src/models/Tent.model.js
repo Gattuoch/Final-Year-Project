@@ -12,47 +12,16 @@ const tentSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    capacity: {
-      type: Number,
-      required: true,
-      min: 1,
-    },
-    pricePerNight: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    amenities: [
-      {
-        type: String,
-      },
-    ],
-    images: [
-      {
-        type: String, // Cloudinary URLs
-      },
-    ],
-    available: {
-      type: Boolean,
-      default: true,
-    },
-    deletedAt: {
-      type: Date,
-      default: null,
-    },
+    name: { type: String, required: true, trim: true },
+    description: { type: String, required: true },
+    capacity: { type: Number, required: true, min: 1 },
+    pricePerNight: { type: Number, required: true, min: 0 },
+    amenities: [String],
+    images: [String],
+    available: { type: Boolean, default: true },
+    deletedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );
 
-const Tent = mongoose.model("Tent", tentSchema);
-export default Tent;
+export default mongoose.models.Tent || mongoose.model("Tent", tentSchema);

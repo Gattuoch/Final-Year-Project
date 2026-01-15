@@ -3,8 +3,7 @@ import mongoose from 'mongoose';
 import { logger } from '../utils/logger.js';
 
 /**
- * Connects to MongoDB with retry logic, connection pooling,
- * and detailed success/error logging.
+ * Connects to MongoDB with retry logic and connection pooling.
  */
 const connectDB = async () => {
   const uri = process.env.MONGO_URI;
@@ -15,17 +14,18 @@ const connectDB = async () => {
   }
 
   try {
+    // Mongoose 6+ always uses the new parser and topology, 
+    // so we only need to pass performance-related options.
     const conn = await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      maxPoolSize: 10,           // Maintain up to 10 socket connections
-      serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-      socketTimeoutMS: 45000,    // Close sockets after 45 seconds of inactivity
-      family: 4,                 // Use IPv4, skip trying IPv6
+      maxPoolSize: 10,           
+      serverSelectionTimeoutMS: 5000, 
+      socketTimeoutMS: 45000,    
+      family: 4,                 
     });
 
-    logger.info(`MongoDB Connected: ${conn.connection.host}:${conn.connection.port}`);
-    logger.info(`Database: ${conn.connection.name}`);
+    // These logs are crucial for troubleshooting:
+    logger.info(`✅ MongoDB Connected: ${conn.connection.host}`);
+    logger.info(`📂 Database Name: ${conn.connection.name}`);
 
     // Graceful shutdown
     process.on('SIGINT', async () => {
@@ -35,9 +35,9 @@ const connectDB = async () => {
     });
 
   } catch (error) {
-    logger.error(`DB Connection Failed: ${error.message}`);
-    logger.error('Retrying in 5 seconds...');
-    setTimeout(connectDB, 5000); // Auto-retry
+    logger.error(`❌ DB Connection Failed: ${error.message}`);
+    logger.info('Retrying in 5 seconds...');
+    setTimeout(connectDB, 5000); 
   }
 };
 
