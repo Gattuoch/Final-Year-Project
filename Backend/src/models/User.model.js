@@ -26,7 +26,8 @@ const BusinessInfoSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema({
   fullName: { type: String, required: true, trim: true, maxlength: 120 },
   avatar: { type: String, trim: true },
-  email: { type: String, required: true, trim: true, lowercase: true, unique: true, maxlength: 254 },
+  email: { type: String, required: true, trim: true, lowercase: true, maxlength: 254 },
+
   phone: { type: String, index: true, sparse: true },
   // Keep the existing name `passwordHash` to avoid breaking callers, but hide it by default
   passwordHash: { type: String, required: true, select: false },

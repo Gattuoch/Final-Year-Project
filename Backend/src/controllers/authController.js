@@ -14,7 +14,6 @@ dotenv.config();
 
 const normalizePhone = (phone) => {
   if (!phone) return null;
-  // STRICT UPDATE: replace(/\D/g, "") removes everything that is not a digit
   return phone.toString().trim().replace(/\D/g, "").replace(/^251/, "0");
 };
 
@@ -39,17 +38,11 @@ const msFromDuration = (duration = "30d") => {
 // ✅ REGISTER
 export const register = async (req, res) => {
   try {
-    // 1. Manually inject Multer file paths into req.body so the Validator can see them
     if (req.files) {
-      if (req.files['license']) {
-        req.body.licenseUrl = req.files['license'][0].path;
-      }
-      if (req.files['govId']) {
-        req.body.govIdUrl = req.files['govId'][0].path;
-      }
+      if (req.files['license']) req.body.licenseUrl = req.files['license'][0].path;
+      if (req.files['govId']) req.body.govIdUrl = req.files['govId'][0].path;
     }
 
-    // 2. Validate req.body (now includes the file paths)
     const { error } = registerValidator.validate(req.body, { abortEarly: false });
     if (error) return res.status(400).json({ 
       success: false, 
@@ -82,14 +75,13 @@ export const register = async (req, res) => {
       metadata: { country }
     };
 
-    // ✅ Attach Business Info if Manager
     if (role === "camp_manager") {
       userData.businessInfo = { 
         businessName, 
         description, 
         location, 
-        licenseUrl, // Saved path from Multer
-        govIdUrl,    // Saved path from Multer
+        licenseUrl,
+        govIdUrl,
         contactEmail: contactEmail || normalizedEmail, 
         status: "pending" 
       };
@@ -97,7 +89,6 @@ export const register = async (req, res) => {
 
     await User.create(userData);
 
-    // --- OTP Generation ---
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     await OTP.create({
       target: normalizedPhone || normalizedEmail,
@@ -106,7 +97,6 @@ export const register = async (req, res) => {
       expiresAt: new Date(Date.now() + 15 * 60 * 1000),
     });
 
-    // --- Email Notification ---
     if (normalizedEmail && process.env.BREVO_USER) {
       const transporter = nodemailer.createTransport({
         host: "smtp-relay.brevo.com", port: 587, secure: false,
@@ -120,7 +110,6 @@ export const register = async (req, res) => {
       });
     }
     
-    // --- SMS Notification ---
     if (normalizedPhone) {
       try { await sendSMS(normalizedPhone, `Your EthioCampGround code is ${code}`); } 
       catch (e) { console.error("SMS Failed", e); }
@@ -155,7 +144,6 @@ export const login = async (req, res) => {
         return res.status(403).json({ success: false, error: "Account disabled/banned" });
     }
 
-    // Role Specific Security
     if ((user.role === "admin" || user.role === "super_admin") && password.length < 15) {
       return res.status(403).json({ success: false, error: "Admin passwords must be 15+ chars." });
     }
@@ -164,16 +152,17 @@ export const login = async (req, res) => {
       if (user.businessInfo?.status !== "approved") return res.status(403).json({ success: false, error: "Manager account pending approval." });
     }
 
-  // include both `id` and `sub` for compatibility with different middlewares
-  const accessToken = jwt.sign({ id: user._id, sub: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
-  const refreshToken = jwt.sign({ id: user._id, sub: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
+    const accessToken = jwt.sign({ id: user._id, sub: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const refreshToken = jwt.sign({ id: user._id, sub: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
 
-    await RefreshToken.create({
+    // ✅ FIX: Use setToken() for required tokenHash
+    const refreshDoc = new RefreshToken({
       user: user._id,
-      token: refreshToken,
       expiresAt: new Date(Date.now() + msFromDuration("30d")),
       createdByIp: req.ip,
     });
+    refreshDoc.setToken(refreshToken);
+    await refreshDoc.save();
 
     return res.json({
       success: true,
@@ -253,7 +242,6 @@ export const refresh = async (req, res) => {
     const { refreshToken } = req.body;
     if (!refreshToken) return res.status(400).json({ success: false, error: "Refresh token required" });
 
-    // verify token signature
     let payload;
     try {
       payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
@@ -267,21 +255,20 @@ export const refresh = async (req, res) => {
       return res.status(401).json({ success: false, error: "Refresh token expired" });
     }
 
-    // Issue new access token and rotate refresh token
-  // include both `id` and `sub` to make the new tokens compatible
-  const accessToken = jwt.sign({ id: payload.id || payload.sub, sub: payload.id || payload.sub, role: payload.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
-  const newRefresh = jwt.sign({ id: payload.id || payload.sub, sub: payload.id || payload.sub }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
+    const accessToken = jwt.sign({ id: payload.id || payload.sub, sub: payload.id || payload.sub, role: payload.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const newRefresh = jwt.sign({ id: payload.id || payload.sub, sub: payload.id || payload.sub }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
 
-    // mark old refresh token revoked and save new one
     stored.revoked = true;
     await stored.save();
 
-    await RefreshToken.create({
+    // ✅ FIX: Use setToken() for required tokenHash
+    const newRefreshDoc = new RefreshToken({
       user: payload.id,
-      token: newRefresh,
-      createdByIp: req.ip,
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      createdByIp: req.ip,
     });
+    newRefreshDoc.setToken(newRefresh);
+    await newRefreshDoc.save();
 
     return res.json({ success: true, accessToken, refreshToken: newRefresh });
   } catch (err) {
