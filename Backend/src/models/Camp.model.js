@@ -2,80 +2,50 @@ import mongoose from "mongoose";
 
 const CampSchema = new mongoose.Schema(
   {
-<<<<<<< HEAD
     managerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     name: { type: String, required: true, trim: true },
-    description: { type: String, required: true },
-    
-    // Combined Location
+    description: { type: String, default: "" },
+    // Location can be flexible between simple string or structured object
     location: {
-      address: { type: String, required: true },
-      region: String,
+      address: { type: String, default: "" },
+      region: { type: String, default: "" },
+      description: { type: String, default: "" },
       coordinates: {
         lat: Number,
         lng: Number,
       },
     },
 
-    // Combined Display & Status
-    status: {
-      type: String,
-      enum: ["pending", "approved", "rejected", "inactive"],
-      default: "pending",
-    },
+    // Status & display
+    status: { type: String, default: "Pending" },
     statusColor: String,
     textColor: String,
     badge: String,
 
-    // Stats
+    // Ratings & metrics
     rating: { type: Number, default: 0 },
     reviews: { type: Number, default: 0 },
-    basePrice: { type: Number, required: true }, // ETB price
-    revenue: { type: Number, default: 0 },
 
-    amenities: [String],
-    images: [String], // Array of URLs
-    videoLink: String,
-    
-    upgradeHistory: [upgradeHistorySchema],
-    deletedAt: { type: Date, default: null },
-=======
-    name: { type: String, required: true },
-    description: String,
-
-    location: {
-      region: String,
-      description: String,
-      address: String,
-    },
-
-    status: {
-      type: String,
-      enum: ["Active", "Pending", "Inactive"],
-      default: "Active",
-    },
-
+    // Pricing & capacity
+    price: { type: Number, default: 0 },
+    basePrice: { type: Number, default: 0 },
     capacity: {
       current: { type: Number, default: 0 },
-      total: Number,
+      total: { type: Number, default: 0 },
     },
 
-    price: Number,
-    revenue: { type: Number, default: 0 },
+    // Media & amenities
+    images: { type: [String], default: [] },
+    image: String,
+    amenities: { type: [String], default: [] },
 
-    images: [String],
->>>>>>> all change here
+    // Soft-delete
+    deletedAt: { type: Date, default: null },
   },
-  { timestamps: true }
+  { timestamps: true, collection: 'camphomes' }
 );
 
-<<<<<<< HEAD
-export default mongoose.models.Camp || mongoose.model("Camp", campSchema);
-=======
-export default mongoose.models.Camp ||
-  mongoose.model("Camp", CampSchema);
->>>>>>> all change here
+export default mongoose.models.Camp || mongoose.model("Camp", CampSchema);

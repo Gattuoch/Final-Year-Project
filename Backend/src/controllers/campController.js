@@ -9,33 +9,82 @@ const campValidator = Joi.object({
   location: Joi.object({
     address: Joi.string().required(),
     region: Joi.string().optional(),
+    // coordinates are optional to support simple frontend payloads that provide only an address
     coordinates: Joi.object({
       lat: Joi.number().required(),
       lng: Joi.number().required(),
-    }).required(),
+    }).optional(),
   }).required(),
-  basePrice: Joi.number().min(50).required(),
+  // allow basePrice >= 0 so UI can create drafts or low-price entries without failing validation
+  basePrice: Joi.number().min(0).required(),
   amenities: Joi.array().items(Joi.string()).default([]),
   images: Joi.array().items(Joi.string()).default([]),
   videoLink: Joi.string().allow("").optional(),
   status: Joi.string().valid("pending", "approved", "rejected").default("pending"),
-});
+}).unknown(true); // allow unknown keys (strip them at validation time)
 
 // ✅ 2. CREATE CAMP
 export const createCamp = async (req, res, next) => {
   try {
-    const { error } = campValidator.validate(req.body);
-    if (error) return res.status(400).json({ success: false, message: error.message });
+    // Normalize frontend payloads: the UI often sends `price`, `location` as a string,
+    // `image` as a single URL and `amenities` as comma-separated string. Also, when
+    // authenticated, use req.user._id as managerId if not provided.
+    const payload = { ...req.body };
 
-    const camp = new Camp(req.body);
+    // use authenticated user as manager if available
+    if (!payload.managerId && req.user && req.user._id) {
+      payload.managerId = String(req.user._id);
+    }
+
+    // if managerId was provided as an object (e.g. a user document), coerce to string id
+    if (payload.managerId && typeof payload.managerId !== "string") {
+      if (payload.managerId._id) payload.managerId = String(payload.managerId._id);
+      else payload.managerId = String(payload.managerId);
+    }
+
+    // map `price` -> `basePrice`
+    if (payload.price !== undefined) {
+      const n = Number(payload.price);
+      payload.basePrice = Number.isFinite(n) ? n : 0;
+      delete payload.price;
+    }
+
+    // normalize location: allow string or object
+    if (payload.location && typeof payload.location === "string") {
+      payload.location = { address: payload.location };
+    }
+
+    // normalize amenities: allow comma-separated string
+    if (payload.amenities && typeof payload.amenities === "string") {
+      payload.amenities = payload.amenities.split(",").map((s) => s.trim()).filter(Boolean);
+    }
+
+    // normalize image -> images array
+    if (payload.image && !payload.images) {
+      payload.images = [payload.image];
+    }
+
+    // Provide defaults for required-ish fields to avoid Joi failing for simple UI payloads
+    payload.description = payload.description || payload.name || "";
+    payload.basePrice = payload.basePrice ?? 0;
+
+    // validate and strip unknown fields (e.g. `badge`) so they don't cause a 400
+    const { error, value: validated } = campValidator.validate(payload, { stripUnknown: true });
+    if (error) {
+      // return a clear Joi message for the client
+      return res.status(400).json({ success: false, message: error.message });
+    }
+
+    const camp = new Camp(validated);
     await camp.save();
 
     res.status(201).json({
       success: true,
       message: "Camp created successfully and is pending approval.",
-      data: camp
+      data: camp,
     });
   } catch (err) {
+    console.error("createCamp error:", err);
     next(err);
   }
 };
@@ -55,10 +104,16 @@ export const updateCamp = async (req, res, next) => {
 // ✅ 4. LIST & SEARCH (Combined Logic)
 export const listCamps = async (req, res, next) => {
   try {
-    const { page = 1, limit = 12, location, minPrice, maxPrice, search } = req.query;
-    const filter = { status: "approved", deletedAt: null };
+    const { page = 1, limit = 12, location, minPrice, maxPrice, search, badge } = req.query;
+    // Return non-deleted camps by default. Previously we forced `status: "approved"` which
+    // prevented listing total camps when clicking the "Total Camps" stat. Make filtering
+    // by `badge` optional and case-insensitive; when no badge is provided return all
+    // non-deleted camps (so the Total stat shows data).
+    const filter = { deletedAt: null };
 
     if (location) filter["location.region"] = { $regex: location, $options: "i" };
+    // allow filtering by badge (e.g. Active, Pending, Inactive) from the frontend
+    if (badge) filter.badge = { $regex: `^${badge}$`, $options: "i" };
     if (minPrice || maxPrice) {
       filter.basePrice = {};
       if (minPrice) filter.basePrice.$gte = Number(minPrice);
@@ -88,6 +143,17 @@ export const listCamps = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
+  }
+};
+
+// ✅ LIST ALL CAMPS (no pagination) - used by frontend components that want a full list
+export const listAllCamps = async (req, res) => {
+  try {
+    const items = await Camp.find({ deletedAt: null }).sort({ createdAt: -1 });
+    return res.json({ success: true, message: items.length ? 'All camps fetched' : 'No camps found', data: items });
+  } catch (err) {
+    console.error('listAllCamps error:', err);
+    return res.status(500).json({ success: false, message: 'Failed to fetch all camps' });
   }
 };
 

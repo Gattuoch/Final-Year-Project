@@ -1,4 +1,4 @@
-import Camp from "../models/CampHome.js";
+import Camp from "../models/Camp.js";
 import Joi from "joi";
 
 // Validation schema

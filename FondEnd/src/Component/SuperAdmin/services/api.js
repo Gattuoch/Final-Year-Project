@@ -53,7 +53,15 @@ API.interceptors.response.use(
     if (err.response && err.response.status === 401 && !originalRequest._retry) {
       const refreshToken = localStorage.getItem("refreshToken");
       if (!refreshToken) {
-        console.error("API ERROR: No refresh token available");
+        // No refresh token — clear auth and redirect to login
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("role");
+        localStorage.removeItem("user");
+        // optional: navigate to login page
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
         return Promise.reject(err);
       }
 

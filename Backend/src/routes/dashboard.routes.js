@@ -1,5 +1,8 @@
 import express from "express";
-import { protect } from "../middlewares/authMiddleware.js";
+// Use the unified auth middleware implementation to avoid conflicts between
+// `authMiddleware.js` and `auth.middleware.js` (they previously exported
+// different `protect` implementations which caused inconsistent 401s).
+import { authenticateJWT } from "../middlewares/auth.middleware.js";
 import { authorizeRoles } from "../middlewares/roleMiddleware.js";
 import {
   getUserStats,
@@ -15,27 +18,28 @@ import {
   getRefundSummary,
 } from "../controllers/dashboard.controller.js";
 import { getVisitors } from "../controllers/dashboard.controller.js";
-import { adminOnly } from "../middlewares/auth.middleware.js";
 
 
 const router = express.Router();
 
 // 🔐 SUPER ADMIN ONLY
-router.use(protect,authorizeRoles("super_admin"));
+// Authenticate JWT for all routes under this router and require super_admin role
+router.use(authenticateJWT, authorizeRoles("super_admin"));
 
 router.get("/stats", getUserStats);
 router.get("/growth", getUserGrowth);
 router.get("/distribution", getUserDistribution);
 router.get("/users", getUsersTable);
-// 
-router.get("/statsstat", protect, adminOnly, getDashboardStats);
-router.get("/revenue", protect, adminOnly, getRevenueChart);
+// The router already enforces authentication + super_admin role above.
+// Individual routes only need to call their handlers.
+router.get("/statsstat", getDashboardStats);
+router.get("/revenue", getRevenueChart);
 // Visitors list (details) - returns mapped visitor bookings (supports ?today=true)
-router.get("/visitors", protect, adminOnly, getVisitors);
+router.get("/visitors", getVisitors);
 // Visitor chart data (kept under /visitors/chart)
-router.get("/visitors/chart", protect, adminOnly, getVisitorChart);
-router.get("/bookings", protect, adminOnly, getBookingActivity);
-router.get("/refunds", protect, adminOnly, getRefundSummary);
+router.get("/visitors/chart", getVisitorChart);
+router.get("/bookings", getBookingActivity);
+router.get("/refunds", getRefundSummary);
 
 
 export default router;

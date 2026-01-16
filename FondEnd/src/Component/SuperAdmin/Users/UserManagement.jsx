@@ -284,6 +284,9 @@ export default function UserManagement() {
   const [editUser, setEditUser] = useState(null);
   const [deleteUser, setDeleteUser] = useState(null);
   const [resetUser, setResetUser] = useState(null);
+  const [showStatModal, setShowStatModal] = useState(false);
+  const [statModalTitle, setStatModalTitle] = useState("");
+  const [statModalList, setStatModalList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -391,6 +394,29 @@ export default function UserManagement() {
       d.setDate(d.getDate() - 30);
       return setFilteredUsers(list.filter((u) => new Date(u.createdAt) >= d));
     }
+  };
+
+  // compute filtered list without mutating global UI state — used for modal previews
+  const getFilteredList = (filter, list = users) => {
+    if (filter === "all") return list;
+    if (filter === "active") return list.filter((u) => !u.isBanned);
+    if (filter === "premium") return list.filter((u) => u.isPremium);
+    if (filter === "banned") return list.filter((u) => u.isBanned);
+    if (filter === "new") {
+      const d = new Date();
+      d.setDate(d.getDate() - 30);
+      return list.filter((u) => new Date(u.createdAt) >= d);
+    }
+    return list;
+  };
+
+  const handleStatClick = (s) => {
+    const list = getFilteredList(s.filter);
+    setStatModalList(list);
+    setStatModalTitle(s.title);
+    setShowStatModal(true);
+    // still apply the filter to the main table for context
+    applyFilter(s.filter, users);
   };
 
   /* ================= UPDATE LOCAL ================= */
@@ -572,7 +598,7 @@ export default function UserManagement() {
           {stats.map((s, i) => (
             <div
               key={i}
-              onClick={() => applyFilter(s.filter)}
+              onClick={() => handleStatClick(s)}
               className="group bg-white p-4 rounded-xl shadow 
                  flex justify-between cursor-pointer 
                  transition hover:bg-green-700 hover:text-white"
@@ -595,6 +621,52 @@ export default function UserManagement() {
             </div>
           ))}
         </div>
+
+        {/* Stats modal showing table view for clicked stat */}
+        {showStatModal && (
+          <div className="fixed inset-0 bg-black/40 flex items-start justify-center z-50 p-6 overflow-auto">
+            <div className="bg-white rounded-2xl w-full max-w-6xl p-6 relative shadow-2xl border">
+              <button onClick={() => setShowStatModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">✕</button>
+              <h2 className="text-2xl font-bold mb-4">{statModalTitle}</h2>
+
+              <div className="overflow-x-auto">
+                <table className="w-full table-auto">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="p-3 text-left">Name</th>
+                      <th className="p-3 text-left">Email</th>
+                      <th className="p-3 text-center">Role</th>
+                      <th className="p-3 text-center">Status</th>
+                      <th className="p-3 text-center">Created</th>
+                      <th className="p-3 text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {statModalList.map((u) => (
+                      <tr key={u._id} className="border-t">
+                        <td className="p-3">{u.fullName}</td>
+                        <td className="p-3">{u.email}</td>
+                        <td className="p-3 text-center">{u.role}</td>
+                        <td className="p-3 text-center">{u.isBanned ? 'Banned' : 'Active'}</td>
+                        <td className="p-3 text-center">{new Date(u.createdAt).toLocaleDateString()}</td>
+                        <td className="p-3 text-center">
+                          <div className="inline-flex items-center">
+                            <ActionMenu user={u} />
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {statModalList.length === 0 && (
+                      <tr>
+                        <td colSpan={6} className="p-6 text-center text-gray-500">No users found</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ================= CHARTS ================= */}
         <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -244,8 +244,9 @@ router.post("/refresh", async (req, res) => {
     });
     if (!doc) return res.status(401).json({ message: "Invalid refresh token" });
 
-    const payload = verifyRefreshToken(refreshToken);
-    const user = await User.findById(payload.sub);
+  const payload = verifyRefreshToken(refreshToken);
+  const userId = payload.id || payload.sub;
+  const user = await User.findById(userId);
     if (!user) return res.status(401).json({ message: "Invalid token user" });
 
     doc.revoked = true;
@@ -276,8 +277,6 @@ router.post("/logout", async (req, res) => {
   await RefreshToken.updateMany({ token: refreshToken }, { revoked: true });
   return res.json({ message: "Logged out" });
 });
-
-export default router;
 
 // ---------------- PROFILE ----------------
 // Protected route to return current authenticated user's profile
@@ -368,3 +367,5 @@ router.patch("/profile", protect, async (req, res) => {
     return res.status(500).json({ message: "Failed to update profile" });
   }
 });
+
+export default router;

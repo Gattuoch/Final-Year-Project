@@ -164,8 +164,9 @@ export const login = async (req, res) => {
       if (user.businessInfo?.status !== "approved") return res.status(403).json({ success: false, error: "Manager account pending approval." });
     }
 
-    const accessToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
-    const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
+  // include both `id` and `sub` for compatibility with different middlewares
+  const accessToken = jwt.sign({ id: user._id, sub: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
+  const refreshToken = jwt.sign({ id: user._id, sub: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
 
     await RefreshToken.create({
       user: user._id,
@@ -243,5 +244,48 @@ export const logout = async (req, res) => {
     return res.json({ success: true, message: "Logged out" });
   } catch (err) {
     res.status(500).json({ success: false, error: "Logout failed" });
+  }
+};
+
+// ✅ REFRESH ACCESS TOKEN
+export const refresh = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) return res.status(400).json({ success: false, error: "Refresh token required" });
+
+    // verify token signature
+    let payload;
+    try {
+      payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    } catch (e) {
+      return res.status(401).json({ success: false, error: "Invalid refresh token" });
+    }
+
+    const stored = await RefreshToken.findOne({ token: refreshToken, user: payload.id, revoked: { $ne: true } });
+    if (!stored) return res.status(401).json({ success: false, error: "Refresh token revoked or not found" });
+    if (stored.expiresAt && stored.expiresAt < new Date()) {
+      return res.status(401).json({ success: false, error: "Refresh token expired" });
+    }
+
+    // Issue new access token and rotate refresh token
+  // include both `id` and `sub` to make the new tokens compatible
+  const accessToken = jwt.sign({ id: payload.id || payload.sub, sub: payload.id || payload.sub, role: payload.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
+  const newRefresh = jwt.sign({ id: payload.id || payload.sub, sub: payload.id || payload.sub }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
+
+    // mark old refresh token revoked and save new one
+    stored.revoked = true;
+    await stored.save();
+
+    await RefreshToken.create({
+      user: payload.id,
+      token: newRefresh,
+      createdByIp: req.ip,
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    });
+
+    return res.json({ success: true, accessToken, refreshToken: newRefresh });
+  } catch (err) {
+    console.error("Refresh Error:", err);
+    return res.status(500).json({ success: false, error: "Refresh failed" });
   }
 };

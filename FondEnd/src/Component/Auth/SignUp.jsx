@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
 
 // Image Assets (Matching the Login for brand consistency)
-import camp0 from "../../assets/camp.png";
+import camp0 from "../../assets/Camp.png";
 import camp1 from "../../assets/camp1.png";
 import camp2 from "../../assets/camp2.png";
 import Navbar from "../Home/Navar";

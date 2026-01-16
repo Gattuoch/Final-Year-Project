@@ -7,7 +7,7 @@ export const signAccessToken = (payload) => {
 };
 
 export const signRefreshToken = (payload) => {
-  return jwt.sign(payload, process.env.JWT_SECRET, {
+  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRES || "30d",
   });
 };
@@ -17,5 +17,5 @@ export const verifyAccessToken = (token) => {
 };
 
 export const verifyRefreshToken = (token) => {
-  return jwt.verify(token, process.env.JWT_SECRET);
+  return jwt.verify(token, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET);
 };

@@ -56,6 +56,9 @@ export default function Dashboard() {
         }
       } catch (err) {
         console.error("Dashboard stats error", err);
+        toast.error("Failed to load dashboard stats. You may need to login again.");
+        // ensure stats is at least an empty object to avoid runtime errors
+        setStats({});
       } finally {
         setLoading(false);
       }

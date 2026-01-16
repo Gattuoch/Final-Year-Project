@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
 
 // Image Assets
-import camp0 from "../../assets/camp.png";
+import camp0 from "../../assets/Camp.png";
 import camp1 from "../../assets/camp1.png";
 import camp2 from "../../assets/camp2.png";
 import Navbar from "../Home/Navar";
@@ -43,13 +43,17 @@ export const Login = () => {
         password: formData.password,
       });
 
-      // Save tokens
-      localStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
-      localStorage.setItem("role", res.data.role);
+  // Save tokens and user info
+  localStorage.setItem("accessToken", res.data.accessToken);
+  localStorage.setItem("refreshToken", res.data.refreshToken);
 
-      // Redirect based on role
-      switch (res.data.role) {
+  // server may return the role under res.data.user.role or res.data.role
+  const role = res.data?.user?.role || res.data?.role || "";
+  localStorage.setItem("role", role);
+  localStorage.setItem("user", JSON.stringify(res.data?.user || {}));
+
+  // Redirect based on role
+  switch (role) {
         case "camper":
           window.location.href = "/camper-dashboard";
           break;

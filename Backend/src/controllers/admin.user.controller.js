@@ -1,10 +1,20 @@
 import User from "../models/User.model.js";
 import bcrypt from "bcryptjs";
 
+// Normalize legacy/frontend role values stored on older user documents
+const normalizeLegacyRole = (user) => {
+  if (!user) return;
+  if (user.role === "user") user.role = "camper";
+  if (user.role === "admin") user.role = "system_admin";
+};
+
 /* RESET PASSWORD */
 export const resetPassword = async (req, res) => {
   const user = await User.findById(req.params.id);
   if (!user) return res.status(404).json({ message: "User not found" });
+
+  // ensure legacy role values don't trigger validation errors on save
+  normalizeLegacyRole(user);
 
   const tempPassword = Math.random().toString(36).slice(-8);
   user.passwordHash = await bcrypt.hash(tempPassword, 10);
@@ -17,6 +27,11 @@ export const resetPassword = async (req, res) => {
 /* TOGGLE PREMIUM */
 export const togglePremium = async (req, res) => {
   const user = await User.findById(req.params.id);
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  // normalize legacy role values to avoid enum validation failure
+  normalizeLegacyRole(user);
+
   user.isPremium = !user.isPremium;
   await user.save();
   res.json({ isPremium: user.isPremium });
@@ -70,6 +85,9 @@ export const invalidateTempPassword = async (req, res) => {
 
   // Generate a random password that will replace the temporary password.
   // This effectively invalidates the previously generated temporary password.
+  // normalize legacy role values before saving
+  normalizeLegacyRole(user);
+
   const random = Math.random().toString(36).slice(-12);
   user.passwordHash = await bcrypt.hash(random, 10);
   await user.save();

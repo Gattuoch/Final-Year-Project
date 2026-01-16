@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import Camp from "../models/CampHome.js";
+import Camp from "../models/Camp.js";
 
 dotenv.config();
 

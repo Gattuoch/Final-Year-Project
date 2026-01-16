@@ -1,6 +1,5 @@
 import Camp from "../models/Camp.model.js";
 import User from "../models/User.model.js";
-<<<<<<< HEAD
 import Booking from "../models/Booking.model.js";
 
 // ✅ 1. SYSTEM ADMINISTRATOR STATS
@@ -36,10 +35,7 @@ export const getManagerStats = async (req, res) => {
 
     const totalMyCamps = myCamps.length;
     const activeBookings = await Booking.countDocuments({ tentId: { $in: campIds }, status: "confirmed" });
-=======
-import Booking from "../models/Booking.js";
-import  {protect}  from "../middlewares/authMiddleware.js";
-import  {authorizeRoles } from "../middlewares/roleMiddleware.js";
+
 
 const router = express.Router();
 
@@ -76,7 +72,6 @@ router.get(
     }
   }
 );
->>>>>>> all change here
 
     res.json({
       success: true,

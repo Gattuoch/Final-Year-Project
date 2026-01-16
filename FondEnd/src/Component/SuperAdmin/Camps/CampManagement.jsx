@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { FiEye, FiEdit, FiTrash2 } from "react-icons/fi";
-import { FaCampground, FaCheckCircle, FaClock, FaBan, FaCloudUploadAlt, FaEllipsisV } from "react-icons/fa";
+import { FaCampground, FaCheckCircle, FaClock, FaBan, FaCloudUploadAlt, FaEllipsisV, FaMapMarkedAlt, FaTicketAlt, FaUsers, FaThLarge, FaMoneyBillWave, FaUserCheck, FaHeartbeat } from "react-icons/fa";
 
 import Sidebar from "../sidebar/Sidebar";
 import CampHeader from "./CampHeader";
@@ -21,7 +21,11 @@ const stagger = {
 };
 
 const defaultStats = [
+  { title: "Overview", key: "overview", color: "text-indigo-600", icon: <FaThLarge className="text-indigo-600 text-xl md:text-2xl" />, bgColor: "bg-indigo-100" },
   { title: "Total Camps", key: "total", color: "text-blue-600", icon: <FaCampground className="text-blue-600 text-xl md:text-2xl" />, bgColor: "bg-blue-100" },
+  { title: "Event Venues", key: "venues", color: "text-purple-600", icon: <FaMapMarkedAlt className="text-purple-600 text-xl md:text-2xl" />, bgColor: "bg-purple-100" },
+  { title: "Total Bookings", key: "bookings", color: "text-yellow-600", icon: <FaTicketAlt className="text-yellow-600 text-xl md:text-2xl" />, bgColor: "bg-yellow-100" },
+  { title: "Users", key: "users", color: "text-teal-600", icon: <FaUsers className="text-teal-600 text-xl md:text-2xl" />, bgColor: "bg-teal-100" },
   { title: "Active Camps", key: "active", color: "text-green-600", icon: <FaCheckCircle className="text-green-600 text-xl md:text-2xl" />, bgColor: "bg-green-100" },
   { title: "Pending Review", key: "pending", color: "text-orange-500", icon: <FaClock className="text-orange-500 text-xl md:text-2xl" />, bgColor: "bg-orange-100" },
   { title: "Inactive", key: "inactive", color: "text-red-500", icon: <FaBan className="text-red-500 text-xl md:text-2xl" />, bgColor: "bg-red-100" },
@@ -47,6 +51,14 @@ const CampManagement = () => {
     const [camps, setCamps] = useState([]);
     const [loading, setLoading] = useState(false);
     const [stats, setStats] = useState(defaultStats);
+  const [showTotalModal, setShowTotalModal] = useState(false);
+  const [totalCampsList, setTotalCampsList] = useState([]);
+  const [showOverviewModal, setShowOverviewModal] = useState(false);
+  const [overviewData, setOverviewData] = useState({ camps: 0, venues: 0, bookings: 0, users: 0, ticketsSold: 0, visitorsToday: 0, earnings: 0, activeUsers: 0, systemHealth: 'Unknown' });
+  const [loadingOverview, setLoadingOverview] = useState(false);
+  const [showStatTableModal, setShowStatTableModal] = useState(false);
+  const [statTableTitle, setStatTableTitle] = useState("");
+  const [statTableItems, setStatTableItems] = useState([]);
 
     // Filters
     const [search, setSearch] = useState("");
@@ -58,6 +70,36 @@ const CampManagement = () => {
     const [page, setPage] = useState(1);
     const [limit] = useState(20);
 
+    // Helper to render location safely when backend may return either a string
+    // or an object { address, region, description }. Avoid passing objects
+    // directly to JSX (causes "Objects are not valid as a React child").
+    const renderLocation = (loc) => {
+      // Return a small, attractive piece of JSX instead of raw JSON.
+      if (!loc) return <span className="text-gray-500">-</span>;
+      if (typeof loc === "string") return <span className="text-gray-700">{loc}</span>;
+
+      // loc is an object { address, region, description }
+      const address = loc.address || "";
+      const region = loc.region || "";
+      const desc = loc.description || "";
+
+      return (
+        <div className="flex flex-col">
+          {address ? <span className="text-gray-800 truncate">{address}</span> : null}
+          {(region || desc) ? (
+            <span className="text-xs text-gray-500 truncate">{[region, desc].filter(Boolean).join(" • ")}</span>
+          ) : null}
+        </div>
+      );
+    };
+    // Helper to produce a plain string for inputs / payloads (don't return '-')
+    const normalizeLocationForInput = (loc) => {
+      if (!loc) return "";
+      if (typeof loc === "string") return loc;
+      if (loc.address) return loc.address;
+      if (loc.region) return loc.region;
+      try { return JSON.stringify(loc); } catch (e) { return ""; }
+    };
     useEffect(() => {
       fetchStats();
     }, []);
@@ -70,12 +112,30 @@ const CampManagement = () => {
     const handleStatClick = (key) => {
       setPage(1);
       switch (key) {
+        case "overview":
+          // open overview totals modal
+          setShowOverviewModal(true);
+          return;
         case "total":
           setSearch("");
           setStatusFilter("");
           setRegionFilter("");
           setMinRating(null);
           setRatingMode(null);
+          // open table modal with all camps
+          setStatTableTitle("All Camps");
+          setStatTableItems(totalCampsList.length ? totalCampsList : camps);
+          setShowStatTableModal(true);
+          break;
+        case "venues":
+          // open venues list
+          viewResource('venues');
+          break;
+        case "bookings":
+          viewResource('bookings');
+          break;
+        case "users":
+          viewResource('users');
           break;
         case "active":
           // show camps whose badge/status is Active
@@ -84,6 +144,10 @@ const CampManagement = () => {
           setRegionFilter("");
           setMinRating(null);
           setRatingMode(null);
+          // open table modal with active camps
+          setStatTableTitle("Active Camps");
+          setStatTableItems((totalCampsList.length ? totalCampsList : camps).filter((c) => (c.badge || "").toLowerCase() === "active"));
+          setShowStatTableModal(true);
           break;
         case "pending":
           // show camps whose badge/status is Pending
@@ -92,6 +156,9 @@ const CampManagement = () => {
           setRegionFilter("");
           setMinRating(null);
           setRatingMode(null);
+          setStatTableTitle("Pending Review");
+          setStatTableItems((totalCampsList.length ? totalCampsList : camps).filter((c) => (c.badge || "").toLowerCase() === "pending"));
+          setShowStatTableModal(true);
           break;
         case "inactive":
           // show camps whose badge/status is Inactive
@@ -100,26 +167,114 @@ const CampManagement = () => {
           setRegionFilter("");
           setMinRating(null);
           setRatingMode(null);
+          setStatTableTitle("Inactive Camps");
+          setStatTableItems((totalCampsList.length ? totalCampsList : camps).filter((c) => (c.badge || "").toLowerCase() === "inactive"));
+          setShowStatTableModal(true);
           break;
         default:
           break;
       }
     };
 
-    const fetchStats = async () => {
+    const resourceEndpoint = {
+      camps: '/campHomeRoutes',
+      venues: '/eventvenues',
+      bookings: '/bookings',
+      users: '/users',
+    };
+
+    const viewResource = async (resource) => {
+      const ep = resourceEndpoint[resource] || resource;
+      const loadingToast = toast.loading('Loading ' + resource + '...');
       try {
-        const res = await API.get("/campHomeRoutes/all");
-        const items = res.data.data || res.data || [];
-    const total = items.length;
-    // Count by badge/status (case-insensitive)
-    const activeCount = items.filter((c) => (c.badge || "").toLowerCase() === "active").length;
-    const pendingCount = items.filter((c) => (c.badge || "").toLowerCase() === "pending").length;
-    const inactiveCount = items.filter((c) => (c.badge || "").toLowerCase() === "inactive").length;
-    const s = { total, active: activeCount, pending: pendingCount, inactive: inactiveCount };
-        setStats((prev) => prev.map((p) => ({ ...p, value: s[p.key] ?? 0 })));
+        setLoading(true);
+        const res = await API.get(ep, { params: { page: 1, limit: 1000 } });
+        const items = res?.data?.data || res?.data || [];
+        const titleMap = { camps: 'Camps', venues: 'Event Venues', bookings: 'Bookings', users: 'Users' };
+        setStatTableTitle(titleMap[resource] || resource);
+        setStatTableItems(items);
+        setShowStatTableModal(true);
+        toast.dismiss(loadingToast);
       } catch (err) {
+        toast.dismiss(loadingToast);
         console.error(err);
-        toast.error("Failed to load stats");
+        toast.error('Failed to load ' + resource);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchStats = async () => {
+      setLoadingOverview(true);
+      try {
+        // fetch several resources in parallel; use settled to tolerate partial failures
+        const [cRes, vRes, bRes, uRes] = await Promise.allSettled([
+          API.get('/campHomeRoutes', { params: { page: 1, limit: 1000 } }),
+          API.get('/eventvenues'),
+          API.get('/bookings'),
+          API.get('/users'),
+        ]);
+
+        // collect results (use empty arrays when a resource failed)
+        const camps = cRes.status === 'fulfilled' ? (cRes.value.data.data || cRes.value.data || []) : [];
+        const venues = vRes.status === 'fulfilled' ? (vRes.value.data.data || vRes.value.data || []) : [];
+        const bookings = bRes.status === 'fulfilled' ? (bRes.value.data.data || bRes.value.data || []) : [];
+        const users = uRes.status === 'fulfilled' ? (uRes.value.data.data || uRes.value.data || []) : [];
+
+        // report specific failures (avoid a noisy generic toast)
+        if (cRes.status === 'rejected') {
+          console.warn('Camps stats failed:', cRes.reason);
+          toast.error('Failed to load camp stats');
+        }
+        if (vRes.status === 'rejected') {
+          console.warn('Event venues failed:', vRes.reason);
+          toast.error('Failed to load event venues');
+        }
+        if (bRes.status === 'rejected') {
+          console.warn('Bookings failed:', bRes.reason);
+          toast.error('Failed to load bookings');
+        }
+        if (uRes.status === 'rejected') {
+          console.warn('Users failed:', uRes.reason);
+          toast.error('Failed to load users');
+        }
+
+        const total = camps.length;
+        setTotalCampsList(camps);
+
+        const activeCount = camps.filter((c) => (c.badge || '').toLowerCase() === 'active').length;
+        const pendingCount = camps.filter((c) => (c.badge || '').toLowerCase() === 'pending').length;
+        const inactiveCount = camps.filter((c) => (c.badge || '').toLowerCase() === 'inactive').length;
+
+        // derive additional metrics (safe with empty arrays)
+        const ticketsSold = bookings.reduce((s, b) => {
+          const v = Number(b.ticketsSold ?? b.tickets ?? b.quantity ?? b.count ?? 0) || 0;
+          return s + v;
+        }, 0);
+
+        const earnings = bookings.reduce((s, b) => {
+          const v = Number(b.total ?? b.amount ?? b.price ?? b.paidAmount ?? 0) || 0;
+          return s + v;
+        }, 0);
+
+        const todayStr = new Date().toDateString();
+        const visitorsToday = bookings.filter((b) => b.createdAt && new Date(b.createdAt).toDateString() === todayStr).length;
+
+        const activeUsers = users.filter((u) => (u.isActive || u.active || (u.status && String(u.status).toLowerCase() === 'active'))).length || users.length;
+
+        const systemHealth = (cRes.status === 'fulfilled' && vRes.status === 'fulfilled' && bRes.status === 'fulfilled' && uRes.status === 'fulfilled') ? 'Good' : 'Degraded';
+
+        setOverviewData({ camps: total, venues: venues.length, bookings: bookings.length, users: users.length, ticketsSold, visitorsToday, earnings, activeUsers, systemHealth });
+
+        // Set stats by mapping keys to their computed values
+        const mapping = { total, active: activeCount, pending: pendingCount, inactive: inactiveCount, venues: venues.length, bookings: bookings.length, users: users.length };
+        setStats((prev) => prev.map((p) => ({ ...p, value: mapping[p.key] ?? 0 })));
+      } catch (err) {
+        // This should be rare; log and surface a single meaningful message
+        console.error('Unexpected error in fetchStats:', err);
+        toast.error('Could not load overview data');
+      } finally {
+        setLoadingOverview(false);
       }
     };
 
@@ -175,7 +330,7 @@ const CampManagement = () => {
         // PUT requires name and location (Joi validation). Include them to avoid 400.
         const payload = {
           name: camp.name || "",
-          location: camp.location || "",
+          location: normalizeLocationForInput(camp.location),
           badge: status,
           statusColor: colors.statusColor,
           TextColor: colors.TextColor,
@@ -282,7 +437,7 @@ const CampManagement = () => {
                 <div className="flex-1">
                   <p className="text-sm text-gray-700">You're about to delete the camp:</p>
                   <h4 className="text-md font-medium mt-2">{camp.name}</h4>
-                  <p className="text-sm text-gray-500 mt-1">Region: {camp.location || '-'} • Badge: {camp.badge || '-'}</p>
+                  <p className="text-sm text-gray-500 mt-1">Region: {renderLocation(camp.location)} • Badge: {camp.badge || '-'}</p>
                   <p className="text-sm text-gray-500 mt-2">To confirm, type the camp name exactly.</p>
                   <input
                     value={confirmText}
@@ -326,7 +481,7 @@ const CampManagement = () => {
             </div>
             <div>
               <p className="text-sm text-gray-600 mb-2">{camp.description}</p>
-              <p className="text-sm"><strong>Location:</strong> {camp.location}</p>
+              <p className="text-sm"><strong>Location:</strong> {renderLocation(camp.location)}</p>
               <p className="text-sm"><strong>Badge:</strong> {camp.badge || '-'}</p>
               <p className="text-sm"><strong>Price:</strong> {camp.price ? formatETB(camp.price) : '-'}</p>
               <p className="text-sm"><strong>Rating:</strong> {camp.rating ?? '-'}</p>
@@ -340,10 +495,267 @@ const CampManagement = () => {
       </div>
     );
 
+    const TotalCampsModal = ({ items, onClose }) => {
+      return (
+        <div className="fixed inset-0 bg-black/40 flex items-start justify-center z-50 p-6 overflow-auto">
+          <div className="bg-white rounded-2xl w-full max-w-5xl p-6 relative shadow-2xl border">
+            <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">✕</button>
+            <h2 className="text-2xl font-bold mb-4">All Camps ({items.length})</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {items.map((c) => (
+                <div key={c._id} className="flex flex-col bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md">
+                  <div className="h-40 w-full overflow-hidden bg-gray-100">
+                    <img src={c.image || (c.images && c.images[0]) || imageFallback} alt={c.name} className="w-full h-full object-cover" onError={handleImgError} />
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col">
+                    <div className="flex items-start justify-between">
+                      <h3 className="text-lg font-semibold text-gray-800">{c.name}</h3>
+                      <span className={`px-2 py-1 rounded-full text-xs ${c.badge ? 'bg-gray-100 text-gray-700' : 'bg-gray-50 text-gray-400'}`}>{c.badge || '-'}</span>
+                    </div>
+                    <div className="mt-2 text-sm text-gray-600 flex-1">
+                      {renderLocation(c.location)}
+                    </div>
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="text-sm text-gray-700 font-medium">{c.price ? formatETB(c.price) : '-'}</div>
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => { setViewCamp(c); onClose(); }} className="px-3 py-1 rounded-md bg-blue-600 text-white text-sm hover:bg-blue-700">View</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+      const TotalsModal = ({ data, onClose, onView }) => {
+        return (
+          <div className="fixed inset-0 bg-black/40 flex items-start justify-center z-50 p-6 overflow-auto">
+            <div className="bg-white rounded-2xl w-full max-w-3xl p-6 relative shadow-2xl border">
+              <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">✕</button>
+              <h2 className="text-2xl font-bold mb-4">Overview Totals</h2>
+                      <div className="overflow-x-auto">
+                        <table className="w-full table-auto">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="p-3 text-left">Metric</th>
+                              <th className="p-3 text-left">Value</th>
+                              <th className="p-3 text-center">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr className="border-t hover:bg-gray-50">
+                              <td className="p-3 flex items-center gap-3"><FaCampground className="text-blue-600"/> <span className="font-medium">Total Camps</span></td>
+                              <td className="p-3">{data.camps ?? 0}</td>
+                              <td className="p-3 text-center"><button onClick={() => onView('camps')} className="px-3 py-1 bg-blue-600 text-white rounded-md">View</button></td>
+                            </tr>
+
+                            <tr className="border-t hover:bg-gray-50">
+                              <td className="p-3 flex items-center gap-3"><FaMapMarkedAlt className="text-purple-600"/> <span className="font-medium">Event Venues</span></td>
+                              <td className="p-3">{data.venues ?? 0}</td>
+                              <td className="p-3 text-center"><button onClick={() => onView('venues')} className="px-3 py-1 bg-purple-600 text-white rounded-md">View</button></td>
+                            </tr>
+
+                            <tr className="border-t hover:bg-gray-50">
+                              <td className="p-3 flex items-center gap-3"><FaTicketAlt className="text-yellow-600"/> <span className="font-medium">Total Bookings</span></td>
+                              <td className="p-3">{data.bookings ?? 0}</td>
+                              <td className="p-3 text-center"><button onClick={() => onView('bookings')} className="px-3 py-1 bg-yellow-600 text-white rounded-md">View</button></td>
+                            </tr>
+
+                            <tr className="border-t hover:bg-gray-50">
+                              <td className="p-3 flex items-center gap-3"><FaTicketAlt className="text-amber-500"/> <span className="font-medium">Tickets Sold</span></td>
+                              <td className="p-3">{data.ticketsSold ?? 0}</td>
+                              <td className="p-3 text-center">-</td>
+                            </tr>
+
+                            <tr className="border-t hover:bg-gray-50">
+                              <td className="p-3 flex items-center gap-3"><FaUserCheck className="text-green-600"/> <span className="font-medium">Visitors Today</span></td>
+                              <td className="p-3">{data.visitorsToday ?? 0}</td>
+                              <td className="p-3 text-center">-</td>
+                            </tr>
+
+                            <tr className="border-t hover:bg-gray-50">
+                              <td className="p-3 flex items-center gap-3"><FaMoneyBillWave className="text-teal-700"/> <span className="font-medium">Total Earnings</span></td>
+                              <td className="p-3">{formatETB(data.earnings ?? 0)}</td>
+                              <td className="p-3 text-center">-</td>
+                            </tr>
+
+                            <tr className="border-t hover:bg-gray-50">
+                              <td className="p-3 flex items-center gap-3"><FaUsers className="text-teal-500"/> <span className="font-medium">Active Users</span></td>
+                              <td className="p-3">{data.activeUsers ?? 0}</td>
+                              <td className="p-3 text-center"><button onClick={() => onView('users')} className="px-3 py-1 bg-teal-600 text-white rounded-md">View</button></td>
+                            </tr>
+
+                            <tr className="border-t hover:bg-gray-50">
+                              <td className="p-3 flex items-center gap-3"><FaHeartbeat className={`text-${data.systemHealth === 'Good' ? 'green' : 'red'}-500`}/> <span className="font-medium">System Health</span></td>
+                              <td className="p-3"><span className={`px-2 py-1 rounded-full text-sm ${data.systemHealth === 'Good' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{data.systemHealth}</span></td>
+                              <td className="p-3 text-center">-</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+              <div className="mt-4 flex justify-end">
+                <button onClick={onClose} className="px-4 py-2 rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50">Close</button>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+    const StatTableModal = ({ title, items, onClose }) => {
+      const [q, setQ] = useState("");
+      const [pageIdx, setPageIdx] = useState(1);
+      const [perPage] = useState(10);
+      const [sortKey, setSortKey] = useState("-createdAt");
+
+      const filtered = useMemo(() => {
+        let list = Array.isArray(items) ? items : [];
+        if (q) {
+          const qq = q.toLowerCase();
+          list = list.filter((c) => {
+            const name = (c.name || "").toString().toLowerCase();
+            const badge = (c.badge || "").toString().toLowerCase();
+            const loc = typeof c.location === "string" ? (c.location || "").toLowerCase() : (((c.location && (c.location.address || c.location.region)) || "") + "").toLowerCase();
+            return name.includes(qq) || badge.includes(qq) || loc.includes(qq) || (c._id || "").toLowerCase().includes(qq);
+          });
+        }
+
+        const [key, dir] = sortKey.startsWith("-") ? [sortKey.slice(1), -1] : [sortKey, 1];
+        list = [...list].sort((a, b) => {
+          if (key === "createdAt") {
+            return dir * (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+          }
+          if (key === "name") {
+            return dir * (String(a.name || "").localeCompare(String(b.name || "")));
+          }
+          if (key === "price") {
+            return dir * ((a.price || 0) - (b.price || 0));
+          }
+          return 0;
+        });
+
+        return list;
+      }, [items, q, sortKey]);
+
+      const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+      const pageItems = filtered.slice((pageIdx - 1) * perPage, pageIdx * perPage);
+
+      const exportCSV = () => {
+        const rows = [
+          ["ID", "Name", "Badge", "Location", "Rating", "Price", "Created"],
+          ...filtered.map((c) => [
+            c._id,
+            c.name || "",
+            c.badge || "",
+            typeof c.location === 'string' ? c.location : (c.location && (c.location.address || c.location.region)) || '',
+            c.rating || "",
+            c.price || "",
+            c.createdAt ? new Date(c.createdAt).toISOString() : "",
+          ]),
+        ];
+        const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${title.replace(/\s+/g, '_').toLowerCase()}_${new Date().toISOString()}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+
+      useEffect(() => {
+        setPageIdx(1);
+      }, [q, sortKey, items]);
+
+      return (
+        <div className="fixed inset-0 bg-black/40 flex items-start justify-center z-50 p-6 overflow-auto">
+          <div className="bg-white rounded-2xl w-full max-w-6xl p-6 relative shadow-2xl border">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h2 className="text-2xl font-bold">{title} ({filtered.length})</h2>
+                <p className="text-sm text-gray-500">Quickly search, sort, page and export the list of camps.</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by name, badge, location or id" className="px-3 py-2 border rounded-md" />
+                <select value={sortKey} onChange={(e) => setSortKey(e.target.value)} className="px-3 py-2 border rounded-md">
+                  <option value="-createdAt">Newest</option>
+                  <option value="createdAt">Oldest</option>
+                  <option value="name">Name A-Z</option>
+                  <option value="-name">Name Z-A</option>
+                  <option value="-price">Price: High to Low</option>
+                  <option value="price">Price: Low to High</option>
+                </select>
+                <button onClick={exportCSV} className="px-3 py-2 bg-indigo-600 text-white rounded-md">Export CSV</button>
+                <button onClick={onClose} className="text-gray-500 hover:text-gray-700">Close</button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full table-auto">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="p-3 text-left">Camp</th>
+                    <th className="p-3 text-left">Location</th>
+                    <th className="p-3 text-center">Badge</th>
+                    <th className="p-3 text-center">Rating</th>
+                    <th className="p-3 text-center">Price</th>
+                    <th className="p-3 text-center">Created</th>
+                    <th className="p-3 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pageItems.map((c) => (
+                    <tr key={c._id} className="border-t hover:bg-gray-50">
+                      <td className="p-3 flex items-center gap-3">
+                        <img src={c.image || (c.images && c.images[0]) || imageFallback} alt={c.name} className="w-12 h-12 rounded-lg object-cover" onError={handleImgError} />
+                        <div>
+                          <div className="font-semibold">{c.name}</div>
+                          <div className="text-xs text-gray-400">ID: {c._id}</div>
+                        </div>
+                      </td>
+                      <td className="p-3">{renderLocation(c.location)}</td>
+                      <td className="p-3 text-center">
+                        <span className={`px-3 py-1 rounded-full text-sm ${c.badge ? 'bg-gray-100 text-gray-700' : 'bg-gray-50 text-gray-400'}`}>{c.badge || '-'}</span>
+                      </td>
+                      <td className="p-3 text-center">{c.rating ? `⭐ ${c.rating}` : '-'}</td>
+                      <td className="p-3 text-center font-semibold">{c.price ? formatETB(c.price) : '-'}</td>
+                      <td className="p-3 text-center">{c.createdAt ? new Date(c.createdAt).toLocaleDateString() : '-'}</td>
+                      <td className="p-3 text-center">
+                        <div className="inline-flex items-center">
+                          <ActionMenu camp={c} onView={() => setViewCamp(c)} onEdit={() => handleEdit(c._id)} onDelete={() => requestDelete(c)} onChangeStatus={changeCampStatus} />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {pageItems.length === 0 && (
+                    <tr>
+                      <td colSpan={7} className="p-6 text-center text-gray-500">No camps found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            <div className="mt-4 flex items-center justify-between">
+              <div className="text-sm text-gray-500">Showing {(pageIdx - 1) * perPage + 1} - {Math.min(pageIdx * perPage, filtered.length)} of {filtered.length}</div>
+              <div className="flex items-center gap-2">
+                <button disabled={pageIdx <= 1} onClick={() => setPageIdx((p) => Math.max(1, p - 1))} className={`px-3 py-1 rounded-md border ${pageIdx <= 1 ? 'opacity-50 cursor-not-allowed' : ''}`}>Prev</button>
+                <div className="px-3 py-1 border rounded-md">{pageIdx} / {totalPages}</div>
+                <button disabled={pageIdx >= totalPages} onClick={() => setPageIdx((p) => Math.min(totalPages, p + 1))} className={`px-3 py-1 rounded-md border ${pageIdx >= totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}>Next</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
     const EditModal = ({ camp, onClose, onSaved }) => {
       const [form, setForm] = useState({
         name: camp.name || "",
-        location: camp.location || "",
+        location: normalizeLocationForInput(camp.location),
         price: camp.price || "",
         badge: camp.badge || "",
         image: camp.image || "",
@@ -815,7 +1227,7 @@ const CampManagement = () => {
                           <img src={camp.image || (camp.images && camp.images[0]) || imageFallback} alt={camp.name} className="w-12 h-12 rounded-lg object-cover" onError={handleImgError} crossOrigin="anonymous" referrerPolicy="no-referrer" loading="lazy" />
                           <div><p className="font-semibold">{camp.name}</p><p className="text-sm text-gray-400">ID: {camp._id}</p></div>
                         </td>
-                        <td>{camp.location || "-"}</td>
+                        <td>{renderLocation(camp.location)}</td>
                         <td>
                           {camp.statusColor || camp.TextColor ? (
                             <span style={{ backgroundColor: camp.statusColor || undefined, color: camp.TextColor || undefined }} className="px-3 py-1 rounded-full text-sm">
@@ -852,7 +1264,7 @@ const CampManagement = () => {
                         <img src={camp.image || (camp.images && camp.images[0]) || imageFallback} alt={camp.name} className="w-20 h-20 rounded-lg object-cover shrink-0" onError={handleImgError} crossOrigin="anonymous" referrerPolicy="no-referrer" loading="lazy" />
                         <div>
                           <p className="font-semibold">{camp.name}</p>
-                          <p className="text-xs text-gray-400">{camp.location || "-"} · {camp.reviews ? `${camp.reviews} reviews` : '-'}</p>
+                          <p className="text-xs text-gray-400">{renderLocation(camp.location)} · {camp.reviews ? `${camp.reviews} reviews` : '-'}</p>
                           {camp.description && (<p className="text-sm text-gray-600 mt-2 line-clamp-2">{camp.description}</p>)}
                         </div>
                       </div>
@@ -880,6 +1292,20 @@ const CampManagement = () => {
             {editCamp && <EditModal camp={editCamp} onClose={() => setEditCamp(null)} onSaved={() => { fetchCamps(); fetchStats(); }} />}
             {createOpen && <NewCampModal onClose={() => setCreateOpen(false)} onCreated={() => { fetchCamps(); fetchStats(); }} />}
             {confirmDeleteCamp && (<ConfirmDeleteModal camp={confirmDeleteCamp} onClose={() => setConfirmDeleteCamp(null)} />)}
+            {showOverviewModal && (
+              <TotalsModal
+                data={overviewData}
+                onClose={() => setShowOverviewModal(false)}
+                onView={(r) => { viewResource(r); setShowOverviewModal(false); }}
+              />
+            )}
+            {showStatTableModal && (
+              <StatTableModal
+                title={statTableTitle}
+                items={statTableItems}
+                onClose={() => setShowStatTableModal(false)}
+              />
+            )}
           </div>
         </main>
       </div>

@@ -8,8 +8,9 @@ export  async function authenticateJWT(req, res, next) {
     if (!authHeader) return res.status(401).json({ message: 'Missing authorization header' });
 
     const token = authHeader.split(' ')[1];
-    const payload = verifyAccessToken(token);
-    const user = await User.findById(payload.sub);
+  const payload = verifyAccessToken(token);
+  const userId = payload.id || payload.sub;
+  const user = await User.findById(userId);
     if (!user || user.isBanned) return res.status(403).json({ message: 'Invalid user' });
 
     req.user = user;
@@ -40,9 +41,10 @@ const protect = async (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
-    const payload = verifyAccessToken(token);
+  const payload = verifyAccessToken(token);
+  const userId = payload.id || payload.sub;
 
-    const user = await User.findById(payload.sub);
+  const user = await User.findById(userId);
     if (!user || user.isBanned) {
       return res.status(403).json({ message: "Invalid or banned user" });
     }

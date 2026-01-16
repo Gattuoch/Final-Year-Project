@@ -119,8 +119,8 @@ export const login = async (req, res) => {
       return res.status(403).json({ success: false, error: "Your account has been deactivated. Contact support." });
     }
 
-    // Generate JWT token
-    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
+  // Generate JWT token (include both id and sub for compatibility)
+  const token = jwt.sign({ id: user._id, sub: user._id, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
 
     // NOTE: frontend expects `accessToken` and `refreshToken` keys — provide them for compatibility
     return res.status(200).json({
