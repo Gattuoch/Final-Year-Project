@@ -9,7 +9,8 @@ const RefreshTokenSchema = new mongoose.Schema({
   ip: { type: String },
   revoked: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
-  expiresAt: { type: Date, required: true, index: true }
+  expiresAt: { type: Date, required: true }
+
 }, { timestamps: false });
 
 // TTL index to remove expired refresh tokens automatically

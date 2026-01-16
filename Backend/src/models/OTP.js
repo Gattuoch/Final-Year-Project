@@ -14,7 +14,8 @@ const OTPSchema = new mongoose.Schema({
 
 OTPSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-const OTP = mongoose.model('OTP', OTPSchema);
+const OTP = mongoose.models.OTP || mongoose.model('OTP', OTPSchema);
+
 
 // ---------------- EMAIL SENDER ----------------
 
