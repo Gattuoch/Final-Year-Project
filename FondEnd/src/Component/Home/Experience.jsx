@@ -1,7 +1,7 @@
 const Experience = () => {
  const handleStart = async () => {
   try {
-    const res = await fetch("https://ethio-camp-ground-backend-lega.onrender.com/api/campHomeRoutes/all", {
+    const res = await fetch("http://localhost:5000/api/campHomeRoutes/all", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

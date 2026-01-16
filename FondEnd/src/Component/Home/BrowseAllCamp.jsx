@@ -105,7 +105,7 @@ const campsData = [
 ];
 
 const ITEMS_PER_PAGE = 6;
-const API_URL = "https://ethio-camp-ground-backend-lega.onrender.com/api/campHomeRoutes";
+const API_URL = "http://localhost:5000/api/campHomeRoutes";
 
 export default function BrowseALLCamps() {
   const [camps, setCamps] = useState(campsData); // initial UI
