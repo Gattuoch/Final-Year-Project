@@ -19,6 +19,7 @@ export default function BookingCard({ booking }) {
         animate-fade-up
       "
     >
+      
       <div className="flex gap-4">
         <img
           src={safe.image}
