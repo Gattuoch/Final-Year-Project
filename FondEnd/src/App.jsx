@@ -49,6 +49,7 @@ import SecuritySettings from "./Component/SuperAdmin/Setting/SecuritySettings.js
 import EmailSettings from "./Component/SuperAdmin/Setting/EmailSettings.jsx";
 import CreateSystemAdmin from "./Component/SuperAdmin/CreateSystemAdmin/CreateSystemAdmin.jsx";
 import Sidebar from "./Component/Camper/Sidebar/Sidebar.jsx";
+import BookingCard from "./Component/Camper/Bookings/BookingCard.jsx";
 
 function App() {
   return (
@@ -170,8 +171,8 @@ function App() {
           element={<CreateSystemAdmin />}
         />
         <Route
-          path="/side"
-          element={<Sidebar />}
+          path="/Camper/booking-card"
+          element={<BookingCard />}
         />
       </Routes>
     </>
