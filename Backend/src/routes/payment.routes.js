@@ -5,6 +5,7 @@ import {
   verifyPayment,
   completeStay,
   handleAbuse,
+  stripeWebhook,
 } from "../controllers/payment.controller.js";
 
 const router = express.Router();
@@ -14,6 +15,13 @@ router.post("/initiate/:bookingId", verifyToken, initiatePayment);
 
 // Verify payment after Chapa callback
 router.get("/verify/:bookingId", verifyToken, verifyPayment);
+
+// Stripe webhook endpoint (uses raw body middleware)
+router.post(
+  "/stripe/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
 
 // Manager/Admin confirms stay completion
 router.patch("/complete/:bookingId", verifyToken, isAdmin, completeStay);

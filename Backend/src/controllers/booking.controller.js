@@ -1,6 +1,7 @@
 import Booking from "../models/Booking.model.js";
 import Tent from "../models/Tent.model.js";
 import Camp from "../models/Camp.model.js";
+import * as emailService from "../services/email.service.js";
 
 // ✅ CREATE BOOKING
 export const createBooking = async (req, res) => {
@@ -22,29 +23,42 @@ export const createBooking = async (req, res) => {
     const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24));
     const totalPrice = nights * tent.pricePerNight;
 
-    const booking = new Booking({
-      camperId,
+    const newBooking = new Booking({
       tentId,
+      camperId,
       startDate,
       endDate,
       guests,
-      totalPrice,
       paymentOption,
       idDocumentUrl,
     });
+    await newBooking.save();
+    tent.bookings.push(newBooking._id);
+    await tent.save();
 
-    // Trigger Grace Period calculation defined in the model
-    if (typeof booking.setGracePeriods === 'function') {
-      booking.setGracePeriods();
-    }
+    // populate minimal fields for email templates
+    await newBooking.populate("camperId", "fullName email");
+    await newBooking.populate("tentId", "name");
+    try { await emailService.sendBookingCreated(newBooking); } catch (e) { console.error("Booking created email failed", e); }
+      // notify tent manager (email + recorded notification)
+      try {
+        const tent = await Tent.findById(tentId).populate("managerId", "fullName email");
+        const manager = tent?.managerId;
+        if (manager && manager.email) {
+          await (await import("../services/notification.service.js")).sendEmailNotification({
+            userId: manager._id,
+            to: manager.email,
+            type: "booking_received_manager",
+            subject: `New booking for ${tent.name}`,
+            html: `<p>${newBooking.camperId?.fullName || 'A camper'} has booked <strong>${tent.name}</strong> from <strong>${new Date(newBooking.startDate).toLocaleDateString()}</strong> to <strong>${new Date(newBooking.endDate).toLocaleDateString()}</strong>. Booking ID: ${newBooking._id}</p>`,
+            meta: { bookingId: newBooking._id, tentId: tent._id },
+          });
+        }
+      } catch (e) {
+        console.error("Manager notification failed", e);
+      }
 
-    await booking.save();
-
-    res.status(201).json({
-      success: true,
-      message: "Booking created successfully.",
-      booking,
-    });
+    return res.status(201).json({ success: true, data: newBooking });
   } catch (err) {
     console.error("Booking error:", err);
     res.status(500).json({ success: false, error: "Server error during booking." });

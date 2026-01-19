@@ -22,13 +22,12 @@ export const createInternalUser = async (req, res) => {
     const mappedRole = roleMap[role] || "camper";
 
     const tempPassword = "Temp@123";
-    const hash = await bcrypt.hash(String(tempPassword), 10);
-
+    // Store plain temporary password; User model pre-save will hash it
     const user = await User.create({
       fullName: name,
       email: emailNormalized,
       role: mappedRole,
-      passwordHash: hash,
+      passwordHash: tempPassword,
       mustResetPassword: true,
       isInternal: true,
     });

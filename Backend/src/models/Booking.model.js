@@ -20,13 +20,16 @@ const bookingSchema = new mongoose.Schema(
     // Payment Info
     paymentOption: {
       type: String,
-      enum: ["prepaid", "postpaid", "cash_on_arrival"],
+      enum: ["prepaid", "postpaid", "cash_on_arrival", "stripe", "stripe_checkout"],
       default: "prepaid",
     },
     paymentStatus: {
       type: String,
       enum: ["unpaid", "paid", "refunded"],
       default: "unpaid",
+    },
+    paymentMeta: {
+      type: mongoose.Schema.Types.Mixed,
     },
 
     // Booking Progress

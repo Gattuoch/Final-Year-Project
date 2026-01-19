@@ -2,6 +2,12 @@ import axios from "axios";
 import dotenv from "dotenv";
 import Booking from "../models/Booking.model.js";
 import User from "../models/User.model.js";
+import * as emailService from "../services/email.service.js";
+import {
+  createStripePaymentIntent,
+  createStripeCheckoutSession,
+  constructStripeEvent,
+} from "../services/payment.service.js";
 
 dotenv.config();
 
@@ -32,6 +38,38 @@ export const initiatePayment = async (req, res) => {
       return res.status(403).json({
         error:
           "You are not eligible for cash on arrival due to previous no-shows or late cancellations.",
+      });
+    }
+
+    // 🟠 Handle Stripe options
+    if (paymentOption === "stripe") {
+      // create a Stripe PaymentIntent and return client_secret
+      const paymentIntent = await createStripePaymentIntent(booking);
+
+      booking.paymentOption = paymentOption;
+      booking.paymentStatus = "unpaid";
+      booking.paymentMeta = { provider: "stripe", paymentIntentId: paymentIntent.id };
+      await booking.save();
+
+      return res.status(200).json({
+        message: "Stripe payment initiated.",
+        client_secret: paymentIntent.client_secret,
+      });
+    }
+
+    if (paymentOption === "stripe_checkout") {
+      const successUrl = `${process.env.FRONTEND_URL}/payment/success`;
+      const cancelUrl = `${process.env.FRONTEND_URL}/payment/cancel`;
+      const session = await createStripeCheckoutSession(booking, successUrl, cancelUrl);
+
+      booking.paymentOption = paymentOption;
+      booking.paymentStatus = "unpaid";
+      booking.paymentMeta = { provider: "stripe", sessionId: session.id };
+      await booking.save();
+
+      return res.status(200).json({
+        message: "Stripe checkout session created.",
+        checkout_url: session.url,
       });
     }
 
@@ -93,6 +131,89 @@ export const initiatePayment = async (req, res) => {
 };
 
 
+// Stripe webhook handler (expects raw body). Verifies signature and updates booking.
+export const stripeWebhook = async (req, res) => {
+  try {
+    const sig = req.headers["stripe-signature"];
+    const event = constructStripeEvent(req.rawBody || req.body, sig);
+
+    if (event.type === "payment_intent.succeeded") {
+      const pi = event.data.object;
+      const bookingId = pi.metadata?.bookingId;
+      if (bookingId) {
+        const booking = await Booking.findById(bookingId);
+        if (booking) {
+          booking.paymentStatus = "paid";
+          booking.status = "confirmed";
+          await booking.save();
+          try {
+            await booking.populate("camperId", "fullName email");
+            await booking.populate({ path: "tentId", populate: { path: "managerId", select: "fullName email" } });
+            await emailService.sendPaymentSuccess(booking);
+            await emailService.sendBookingConfirmed(booking);
+            const camperId = booking.camperId?._id || booking.camperId;
+            await (await import("../services/notification.service.js")).sendEmailNotification({
+              userId: camperId,
+              to: booking.camperId?.email || booking.camperEmail,
+              type: "payment_success",
+              subject: `Payment Received - ${booking._id}`,
+              html: `<p>Payment received for booking ${booking._id}</p>`,
+              meta: { bookingId: booking._id }
+            });
+
+            // notify manager as well
+            const manager = booking.tentId?.managerId;
+            if (manager && manager.email) {
+              await (await import("../services/notification.service.js")).sendEmailNotification({
+                userId: manager._id,
+                to: manager.email,
+                type: "payment_received_manager",
+                subject: `Payment received for booking ${booking._id}`,
+                html: `<p>Payment received for booking <strong>${booking._id}</strong> on tent <strong>${booking.tentId?.name}</strong>.</p>`,
+                meta: { bookingId: booking._id, tentId: booking.tentId?._id }
+              });
+            }
+          } catch (e) { console.error("Stripe post-payment email error:", e); }
+        }
+      }
+    }
+
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object;
+      const bookingId = session.metadata?.bookingId;
+      if (bookingId) {
+        const booking = await Booking.findById(bookingId);
+        if (booking) {
+          booking.paymentStatus = "paid";
+          booking.status = "confirmed";
+          await booking.save();
+          try {
+            await booking.populate("camperId", "fullName email");
+            await booking.populate("tentId", "name");
+            await emailService.sendPaymentSuccess(booking);
+            await emailService.sendBookingConfirmed(booking);
+            const camperId = booking.camperId?._id || booking.camperId;
+            await (await import("../services/notification.service.js")).sendEmailNotification({
+              userId: camperId,
+              to: booking.camperId?.email || booking.camperEmail,
+              type: "payment_success",
+              subject: `Payment Received - ${booking._id}`,
+              html: `<p>Payment received for booking ${booking._id}</p>`,
+              meta: { bookingId: booking._id }
+            });
+          } catch (e) { console.error("Stripe checkout post-payment email error:", e); }
+        }
+      }
+    }
+
+    res.status(200).send({ received: true });
+  } catch (err) {
+    console.error("Stripe webhook error:", err.message || err);
+    res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+};
+
+
 //
 // 2️⃣ VERIFY PAYMENT STATUS (Chapa Callback)
 //
@@ -115,6 +236,38 @@ export const verifyPayment = async (req, res) => {
     booking.paymentStatus = "paid";
     booking.status = "confirmed";
     await booking.save();
+
+      try {
+      await booking.populate("camperId", "fullName email");
+      await booking.populate({ path: "tentId", populate: { path: "managerId", select: "fullName email" } });
+      await emailService.sendPaymentSuccess(booking);
+      await emailService.sendBookingConfirmed(booking);
+      // also record notifications for camper
+      const camperId = booking.camperId?._id || booking.camperId;
+      await (await import("../services/notification.service.js")).sendEmailNotification({
+        userId: camperId,
+        to: booking.camperId?.email || booking.camperEmail,
+        type: "payment_success",
+        subject: `Payment Received - ${booking._id}`,
+        html: `<p>Payment received for booking ${booking._id}</p>`,
+        meta: { bookingId: booking._id }
+      });
+
+      // notify manager as well
+      const manager = booking.tentId?.managerId;
+      if (manager && manager.email) {
+        await (await import("../services/notification.service.js")).sendEmailNotification({
+          userId: manager._id,
+          to: manager.email,
+          type: "payment_received_manager",
+          subject: `Payment received for booking ${booking._id}`,
+          html: `<p>Payment received for booking <strong>${booking._id}</strong> on tent <strong>${booking.tentId?.name}</strong>.</p>` ,
+          meta: { bookingId: booking._id, tentId: booking.tentId?._id }
+        });
+      }
+    } catch (e) {
+      console.error("Post-payment email error:", e);
+    }
 
     return res.status(200).json({
       message: "Payment verified successfully.",

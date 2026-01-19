@@ -8,7 +8,8 @@ const createSuperAdmin = async () => {
       return;
     }
     const emailNormalized = String(process.env.SUPER_ADMIN_EMAIL).toLowerCase().trim();
-    const passwordHash = await bcrypt.hash(String(process.env.SUPER_ADMIN_PASSWORD), 10);
+    // Store plain super admin password and rely on model pre-save to hash it once
+    const passwordHash = String(process.env.SUPER_ADMIN_PASSWORD);
 
     // Try to find by role first, then by email
     let exists = await User.findOne({ role: "super_admin" });

@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
+import * as emailService from "../services/email.service.js";
 import User from "../models/User.model.js";
 import OTP from "../models/OTP.js";
 import RefreshToken from "../models/RefreshToken.js";
@@ -61,13 +62,13 @@ export const register = async (req, res) => {
     const exists = await User.findOne({ $or: [{ email: normalizedEmail }, { phone: normalizedPhone }] });
     if (exists) return res.status(400).json({ success: false, error: "Email or Phone already registered." });
 
-    const hashedPassword = await bcrypt.hash(password, 12);
-    
+    // Do not pre-hash here; store the raw password into `passwordHash`
+    // so the User model's pre-save hook performs a single hash operation.
     const userData = {
       fullName: fullName.trim(),
       email: normalizedEmail,
       phone: normalizedPhone,
-      passwordHash: hashedPassword,
+      passwordHash: password,
       role: role || "camper",
       isVerified: false,
       isInternal: false,
@@ -97,17 +98,8 @@ export const register = async (req, res) => {
       expiresAt: new Date(Date.now() + 15 * 60 * 1000),
     });
 
-    if (normalizedEmail && process.env.BREVO_USER) {
-      const transporter = nodemailer.createTransport({
-        host: "smtp-relay.brevo.com", port: 587, secure: false,
-        auth: { user: process.env.BREVO_USER, pass: process.env.BREVO_PASS }
-      });
-      await transporter.sendMail({
-        from: `"EthioCampGround" <${process.env.BREVO_USER}>`,
-        to: normalizedEmail,
-        subject: "Verify your account",
-        html: `<h2>Verification code: ${code}</h2>`
-      });
+    if (normalizedEmail) {
+      try { await emailService.sendVerificationEmail(normalizedEmail, code); } catch (e) { console.error("Email send failed", e); }
     }
     
     if (normalizedPhone) {
@@ -196,6 +188,14 @@ export const verifyOTP = async (req, res) => {
         { new: true }
       );
 
+    try {
+      if (user?.email) await emailService.sendMail({
+        to: user.email,
+        subject: "Email verified - EthioCamp",
+        html: `<p>Hello ${user.fullName || ''}, your email has been verified successfully.</p>`,
+      });
+    } catch (e) { console.error("Verification email failed", e); }
+
     return res.json({ 
       success: true, 
       message: "OTP verified successfully",
@@ -211,12 +211,16 @@ export const createInternalUser = async (req, res) => {
   try {
     const { fullName, email, role } = req.body;
     const tempPassword = Math.random().toString(36).slice(-10) + "A1!";
-    const hashedPassword = await bcrypt.hash(tempPassword, 12);
-
+    // Store plain temporary password; User model will hash it on save
     const user = await User.create({
       fullName, email: email.toLowerCase().trim(),
-      passwordHash: hashedPassword, role, isInternal: true, mustResetPassword: true, isActive: true, isVerified: true
+      passwordHash: tempPassword, role, isInternal: true, mustResetPassword: true, isActive: true, isVerified: true
     });
+
+    // send account creation email with temporary password
+    if (user.email) {
+      try { await emailService.sendAccountCreated(user.email, tempPassword); } catch (e) { console.error("Account created email failed", e); }
+    }
 
     res.json({ success: true, message: "Internal user created", tempPassword, user: { id: user._id, email: user.email, role: user.role } });
   } catch (err) {
@@ -274,5 +278,67 @@ export const refresh = async (req, res) => {
   } catch (err) {
     console.error("Refresh Error:", err);
     return res.status(500).json({ success: false, error: "Refresh failed" });
+  }
+};
+
+// ---------------- PASSWORD RESET (REQUEST) ----------------
+export const requestPasswordReset = async (req, res) => {
+  try {
+    const { identifier } = req.body;
+    if (!identifier) return res.status(400).json({ success: false, error: 'Identifier required' });
+
+    const target = normalizeIdentifier(identifier);
+    const user = await User.findOne({ $or: [{ email: target }, { phone: target }] });
+    if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    await OTP.create({ target, code, type: 'password_reset', expiresAt: new Date(Date.now() + 15 * 60 * 1000) });
+
+    // Email or SMS the code
+    if (user.email) {
+      try {
+        await emailService.sendMail({
+          to: user.email,
+          subject: 'Password reset code - EthioCamp',
+          html: `<p>Your password reset code is <strong>${code}</strong>. It expires in 15 minutes.</p>`,
+        });
+      } catch (e) { console.error('Password reset email failed', e); }
+    }
+    if (user.phone) {
+      try { await sendSMS(user.phone, `Your reset code: ${code}`); } catch (e) { console.error('Password reset SMS failed', e); }
+    }
+
+    return res.json({ success: true, message: 'Password reset code sent' });
+  } catch (err) {
+    console.error('requestPasswordReset error:', err);
+    return res.status(500).json({ success: false, error: 'Failed to request password reset' });
+  }
+};
+
+// ---------------- PASSWORD RESET (PERFORM) ----------------
+export const performPasswordReset = async (req, res) => {
+  try {
+    let { identifier, code, newPassword } = req.body;
+    if (!identifier || !code || !newPassword) return res.status(400).json({ success: false, error: 'identifier, code and newPassword required' });
+
+    const target = normalizeIdentifier(identifier);
+    const otp = await OTP.findOne({ target, code: code.trim(), type: 'password_reset', used: false });
+    if (!otp || otp.expiresAt < new Date()) return res.status(400).json({ success: false, error: 'Invalid or expired code' });
+
+    const user = await User.findOne({ $or: [{ email: target }, { phone: target }] });
+    if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+
+    // mark OTP used
+    otp.used = true; await otp.save();
+
+    // store plain password so model pre-save will hash
+    user.passwordHash = newPassword;
+    user.mustResetPassword = false;
+    await user.save();
+
+    return res.json({ success: true, message: 'Password updated successfully' });
+  } catch (err) {
+    console.error('performPasswordReset error:', err);
+    return res.status(500).json({ success: false, error: 'Failed to reset password' });
   }
 };

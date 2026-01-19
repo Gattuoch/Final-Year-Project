@@ -20,6 +20,12 @@ const tentSchema = new mongoose.Schema(
     images: [String],
     available: { type: Boolean, default: true },
     deletedAt: { type: Date, default: null },
+    bookings: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Booking",
+      },
+    ],
   },
   { timestamps: true }
 );
