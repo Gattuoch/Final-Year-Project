@@ -15,7 +15,8 @@ const createSuperAdmin = async () => {
       return;
     }
 
-    const passwordHash = await bcrypt.hash(process.env.SUPER_ADMIN_PASSWORD, 10);
+    // Store raw password in passwordHash and let model pre-save hash it
+    const passwordHash = process.env.SUPER_ADMIN_PASSWORD;
 
     await User.create({
       fullName: "Platform Super Admin",

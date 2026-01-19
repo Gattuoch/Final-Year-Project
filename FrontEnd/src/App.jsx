@@ -18,8 +18,8 @@ import Experience from "./Component/Home/Experience";
 import BrowseCamps from "./Component/Home/BrowseCamps";
 
 // Camps Page Components
-import CampBrowse from "./Component/Home/CampBrowse";
-import BrowseALLCamps from "./Component/Home/BrowseAllCamp";
+
+import BrowseALLCamps from "./Component/Home/BrowseCamps.jsx";
 
 // About Page Components
 import About from "./Component/Home/About";
@@ -48,12 +48,15 @@ import GeneralSettings from "./Component/SuperAdmin/Setting/GeneralSettings.jsx"
 import SecuritySettings from "./Component/SuperAdmin/Setting/SecuritySettings.jsx";
 import EmailSettings from "./Component/SuperAdmin/Setting/EmailSettings.jsx";
 import CreateSystemAdmin from "./Component/SuperAdmin/CreateSystemAdmin/CreateSystemAdmin.jsx";
-import BookingDashboard from "./Component/Camper/Main/Dashboard.jsx";
+
+// Camper Dashboard Components
+import BookingCard from "./Component/Camper/Bookings/BookingCard.jsx";
 import Payments from "./Component/Camper/Activity/Payments.jsx";
 import MyReservations from "./Component/Camper/Bookings/MyReservations.jsx";
 import Booking from "./Component/Camper/Bookings/Booking.jsx";
-import NewBooking from "./Component/Camper/Bookings/NewBooking.jsx";
-import MyProfile from "./Component/Camper/Main/MyProfile.jsx";
+import Confirmation from "./Component/Camper/Bookings/Confirmation.jsx"; // Renamed for clarity (was Confirmation.jsx)
+import CampsiteDirectory from "./Component/Camper/Bookings/CampsiteDirectory.jsx";
+
 
 function App() {
   return (
@@ -101,8 +104,8 @@ function App() {
             <>
               <Navbar />
               <Hero />
+              <BrowseCamps />
               <BrowseALLCamps />
-              <CampBrowse />
               <Footer />
             </>
           }
@@ -174,19 +177,31 @@ function App() {
           path="/super-admin/create-system-admin"
           element={<CreateSystemAdmin />}
         />
-       
-       {/* CAMPER DASHBOARD */}
-        <Route path="/camper-dashboard/payments" element={<Payments />} />
-        <Route path="/camper-dashboard/reservations" element={<MyReservations />} />
-        <Route path="/camper-dashboard/reservations/new-booking" element={<Booking />} />
-         <Route path="/camper-dashboard/reservations/confirm-booking" element={<NewBooking />} />
-          <Route
-          path="/camper-dashboard"element={<BookingDashboard/>}
-        />
-        <Route
-          path="/camper-dashboard/profile"element={<MyProfile/>}
-        />
 
+        {/* ======================================================== */}
+        {/* CAMPER DASHBOARD ROUTES                */}
+        {/* ======================================================== */}
+        
+        {/* 1. Dashboard Home */}
+        <Route
+          path="/camper-dashboard"
+          element={<BookingCard />}
+        />
+        
+        {/* 2. My Reservations List */}
+        <Route path="/camper-dashboard/reservations" element={<MyReservations />} />
+        
+        {/* 3. Search / Directory (Clicked from "New Booking") */}
+        <Route path="/camper-dashboard/campsite-directory" element={<CampsiteDirectory />} />
+        
+        {/* 4. Specific Camp Details & Create Booking (Dynamic ID) */}
+        <Route path="/camper-dashboard/book/:id" element={<Booking />} />
+        
+        {/* 5. Payment / Confirmation Page */}
+        <Route path="/camper-dashboard/reservations/confirm-booking" element={<Confirmation />} />
+        
+        {/* 6. Payments History */}
+        <Route path="/camper-dashboard/payments" element={<Payments />} />
 
       </Routes>
     </>
@@ -194,4 +209,3 @@ function App() {
 }
 
 export default App;
-

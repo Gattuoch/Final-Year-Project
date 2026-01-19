@@ -17,7 +17,8 @@ export const resetPassword = async (req, res) => {
   normalizeLegacyRole(user);
 
   const tempPassword = Math.random().toString(36).slice(-8);
-  user.passwordHash = await bcrypt.hash(tempPassword, 10);
+  // Store plain temporary password; User model's pre-save hook will hash it once
+  user.passwordHash = tempPassword;
   await user.save();
 
   console.log("TEMP PASSWORD:", tempPassword); // send via email
@@ -89,7 +90,8 @@ export const invalidateTempPassword = async (req, res) => {
   normalizeLegacyRole(user);
 
   const random = Math.random().toString(36).slice(-12);
-  user.passwordHash = await bcrypt.hash(random, 10);
+  // Store plain random password so model pre-save will hash it
+  user.passwordHash = random;
   await user.save();
 
   // NOTE: For security, we don't return the generated password in the response.

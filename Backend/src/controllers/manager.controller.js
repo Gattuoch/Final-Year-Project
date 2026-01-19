@@ -19,15 +19,13 @@ export const managerSignup = async (req, res) => {
       return res.status(400).json({ success: false, message: "Manager already exists with this email or phone." });
     }
 
-    // 3. Hash password (using 12 rounds to match authController)
-    const hashedPass = await bcrypt.hash(password, 12);
-
-    // 4. Create Manager within the User model
+    // 3. Create Manager within the User model
+    // Store plain password and let User model pre-save hook hash it
     const manager = await User.create({
       fullName: fullName.trim(),
       email: normalizedEmail,
       phone: normalizedPhone,
-      passwordHash: hashedPass, // Matches the UserSchema field name
+      passwordHash: password, // Matches the UserSchema field name; model will hash
       role: "camp_manager",     // Hardcoded role for this controller
       isVerified: false,
       isActive: true,

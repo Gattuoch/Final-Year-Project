@@ -42,11 +42,9 @@ export const register = async (req, res) => {
     if (exists)
       return res.status(400).json({ success: false, error: "This email is already registered." });
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 12);
-
-    // Build user object
-    const userData = { fullName, email, password: hashedPassword, phone, role };
+    // Do not pre-hash here — store the raw password into `passwordHash`
+    // so the model's pre-save hook will hash it exactly once.
+    const userData = { fullName, email, passwordHash: password, phone, role };
 
     // Special logic for Camp Managers
     if (role === "manager") {
@@ -90,13 +88,13 @@ export const login = async (req, res) => {
     let { email, password } = req.body;
     email = email.toLowerCase().trim();
 
-    // Find user
-    const user = await User.findOne({ email });
+    // Find user and include the passwordHash (schema selects it false by default)
+    const user = await User.findOne({ email }).select('+passwordHash');
     if (!user)
       return res.status(400).json({ success: false, error: "Invalid email or password." });
 
-    // Check password match
-    const isMatch = await bcrypt.compare(password, user.password);
+    // Check password match via model helper (uses passwordHash)
+    const isMatch = await user.comparePassword(password);
     if (!isMatch)
       return res.status(400).json({ success: false, error: "Invalid email or password." });
 

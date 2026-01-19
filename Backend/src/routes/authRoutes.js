@@ -9,6 +9,8 @@ import {
   createInternalUser, 
   logout,
   refresh,
+  requestPasswordReset,
+  performPasswordReset,
 } from "../controllers/authController.js";
 import { verifyToken, isAdmin } from "../middlewares/auth.middleware.js";
 import upload from "../middlewares/upload.js"; 
@@ -24,6 +26,8 @@ router.post("/register", upload.fields([
 router.post("/login", login);
 router.post("/refresh", refresh);
 router.post("/verify-otp", verifyOTP);
+router.post("/request-reset", requestPasswordReset);
+router.post("/reset-password", performPasswordReset);
 router.post("/create-internal", verifyToken, isAdmin, createInternalUser);
 router.post("/logout", verifyToken, logout);
 

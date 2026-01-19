@@ -2,55 +2,69 @@ import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema(
   {
+    // Relations
     camperId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
     tentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Tent",
       required: true,
     },
-    startDate: { type: Date, required: true },
-    endDate: { type: Date, required: true },
+    campId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Camp", 
+      required: true,
+    },
+
+    // Stay Details
+    checkInDate: { type: Date, required: true },
+    checkOutDate: { type: Date, required: true },
     guests: { type: Number, min: 1, required: true },
-    totalPrice: { type: Number, required: true },
+    
+    // Financials
+    totalPrice: { type: Number, required: true }, // Stored in ETB
 
     // Payment Info
     paymentOption: {
       type: String,
-      enum: ["prepaid", "postpaid", "cash_on_arrival"],
-      default: "prepaid",
+      enum: ["chapa", "stripe", "cash_on_arrival", "pending"],
+      default: "pending",
     },
     paymentStatus: {
       type: String,
-      enum: ["unpaid", "paid", "refunded"],
+      enum: ["unpaid", "paid", "refunded", "failed"],
       default: "unpaid",
     },
+    paymentMeta: {
+      type: mongoose.Schema.Types.Mixed,
+    },
 
-    // Booking Progress
+    // Booking Status
     status: {
       type: String,
-      enum: ["pending", "confirmed", "cancelled", "completed"],
+      enum: ["pending", "confirmed", "cancelled", "completed", "no-show"],
       default: "pending",
     },
-    idDocumentUrl: { type: String }, // Optional for some roles
-    noShow: { type: Boolean, default: false },
-    cancelledAt: { type: Date },
 
+    // Meta & Logic
+    idDocumentUrl: { type: String },
+    cancelReason: { type: String },
+    cancelledAt: { type: Date },
+    
     // Automation
     graceExpiry: { type: Date },
     autoCancelAt: { type: Date },
-    cancelReason: { type: String },
-    createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
 
-// Calculate grace window based on stay timing
+// Grace period calculation
 bookingSchema.methods.setGracePeriods = function () {
-  const start = new Date(this.startDate);
+  const start = new Date(this.checkInDate);
   const now = new Date();
   const diffDays = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
 

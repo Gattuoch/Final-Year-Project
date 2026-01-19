@@ -14,12 +14,11 @@ export const createSystemAdmin = async (req, res) => {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
-
+    // Store plain password; User model will hash on save
     const systemAdmin = await User.create({
       fullName,
       email,
-      passwordHash: hashedPassword,
+      passwordHash: password,
       role: "system_admin",
       isInternal: true,
       mustResetPassword: true,

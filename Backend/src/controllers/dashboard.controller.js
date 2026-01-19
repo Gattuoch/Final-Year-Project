@@ -1,4 +1,4 @@
-import CampHome from "../models/Camp.js";
+import CampHome from "../models/Camp.model.js";
 import EventVenue from "../models/EventVenue.model.js";
 import Booking from "../models/Booking.model.js";
 import User from "../models/User.model.js";

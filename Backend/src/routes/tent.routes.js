@@ -5,16 +5,17 @@ import {
   updateTent,
   deleteTent,
 } from "../controllers/tent.controller.js";
-import { verifyToken, isManager } from "../middlewares/auth.middleware.js";
+import { verifyToken, isManager, isAdmin } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
 // Public: view tents for a camp
 router.get("/:campId", getTentsByCamp);
 
-// Manager routes
-router.post("/:campId", verifyToken, isManager, createTent);
-router.patch("/:tentId", verifyToken, isManager, updateTent);
-router.delete("/:tentId", verifyToken, isManager, deleteTent);
+// Manager/Admin routes
+// Note: We use 'verifyToken' to get the user, the controller handles specific permission checks
+router.post("/:campId", verifyToken, createTent);
+router.patch("/:tentId", verifyToken, updateTent);
+router.delete("/:tentId", verifyToken, deleteTent);
 
 export default router;

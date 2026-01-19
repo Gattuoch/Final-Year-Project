@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "dev": "npm --prefix Backend run dev"
+  },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/vite": "^4.1.17",

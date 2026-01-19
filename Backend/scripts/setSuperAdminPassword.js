@@ -30,7 +30,8 @@ const run = async () => {
     console.log('Connected to DB');
 
     const emailNormalized = String(email).toLowerCase().trim();
-    const hash = await bcrypt.hash(String(password), 10);
+    // Store plain password and let model pre-save hash it on save
+    const hash = String(password);
 
     let user = await User.findOne({ role: 'super_admin' });
     if (!user) user = await User.findOne({ email: emailNormalized });
@@ -48,7 +49,7 @@ const run = async () => {
       });
       console.log('Super admin created:', created._id.toString());
     } else {
-      user.passwordHash = hash;
+      user.passwordHash = hash; // plain password, model will hash on save
       user.email = emailNormalized;
       user.isInternal = true;
       await user.save();
