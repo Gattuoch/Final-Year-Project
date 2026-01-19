@@ -152,7 +152,7 @@ const Navbar = () => {
                   <p className="text-sm font-bold text-green-950 truncate">{user.fullName || "User"}</p>
                   <p className="text-[10px] text-gray-500 truncate">{user.email}</p>
                 </div>
-                <Link to="/profile" onClick={() => setIsAccountOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors font-medium">
+                <Link to="/camper-dashboard" onClick={() => setIsAccountOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors font-medium">
                   <HiUser className="text-gray-400" /> Profile
                 </Link>
                 <button onClick={handleLogout} className="w-full text-left flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors font-medium">

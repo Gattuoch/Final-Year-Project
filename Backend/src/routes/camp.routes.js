@@ -10,42 +10,47 @@ import {
   rejectCamp,
   getPendingCamps,
 } from "../controllers/campController.js";
-import adminCampController from "../controllers/adminCamp.controller.js";
 import { verifyToken, isAdmin } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
 /* ============================================================
-    1. PUBLIC ROUTES
+   1. PUBLIC ROUTES (Search & Details)
    ============================================================ */
-// List/search approved camps (supports query params)
+// List approved camps (with filters)
 router.get("/", listCamps);
-// Full list used by some frontend pages
-router.get("/all", listAllCamps);
+
+// Get specific camp details (For Booking Page)
+router.get("/:id", getCampDetails);
+
+// Full list (Internal use/Frontend cache)
+router.get("/list/all", listAllCamps);
+
 
 /* ============================================================
-    2. ADMIN ROUTES (place before "/:id" to avoid accidental capture)
+   2. MANAGER / AUTHENTICATED ROUTES (Create & Edit)
    ============================================================ */
-router.get("/admin", verifyToken, isAdmin, adminCampController.getAdminCamps);
-router.get("/admin/stats", verifyToken, isAdmin, adminCampController.getCampStats);
-router.get("/admin/pending", verifyToken, isAdmin, getPendingCamps);
-router.patch("/admin/:id/approve", verifyToken, isAdmin, approveCamp);
-router.patch("/admin/:id/reject", verifyToken, isAdmin, rejectCamp);
-router.patch("/admin/:id/status", verifyToken, isAdmin, adminCampController.updateCampStatus);
-router.delete("/admin/:id", verifyToken, isAdmin, adminCampController.adminDeleteCamp);
-
-/* ============================================================
-    3. MANAGER / AUTHENTICATED ROUTES
-   ============================================================ */
+// Create a new camp (Requires login)
 router.post("/", verifyToken, createCamp);
-// Accept both PATCH and PUT for updates (frontend sometimes uses PUT)
+
+// Update/Edit camp (Manager or Admin)
 router.patch("/:id", verifyToken, updateCamp);
 router.put("/:id", verifyToken, updateCamp);
+
+// Delete (Soft delete)
 router.delete("/:id", verifyToken, deleteCamp);
 
+
 /* ============================================================
-    4. PUBLIC DETAIL ROUTE
+   3. ADMIN ROUTES (Approval Flow)
    ============================================================ */
-router.get("/:id", getCampDetails);
+// Get all pending camps
+router.get("/admin/pending", verifyToken, isAdmin, getPendingCamps);
+
+// Approve a camp
+router.patch("/admin/:id/approve", verifyToken, isAdmin, approveCamp);
+
+// Reject a camp
+router.patch("/admin/:id/reject", verifyToken, isAdmin, rejectCamp);
 
 export default router;

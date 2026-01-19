@@ -8,33 +8,36 @@ export const createTent = async (req, res) => {
     const { name, description, capacity, pricePerNight, amenities, images } = req.body;
 
     const camp = await Camp.findById(campId);
-    if (!camp) return res.status(404).json({ error: "Camp not found." });
+    if (!camp) return res.status(404).json({ success: false, error: "Camp not found." });
 
-    // Only approved managers owning the camp can add tents
-    if (camp.managerId.toString() !== req.user.id)
-      return res.status(403).json({ error: "You can only add tents to your own camp." });
+    // Authorization: Owner or Super Admin
+    if (camp.managerId.toString() !== req.user.id && req.user.role !== "super_admin") {
+      return res.status(403).json({ success: false, error: "You can only add tents to your own camp." });
+    }
 
-    if (camp.status !== "approved")
-      return res.status(400).json({ error: "You can only add tents to approved camps." });
+    if (camp.status !== "approved") {
+      return res.status(400).json({ success: false, error: "You can only add tents to approved camps." });
+    }
 
     const tent = await Tent.create({
       campId,
-      managerId: req.user.id,
+      managerId: camp.managerId, // Assign to camp owner, not necessarily the creator (if admin)
       name,
       description,
       capacity,
       pricePerNight,
       amenities,
-      images,
+      images: images || [], // Default empty array
     });
 
     return res.status(201).json({
+      success: true,
       message: "Tent created successfully.",
-      tent,
+      data: tent,
     });
   } catch (err) {
     console.error("Tent creation error:", err);
-    res.status(500).json({ error: "Server error during tent creation." });
+    res.status(500).json({ success: false, error: "Server error during tent creation." });
   }
 };
 
@@ -50,12 +53,13 @@ export const getTentsByCamp = async (req, res) => {
     });
 
     return res.status(200).json({
+      success: true,
       message: "Tents retrieved successfully.",
-      tents,
+      data: tents,
     });
   } catch (err) {
     console.error("Fetch tents error:", err);
-    res.status(500).json({ error: "Server error retrieving tents." });
+    res.status(500).json({ success: false, error: "Server error retrieving tents." });
   }
 };
 
@@ -64,21 +68,23 @@ export const updateTent = async (req, res) => {
   try {
     const { tentId } = req.params;
     const tent = await Tent.findById(tentId);
-    if (!tent) return res.status(404).json({ error: "Tent not found." });
+    if (!tent) return res.status(404).json({ success: false, error: "Tent not found." });
 
-    if (tent.managerId.toString() !== req.user.id)
-      return res.status(403).json({ error: "You can only edit your own tents." });
+    if (tent.managerId.toString() !== req.user.id && req.user.role !== "super_admin") {
+      return res.status(403).json({ success: false, error: "You can only edit your own tents." });
+    }
 
     Object.assign(tent, req.body);
     await tent.save();
 
     return res.status(200).json({
+      success: true,
       message: "Tent updated successfully.",
-      tent,
+      data: tent,
     });
   } catch (err) {
     console.error("Update tent error:", err);
-    res.status(500).json({ error: "Server error updating tent." });
+    res.status(500).json({ success: false, error: "Server error updating tent." });
   }
 };
 
@@ -87,17 +93,18 @@ export const deleteTent = async (req, res) => {
   try {
     const { tentId } = req.params;
     const tent = await Tent.findById(tentId);
-    if (!tent) return res.status(404).json({ error: "Tent not found." });
+    if (!tent) return res.status(404).json({ success: false, error: "Tent not found." });
 
-    if (tent.managerId.toString() !== req.user.id)
-      return res.status(403).json({ error: "You can only delete your own tents." });
+    if (tent.managerId.toString() !== req.user.id && req.user.role !== "super_admin") {
+      return res.status(403).json({ success: false, error: "You can only delete your own tents." });
+    }
 
     tent.deletedAt = new Date();
     await tent.save();
 
-    return res.status(200).json({ message: "Tent deleted successfully." });
+    return res.status(200).json({ success: true, message: "Tent deleted successfully." });
   } catch (err) {
     console.error("Delete tent error:", err);
-    res.status(500).json({ error: "Server error deleting tent." });
+    res.status(500).json({ success: false, error: "Server error deleting tent." });
   }
 };

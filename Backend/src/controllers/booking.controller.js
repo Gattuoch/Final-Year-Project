@@ -3,65 +3,95 @@ import Tent from "../models/Tent.model.js";
 import Camp from "../models/Camp.model.js";
 import * as emailService from "../services/email.service.js";
 
-// ✅ CREATE BOOKING
+// ✅ CREATE BOOKING (Step 1 of Flow)
 export const createBooking = async (req, res) => {
   try {
-    const { tentId, startDate, endDate, guests, paymentOption, idDocumentUrl } = req.body;
-    const camperId = req.user.id;
+    const { tentId, checkIn, checkOut, guests, idDocumentUrl } = req.body;
+    const camperId = req.user.id; // From middleware
 
-    // Check tent validity
+    // 1. Validate Dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate comparison
+
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+
+    // Basic format check
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return res.status(400).json({ success: false, error: "Invalid date format." });
+    }
+
+    // Constraint: Check-in cannot be in the past
+    // We normalize 'start' to midnight to ignore the exact time the user clicked
+    const startNormalized = new Date(start);
+    startNormalized.setHours(0, 0, 0, 0);
+
+    if (startNormalized < today) {
+      return res.status(400).json({ success: false, error: "Check-in date cannot be in the past." });
+    }
+
+    // Constraint: Check-out must be strictly after Check-in
+    if (end <= start) {
+      return res.status(400).json({ success: false, error: "Check-out date must be after check-in date." });
+    }
+
+    // 2. Fetch Tent & Camp
     const tent = await Tent.findById(tentId);
     if (!tent) return res.status(404).json({ success: false, error: "Tent not found." });
 
-    // Check if camp is approved using the unified Camp model
     const camp = await Camp.findById(tent.campId);
-    if (!camp || camp.status !== "approved") {
-      return res.status(403).json({ success: false, error: "Cannot book a tent from an unapproved camp." });
+    if (!camp) return res.status(404).json({ success: false, error: "Camp not found." });
+
+    // 3. Availability Check (Prevent Overlapping)
+    const existingBooking = await Booking.findOne({
+      tentId,
+      status: { $in: ["confirmed", "pending", "paid"] }, // Exclude cancelled/expired
+      $or: [
+        { checkInDate: { $lt: end }, checkOutDate: { $gt: start } } // Overlap logic
+      ]
+    });
+
+    if (existingBooking) {
+      return res.status(409).json({ success: false, error: "This tent is already booked for these dates." });
     }
 
-    // Calculate total price
-    const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24));
-    const totalPrice = nights * tent.pricePerNight;
+    // 4. Calculate Price (ETB)
+    const oneDay = 1000 * 60 * 60 * 24;
+    const nights = Math.ceil((end - start) / oneDay);
+    const totalPrice = nights * tent.pricePerNight; // Assumes pricePerNight is in ETB
 
+    // 5. Create Booking (Status: Unpaid/Pending)
     const newBooking = new Booking({
-      tentId,
       camperId,
-      startDate,
-      endDate,
+      tentId,
+      campId: camp._id,
+      checkInDate: start,
+      checkOutDate: end,
       guests,
-      paymentOption,
+      totalPrice,
       idDocumentUrl,
+      status: "pending",
+      paymentStatus: "unpaid"
     });
+
+    // Set grace period for payment
+    newBooking.setGracePeriods();
+    
     await newBooking.save();
-    tent.bookings.push(newBooking._id);
-    await tent.save();
 
-    // populate minimal fields for email templates
-    await newBooking.populate("camperId", "fullName email");
+    // 6. Return response
+    // We populate minimal fields to return to frontend
     await newBooking.populate("tentId", "name");
-    try { await emailService.sendBookingCreated(newBooking); } catch (e) { console.error("Booking created email failed", e); }
-      // notify tent manager (email + recorded notification)
-      try {
-        const tent = await Tent.findById(tentId).populate("managerId", "fullName email");
-        const manager = tent?.managerId;
-        if (manager && manager.email) {
-          await (await import("../services/notification.service.js")).sendEmailNotification({
-            userId: manager._id,
-            to: manager.email,
-            type: "booking_received_manager",
-            subject: `New booking for ${tent.name}`,
-            html: `<p>${newBooking.camperId?.fullName || 'A camper'} has booked <strong>${tent.name}</strong> from <strong>${new Date(newBooking.startDate).toLocaleDateString()}</strong> to <strong>${new Date(newBooking.endDate).toLocaleDateString()}</strong>. Booking ID: ${newBooking._id}</p>`,
-            meta: { bookingId: newBooking._id, tentId: tent._id },
-          });
-        }
-      } catch (e) {
-        console.error("Manager notification failed", e);
-      }
+    
+    return res.status(201).json({ 
+      success: true, 
+      message: "Booking initiated. Please complete payment.",
+      booking: newBooking 
+    });
 
-    return res.status(201).json({ success: true, data: newBooking });
   } catch (err) {
-    console.error("Booking error:", err);
-    res.status(500).json({ success: false, error: "Server error during booking." });
+    console.error("Create Booking Error:", err);
+    res.status(500).json({ success: false, error: "Server error during booking creation." });
   }
 };
 
@@ -70,8 +100,11 @@ export const getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.find()
       .populate("camperId", "fullName email")
-      .populate("tentId", "name pricePerNight");
-    res.json({ success: true, message: "Bookings retrieved successfully.", bookings });
+      .populate("tentId", "name pricePerNight")
+      .populate("campId", "name location")
+      .sort({ createdAt: -1 });
+      
+    res.json({ success: true, bookings });
   } catch (err) {
     res.status(500).json({ success: false, error: "Failed to fetch bookings." });
   }
@@ -81,10 +114,13 @@ export const getAllBookings = async (req, res) => {
 export const getMyBookings = async (req, res) => {
   try {
     const bookings = await Booking.find({ camperId: req.user.id })
-      .populate("tentId", "name pricePerNight");
-    res.json({ success: true, message: "Your bookings retrieved successfully.", bookings });
+      .populate("tentId", "name pricePerNight images")
+      .populate("campId", "name location")
+      .sort({ createdAt: -1 });
+
+    res.json({ success: true, bookings });
   } catch (err) {
-    res.status(500).json({ success: false, error: "Failed to fetch user bookings." });
+    res.status(500).json({ success: false, error: "Failed to fetch your bookings." });
   }
 };
 
@@ -94,9 +130,10 @@ export const cancelBooking = async (req, res) => {
     const booking = await Booking.findById(req.params.id);
     if (!booking) return res.status(404).json({ success: false, error: "Booking not found." });
 
-    // Check authorization
-    if (booking.camperId.toString() !== req.user.id && req.user.role !== "super_admin")
-      return res.status(403).json({ success: false, error: "Not authorized to cancel this booking." });
+    // Authorization: Owner or Admin
+    if (booking.camperId.toString() !== req.user.id && req.user.role !== "super_admin") {
+      return res.status(403).json({ success: false, error: "Not authorized." });
+    }
 
     booking.status = "cancelled";
     booking.cancelledAt = new Date();
@@ -106,6 +143,7 @@ export const cancelBooking = async (req, res) => {
 
     res.json({ success: true, message: "Booking cancelled successfully." });
   } catch (err) {
+    console.error("Cancel Error:", err);
     res.status(500).json({ success: false, error: "Failed to cancel booking." });
   }
 };

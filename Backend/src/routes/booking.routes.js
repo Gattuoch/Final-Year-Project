@@ -6,31 +6,37 @@ import {
   cancelBooking,
 } from "../controllers/booking.controller.js";
 import { verifyToken, isAdmin } from "../middlewares/auth.middleware.js";
-import Tent from "../models/tent.model.js";
+import Booking from "../models/Booking.model.js";
 
 const router = express.Router();
 
-// Camper/Manager can create booking
+// ✅ Create a new booking
 router.post("/", verifyToken, createBooking);
 
-// Camper: get their bookings
-router.get("/my", verifyToken, getMyBookings);
+// ✅ Get logged-in user's bookings
+router.get("/my-bookings", verifyToken, getMyBookings);
 
-// Admin: see all bookings
-router.get("/", verifyToken, isAdmin, getAllBookings);
+// ✅ Admin: Get ALL bookings
+router.get("/all", verifyToken, isAdmin, getAllBookings);
 
-// Cancel booking
+// ✅ Cancel a booking
 router.patch("/:id/cancel", verifyToken, cancelBooking);
 
-// Add route to get bookings by tent
-router.get("/:tentId", verifyToken, async (req, res) => {
-  const { tentId } = req.params;
-  const tent = await Tent.findById(tentId).populate("bookings");
-  if (!tent)
-    return res
-      .status(404)
-      .json({ success: false, error: "Tent not found." });
-  return res.status(200).json({ success: true, data: tent.bookings });
+// ✅ Get bookings for a specific tent (Availability Check)
+router.get("/tent/:tentId", verifyToken, async (req, res) => {
+  try {
+    const { tentId } = req.params;
+    
+    // Return engaged dates to help frontend disable calendar days
+    const bookings = await Booking.find({
+      tentId,
+      status: { $in: ["confirmed", "pending", "paid"] } 
+    }).select("checkInDate checkOutDate status");
+
+    return res.status(200).json({ success: true, data: bookings });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: "Failed to fetch tent bookings." });
+  }
 });
 
 export default router;

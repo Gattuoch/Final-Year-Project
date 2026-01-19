@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NewBooking from "./NewBooking";
 
 const ReservationHeader = () => {
   const [open, setOpen] = useState(false);
@@ -32,19 +31,17 @@ const ReservationHeader = () => {
               <option value="cancelled">Cancelled</option>
             </select>
 
+            {/* ✅ UPDATED: Navigates to Campsite Directory */}
             <button
               type="button"
-              className="px-5 py-2.5 bg-green-600 text-white rounded-lg"
-              onClick={() => navigate("/camper-dashboard/reservations/new-booking")}
+              className="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              onClick={() => navigate("/camper-dashboard/campsite-directory")}
             >
               + New Booking
             </button>
           </div>
         </div>
       </div>
-
-      {/* Modal */}
-      {open && <NewBooking onClose={() => setOpen(false)} />}
     </>
   );
 };
