@@ -48,8 +48,11 @@ import GeneralSettings from "./Component/SuperAdmin/Setting/GeneralSettings.jsx"
 import SecuritySettings from "./Component/SuperAdmin/Setting/SecuritySettings.jsx";
 import EmailSettings from "./Component/SuperAdmin/Setting/EmailSettings.jsx";
 import CreateSystemAdmin from "./Component/SuperAdmin/CreateSystemAdmin/CreateSystemAdmin.jsx";
-import Sidebar from "./Component/Camper/Sidebar/Sidebar.jsx";
 import BookingCard from "./Component/Camper/Bookings/BookingCard.jsx";
+import Payments from "./Component/Camper/Activity/Payments.jsx";
+import MyReservations from "./Component/Camper/Bookings/MyReservations.jsx";
+import Booking from "./Component/Camper/Bookings/Booking.jsx";
+import NewBooking from "./Component/Camper/Bookings/NewBooking.jsx";
 
 function App() {
   return (
@@ -171,12 +174,18 @@ function App() {
           element={<CreateSystemAdmin />}
         />
         <Route
-          path="/Camper/booking-card"
+          path="/camper-dashboard"
           element={<BookingCard />}
         />
+       {/* CAMPER DASHBOARD */}
+        <Route path="/camper-dashboard/payments" element={<Payments />} />
+        <Route path="/camper-dashboard/reservations" element={<MyReservations />} />
+        <Route path="/camper-dashboard/reservations/new-booking" element={<Booking />} />
+         <Route path="/camper-dashboard/reservations/confirm-booking" element={<NewBooking />} />
       </Routes>
     </>
   );
 }
 
 export default App;
+

@@ -43,19 +43,23 @@ const OTPVerification = () => {
 
         // 3. Clean up the pending target
         localStorage.removeItem("pendingTarget");
+// 4. Conditional Redirection based on Role
+const userRole = res.data?.user?.role || res.data?.role;
 
-        // 4. Conditional Redirection based on Role
-        const userRole = res.data.user?.role || res.data.role;
-        
-        setTimeout(() => {
-          if (userRole === "camp_manager") {
-            navigate("/manager-dashboard");
-          } else if (["super_admin", "admin", "system_admin"].includes(userRole)) {
-            navigate("/admin-dashboard");
-          } else {
-            navigate("/"); // Home for campers
-          }
-        }, 1500);
+const ROLE_REDIRECTS = {
+  camper: "/camper-dashboard",
+  camp_manager: "/manager-dashboard",
+  event_manager: "/admin-dashboard",
+  ticket_officer: "/admin-dashboard",
+  security_officer: "/admin-dashboard",
+  system_admin: "/admin-dashboard",
+  super_admin: "/admin-dashboard",
+};
+
+setTimeout(() => {
+  navigate(ROLE_REDIRECTS[userRole] || "/");
+}, 1500);
+
       }
 
     } catch (err) {
