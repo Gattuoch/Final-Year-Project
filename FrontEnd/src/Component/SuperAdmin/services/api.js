@@ -3,12 +3,12 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api", // your backend URL
+  baseURL: "http://localhost:5000/api",
 });
 
-// Attach JWT token to every request
+// ✅ 1. Token Interceptor (Matches your login logic)
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken"); // must match login storage
+  const token = localStorage.getItem("token"); 
   if (token) {
     config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${token}`;
@@ -16,121 +16,60 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-// Global error handler (optional)
+// ✅ 2. Error Interceptor (Handles 401 Logout)
 API.interceptors.response.use(
   (res) => {
-    // Show success toast for non-GET mutating requests (POST/PUT/PATCH/DELETE)
+    // Show success toast for mutating requests
     try {
       const method = (res.config && res.config.method) || "get";
       if (method && method.toLowerCase() !== "get") {
         const msg = res.data?.message || (res.statusText ? res.statusText : "Success");
-        // Only show a toast when there's a meaningful message or a successful status
         if (msg) toast.success(msg);
       }
     } catch (e) {
-      // swallow errors from toast handling
-      console.debug("Toast success handler error", e);
+      console.debug("Toast handler error", e);
     }
     return res;
   },
-  (err) => {
-    // Refresh token flow: when we get 401, try to refresh access token using refresh token
+  async (err) => {
     const originalRequest = err.config;
 
-    // show error toast for non-auth cases
+    // Show error toast (excluding auth checks)
     try {
-      const message =
-        err.response?.data?.message || err.response?.data?.error || err.message || "Request failed";
-      // only toast when not an auth/refresh failure (optional)
-      if (!(originalRequest && originalRequest.url && originalRequest.url.includes("/auth/refresh"))) {
+      const message = err.response?.data?.message || "Request failed";
+      // Don't toast on refresh check failures to keep UI clean
+      if (!originalRequest?.url?.includes("/auth/refresh")) {
         toast.error(message);
       }
     } catch (e) {
-      console.debug("Toast error handler error", e);
+      console.debug("Toast error", e);
     }
 
-    // If 401 unauthorized, try refreshing
+    // Handle 401 (Unauthorized)
     if (err.response && err.response.status === 401 && !originalRequest._retry) {
-      const refreshToken = localStorage.getItem("refreshToken");
-      if (!refreshToken) {
-        // No refresh token — clear auth and redirect to login
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("role");
-        localStorage.removeItem("user");
-        // optional: navigate to login page
-        if (typeof window !== "undefined") {
-          window.location.href = "/login";
-        }
-        return Promise.reject(err);
-      }
-
       originalRequest._retry = true;
-
-      // queue requests while refreshing
-      if (!API._isRefreshing) API._isRefreshing = false;
-      if (!API._failedQueue) API._failedQueue = [];
-
-      const processQueue = (error, token = null) => {
-        API._failedQueue.forEach((prom) => {
-          if (error) prom.reject(error);
-          else prom.resolve(token);
-        });
-        API._failedQueue = [];
-      };
-
-      if (API._isRefreshing) {
-        return new Promise(function (resolve, reject) {
-          API._failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers.Authorization = "Bearer " + token;
-            return API(originalRequest);
-          })
-          .catch((err2) => Promise.reject(err2));
+      
+      // Clear session
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      
+      // Redirect to login
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
       }
-
-      API._isRefreshing = true;
-
-      return new Promise(function (resolve, reject) {
-        API.post("/auth/refresh", { refreshToken })
-          .then((response) => {
-            const { accessToken, refreshToken: newRefresh } = response.data;
-            if (accessToken) {
-              localStorage.setItem("accessToken", accessToken);
-            }
-            if (newRefresh) {
-              localStorage.setItem("refreshToken", newRefresh);
-            }
-
-            API.defaults.headers.common["Authorization"] = "Bearer " + accessToken;
-            originalRequest.headers.Authorization = "Bearer " + accessToken;
-            processQueue(null, accessToken);
-            resolve(API(originalRequest));
-          })
-          .catch((err2) => {
-            processQueue(err2, null);
-            // optional: clear tokens and redirect to login
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            console.error("Refresh failed", err2);
-            reject(err2);
-          })
-          .finally(() => {
-            API._isRefreshing = false;
-          });
-      });
+      return Promise.reject(err);
     }
 
-    console.error("API ERROR:", err.response?.data || err.message);
     return Promise.reject(err);
   }
 );
 
-export const fetchDashboardStats = () => API.get("/usersuperadmindashboard/statsstat");
-export const fetchRevenueChart = () => API.get("/usersuperadmindashboard/revenue");
-export const fetchVisitorChart = () => API.get("/usersuperadmindashboard/visitors");
-export const fetchBookingActivity = () => API.get("/usersuperadmindashboard/bookings");
-export const fetchRefundSummary = () => API.get("/usersuperadmindashboard/refunds");
+// ✅ 3. THE FIX: CHANGED "/user" TO "/users" (PLURAL)
+// This matches: app.use("/api/users", userRoutes) in server.js
+export const fetchDashboardStats = () => API.get("/users/super-admin/dashboard/stats");
+export const fetchRevenueChart = () => API.get("/users/super-admin/dashboard/revenue");
+export const fetchVisitorChart = () => API.get("/users/super-admin/dashboard/visitors");
+export const fetchBookingActivity = () => API.get("/users/super-admin/dashboard/bookings");
+export const fetchRefundSummary = () => API.get("/users/super-admin/dashboard/refunds");
 
 export default API;

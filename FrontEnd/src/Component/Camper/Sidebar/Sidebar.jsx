@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   HomeIcon,
   UserIcon,
@@ -13,12 +14,59 @@ import {
   ArrowRightOnRectangleIcon,
   XMarkIcon,
   Bars3Icon,
+  GlobeAltIcon // Added for the website button
 } from "@heroicons/react/24/outline";
 import logoIcon from "../../../assets/logo-icon.png";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [counts, setCounts] = useState({ trips: 0, notifications: 0 });
+  const navigate = useNavigate();
+
   const closeSidebar = () => setIsOpen(false);
+
+  // ✅ 1. DYNAMIC DATA FETCHING
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        // Fetch bookings to calculate badges
+        const res = await axios.get("http://localhost:5000/api/bookings/my-bookings", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.data.success) {
+          const bookings = res.data.data;
+          
+          // Count Active Trips (Confirmed & Future/Current)
+          const today = new Date();
+          const activeTrips = bookings.filter(b => 
+            b.status === 'confirmed' && new Date(b.checkOut) >= today
+          ).length;
+
+          // Count Notifications (Unpaid)
+          const unpaid = bookings.filter(b => b.paymentStatus === 'unpaid').length;
+
+          setCounts({ trips: activeTrips, notifications: unpaid });
+        }
+      } catch (err) {
+        console.error("Sidebar stats error:", err);
+      }
+    };
+
+    fetchCounts();
+  }, []);
+
+  // ✅ 2. LOGOUT FUNCTION
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to log out?")) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/login");
+    }
+  };
 
   return (
     <>
@@ -87,7 +135,7 @@ export default function Sidebar() {
               to="/camper-dashboard/reservations"
               icon={CalendarIcon}
               label="My Trips"
-              badge="3"
+              badge={counts.trips > 0 ? counts.trips : null} // Dynamic Badge
               onClick={closeSidebar}
             />
             <NavItem
@@ -103,7 +151,7 @@ export default function Sidebar() {
             <NavItem
               to="/camper-dashboard/payments"
               icon={CreditCardIcon}
-              label="Payments "
+              label="Payments"
               onClick={closeSidebar}
             />
           </Section>
@@ -114,7 +162,7 @@ export default function Sidebar() {
               to="/camper-dashboard/notifications"
               icon={BellIcon}
               label="Notifications"
-              badge="5"
+              badge={counts.notifications > 0 ? counts.notifications : null} // Dynamic Badge
               onClick={closeSidebar}
             />
           </Section>
@@ -133,12 +181,6 @@ export default function Sidebar() {
               label="Settings"
               onClick={closeSidebar}
             />
-            <NavItem
-              to="/logout"
-              icon={ArrowRightOnRectangleIcon}
-              label="Logout"
-              onClick={closeSidebar}
-            />
           </Section>
 
           {/* HELP */}
@@ -151,6 +193,29 @@ export default function Sidebar() {
             />
           </Section>
         </nav>
+
+        {/* ================= Bottom Actions (Pinned) ================= */}
+        <div className="p-4 border-t border-gray-100 bg-gray-50/50 space-y-2">
+          
+          {/* Back to Website Button */}
+          <button
+            onClick={() => window.location.href = "/"}
+            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-gray-600 hover:bg-white hover:text-green-700 hover:shadow-sm transition-all duration-200 text-sm font-medium"
+          >
+            <GlobeAltIcon className="w-5 h-5" />
+            Back to Home
+          </button>
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-600 hover:bg-red-50 hover:shadow-sm transition-all duration-200 text-sm font-medium"
+          >
+            <ArrowRightOnRectangleIcon className="w-5 h-5" />
+            Logout
+          </button>
+        </div>
+
       </aside>
 
       {/* ================= Mobile Open Button ================= */}
@@ -200,7 +265,7 @@ function NavItem({ icon: Icon, label, to, badge, onClick, end = false }) {
       <span className="flex-1 text-sm font-medium">{label}</span>
 
       {badge && (
-        <span className="bg-red-500 text-white text-xs min-w-[20px] h-5 flex items-center justify-center rounded-full">
+        <span className="bg-red-500 text-white text-xs min-w-[20px] h-5 flex items-center justify-center rounded-full px-1.5">
           {badge}
         </span>
       )}
