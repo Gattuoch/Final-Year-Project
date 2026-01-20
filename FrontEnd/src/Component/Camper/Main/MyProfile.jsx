@@ -1,14 +1,11 @@
-import { Camera, Download, Share2, QrCode, ShieldCheck } from "lucide-react";
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { Camera, Share2, QrCode } from "lucide-react";
 import {
-  ArrowDownTrayIcon,
   ShieldCheckIcon,
   Cog6ToothIcon,
   CalendarDaysIcon,
-  ArrowPathIcon,
   TrophyIcon,
-} from "@heroicons/react/24/outline";
-import {
   LockClosedIcon,
   KeyIcon,
 } from "@heroicons/react/24/outline";
@@ -16,348 +13,332 @@ import Sidebar from "../Sidebar/Sidebar";
 import MyProfileHeader from "./MyProfileHeader";
 
 export default function MyProfile() {
-
-  const [avatar, setAvatar] = useState("https://i.pravatar.cc/150");
-  const [cover, setCover] = useState(null);
+  // UI Loading States
+  const [pageLoading, setPageLoading] = useState(true); // Initial load
+  const [saveLoading, setSaveLoading] = useState(false); // Saving process
   const [showQR, setShowQR] = useState(false);
 
+  // Images
+  const [avatarPreview, setAvatarPreview] = useState("https://i.pravatar.cc/150");
+  const [coverPreview, setCoverPreview] = useState(null);
   const avatarInputRef = useRef(null);
   const coverInputRef = useRef(null);
-  const [profile, setProfile] = useState({
-  firstName: "John",
-  lastName: "Doe",
-  email: "john@example.com",
-  phone: "+251 911 234567",
-  dob: "05/15/1990",
-  gender: "Male",
-});
 
-    /* ================= HANDLERS ================= */
+  // ✅ 1. Profile State (Initialized Empty)
+  const [profile, setProfile] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    dateOfBirth: "",
+    gender: "",
+    trustScore: 0,
+    role: "",
+    _id: ""
+  });
+
+  // ✅ 2. FETCH DATA FROM DATABASE
+ // ✅ 2. FETCH DATA FROM DATABASE (Fixed)
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const storedUser = localStorage.getItem("user");
+        
+        if (!token || !storedUser) {
+          console.error("❌ No login session found (Token or User missing in LocalStorage)");
+          setPageLoading(false);
+          return;
+        }
+
+        // Safe parsing
+        const parsedUser = JSON.parse(storedUser);
+        const userId = parsedUser.id || parsedUser._id; // Handle both id formats
+
+        console.log("🔍 Fetching profile for User ID:", userId);
+
+        const res = await axios.get(`http://localhost:5000/api/users/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        console.log("✅ Backend Response:", res.data); // <--- CHECK THIS IN CONSOLE
+
+        // 🛠️ SMART DATA FINDER
+        // Different backends return data differently. This checks all common spots.
+        const dbUser = res.data.data || res.data.user || res.data;
+
+        if (dbUser) {
+          console.log("👤 Found User Data:", dbUser);
+
+          setProfile({
+            firstName: dbUser.firstName || "",
+            lastName: dbUser.lastName || "",
+            email: dbUser.email || "", // Must match backend key exactly
+            // Check 'phoneNumber', 'phone', or 'mobile'
+            phoneNumber: dbUser.phoneNumber || dbUser.phone || dbUser.mobile || "", 
+            dateOfBirth: dbUser.dateOfBirth ? dbUser.dateOfBirth.split("T")[0] : "",
+            gender: dbUser.gender || "Male",
+            trustScore: dbUser.trustScore || 0,
+            role: dbUser.role || "Camper",
+            _id: dbUser._id || userId
+          });
+
+          if (dbUser.profilePicture) setAvatarPreview(dbUser.profilePicture);
+          if (dbUser.coverPicture) setCoverPreview(dbUser.coverPicture);
+        } else {
+          console.error("❌ Could not find user object in response");
+        }
+
+      } catch (error) {
+        console.error("❌ Failed to load profile:", error);
+        // Fallback: If API fails, show what we have in local storage
+        const fallbackUser = JSON.parse(localStorage.getItem("user"));
+        if(fallbackUser) {
+             setProfile(prev => ({ ...prev, ...fallbackUser }));
+        }
+      } finally {
+        setPageLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+  // ✅ 3. Handle Text Input Changes
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  const handleAvatarChange = (e) => {
-    if (e.target.files[0]) {
-      setAvatar(URL.createObjectURL(e.target.files[0]));
+  // ✅ 4. Save Changes to Database
+  const handleSave = async () => {
+    setSaveLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      
+      const payload = {
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        phoneNumber: profile.phoneNumber,
+        dateOfBirth: profile.dateOfBirth,
+        gender: profile.gender
+      };
+
+      const res = await axios.patch(
+        `http://localhost:5000/api/users/${profile._id}`,
+        payload,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.data.success) {
+        // Update LocalStorage so Dashboard Header updates too
+        const currentUser = JSON.parse(localStorage.getItem("user"));
+        localStorage.setItem("user", JSON.stringify({ ...currentUser, ...payload }));
+        
+        alert("Profile updated successfully!");
+      }
+    } catch (error) {
+      console.error("Update failed:", error);
+      alert("Failed to update profile.");
+    } finally {
+      setSaveLoading(false);
     }
   };
 
-  const handleCoverChange = (e) => {
-    if (e.target.files[0]) {
-      setCover(URL.createObjectURL(e.target.files[0]));
-    }
-  };
+  // Loading Screen
+  if (pageLoading) {
+    return <div className="flex h-screen justify-center items-center">Loading your data...</div>;
+  }
 
-  const handleSaveProfile = () => {
-    console.log("Profile saved:", profile);
-    alert("Profile updated successfully ✅");
-  };
-
-  const handleShare = async () => {
-    const url = window.location.href;
-    if (navigator.share) {
-      await navigator.share({
-        title: "My Profile",
-        text: "Check out my profile",
-        url,
-      });
-    } else {
-      navigator.clipboard.writeText(url);
-      alert("Profile link copied to clipboard 📋");
-    }
-  };
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
-          <Sidebar />
-    
-          <main className="flex-1 p-4 sm:p-6  top-0">
-     <MyProfileHeader/>
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
+      <Sidebar />
 
-      {/* Cover Section */}
-      <div className="relative bg-emerald-600 rounded-2xl h-52 mb-20 overflow-hidden"
-      style={{
-            backgroundImage: cover ? `url(${cover})` : undefined,
+      <main className="flex-1 p-4 sm:p-6 overflow-y-auto">
+        {/* Header receives the dynamic profile data */}
+        <MyProfileHeader onSave={handleSave} loading={saveLoading} user={profile} />
+
+        {/* Cover Image */}
+        <div 
+          className="relative bg-gradient-to-r from-emerald-600 to-green-500 rounded-2xl h-52 mb-20 overflow-hidden shadow-sm"
+          style={{
+            backgroundImage: coverPreview ? `url(${coverPreview})` : undefined,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
+        >
+          <button 
+            className="absolute top-4 right-4 flex items-center gap-2 bg-black/30 hover:bg-black/40 text-white px-4 py-2 rounded-lg backdrop-blur-sm transition"
+            onClick={() => coverInputRef.current.click()}
           >
-        <button className="absolute top-4 right-4 flex items-center gap-2 bg-white/20 text-white px-4 py-2 rounded-lg backdrop-blur"
-          onClick={() => coverInputRef.current.click()}
-          >
-          <Camera size={18} />
-          Change Cover
-        </button>
-        <input
-            type="file"
-            ref={coverInputRef}
-            onChange={handleCoverChange}
-            hidden
-            accept="image/*"
-          />
-      </div>
+            <Camera size={18} />
+            <span className="text-sm font-medium">Edit Cover</span>
+          </button>
+          <input type="file" ref={coverInputRef} hidden accept="image/*" />
+        </div>
 
-     {/* Profile Card */}
-        <div className="bg-white rounded-2xl shadow-sm p-6 -mt-32 relative">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="relative">
-                <img
-                  src={avatar}
-                  alt="profile"
-                  className="w-24 h-24 rounded-xl object-cover border-4 border-white"
-                />
-                <button
-                  className="absolute bottom-1 right-1 bg-emerald-600 p-2 rounded-lg text-white"
-                  onClick={() => avatarInputRef.current.click()}
-                >
+        {/* Profile Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 -mt-32 relative mx-4 sm:mx-0">
+          <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-6">
+            
+            <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+              <div className="relative group">
+                <img src={avatarPreview} alt="profile" className="w-28 h-28 rounded-2xl object-cover border-4 border-white shadow-md bg-white" />
+                <button className="absolute -bottom-2 -right-2 bg-emerald-600 p-2 rounded-full text-white hover:bg-emerald-700 shadow-sm transition">
                   <Camera size={16} />
                 </button>
+              </div>
+
+              <div className="mb-2">
+                {/* Dynamic Name and Email from State */}
+                <h2 className="text-2xl font-bold text-gray-900 capitalize">
+                  {profile.firstName} {profile.lastName}
+                </h2>
+                <p className="text-gray-500 text-sm">
+                  {profile.role} • {profile.email}
+                </p>
+                
+                <div className="flex items-center justify-center sm:justify-start gap-4 mt-3">
+                  <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-xs font-semibold">
+                    <TrophyIcon className="w-3 h-3" /> {profile.trustScore} Trust Points
+                  </span>
+                  <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold">
+                    <ShieldCheckIcon className="w-3 h-3" /> Verified
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 w-full sm:w-auto">
+              <button onClick={() => setShowQR(true)} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-medium transition">
+                <QrCode size={18} /> QR Code
+              </button>
+              <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition">
+                <Share2 size={18} /> Share
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Form Grid - BOUND TO STATE */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+          
+          <div className="lg:col-span-2 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+            <h2 className="text-lg font-bold text-gray-900 mb-6 pb-4 border-b border-gray-50">
+              Personal Information
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">First Name</label>
                 <input
-                  type="file"
-                  ref={avatarInputRef}
-                  onChange={handleAvatarChange}
-                  hidden
-                  accept="image/*"
+                  type="text"
+                  name="firstName"
+                  value={profile.firstName} // ✅ Shows DB Data
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 border-transparent focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition outline-none font-medium text-gray-700"
                 />
               </div>
 
               <div>
-                <p className="text-gray-500">Member since November 2023</p>
-                <div className="flex items-center gap-4 mt-2">
-                  <span className="text-amber-500 font-medium">
-                    ⭐ 156 Points
-                  </span>
-                  <span className="text-emerald-600 font-medium">
-                    ✔ Verified Account
-                  </span>
-                </div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Last Name</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={profile.lastName} // ✅ Shows DB Data
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 border-transparent focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition outline-none font-medium text-gray-700"
+                />
               </div>
-            </div>
 
-            <div className="flex gap-3">
-              <button
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-gray-50"
-                onClick={() => setShowQR(true)}
-              >
-                <QrCode size={18} />
-                My QR
-              </button>
-              <button
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white"
-                onClick={handleShare}
-              >
-                <Share2 size={18} />
-                Share Profile
-              </button>
-            </div>
-          </div>
-        </div>
-
-      {/* Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-         {/* ================= Personal Information ================= */}
-      <div className="lg:col-span-2 bg-white rounded-2xl p-6 border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">
-          Personal Information
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* First Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              First Name
-            </label>
-            <input
-              type="text"
-              defaultValue="John"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-            />
-          </div>
-
-          {/* Last Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Last Name
-            </label>
-            <input
-              type="text"
-              defaultValue="Doe"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Email */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              defaultValue="john@example.com"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Phone */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number
-            </label>
-            <input
-              type="text"
-              defaultValue="+251 911 234567"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Date of Birth */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Date of Birth
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                defaultValue="05/15/1990"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                onChange={handleChange}
-              />
-              <CalendarDaysIcon className="w-5 h-5 text-gray-400 absolute right-4 top-3.5" />
-            </div>
-          </div>
-
-          {/* Gender */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Gender
-            </label>
-            <select className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 focus:outline-none">
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* ================= Account Security ================= */}
-      <div className="bg-white rounded-2xl p-6 border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">
-          Account Security
-        </h2>
-
-        <div className="space-y-4">
-          {/* Two-Factor */}
-          <div className="flex items-center justify-between bg-gray-50 rounded-xl p-4">
-            <div className="flex items-center gap-4">
-              <div className="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center">
-                <LockClosedIcon className="w-6 h-6 text-emerald-600" />
+              <div className="md:col-span-2">
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={profile.email} // ✅ Shows DB Data
+                  disabled // Disabled because email usually requires specific process to change
+                  className="w-full px-4 py-3 rounded-lg bg-gray-100 border-transparent text-gray-500 cursor-not-allowed font-medium"
+                />
               </div>
+
               <div>
-                <p className="font-semibold text-gray-900">
-                  Two-Factor Authentication
-                </p>
-                <p className="text-sm text-gray-500">Enabled</p>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Phone Number</label>
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={profile.phoneNumber} // ✅ Shows DB Data
+                  onChange={handleChange}
+                  placeholder="+251..."
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 border-transparent focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition outline-none font-medium text-gray-700"
+                />
               </div>
-            </div>
 
-            <button className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700">
-              <KeyIcon className="w-4 h-4" />
-              Manage
-            </button>
-          </div>
-
-          {/* Privacy Settings */}
-          <div className="flex items-center justify-between bg-gray-50 rounded-xl p-4">
-            <div className="flex items-center gap-4">
-              <div className="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center">
-                <ShieldCheckIcon className="w-6 h-6 text-blue-600" />
-              </div>
               <div>
-                <p className="font-semibold text-gray-900">
-                  Privacy Settings
-                </p>
-                <p className="text-sm text-gray-500">Review</p>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Date of Birth</label>
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  value={profile.dateOfBirth} // ✅ Shows DB Data
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 border-transparent focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition outline-none font-medium text-gray-700"
+                />
               </div>
-            </div>
 
-            <button className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300">
-              <Cog6ToothIcon className="w-4 h-4" />
-              Configure
-            </button>
-          </div>
-        </div>
-      </div>
-      </div>
-       {/* ================= Content ================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">      
-        {/* ================= Profile Activity ================= */}
-        <div className="bg-white rounded-2xl p-6 border border-gray-100">
-          <h3 className="font-semibold text-gray-900 mb-4">
-            Profile Activity
-          </h3>
-
-          <div className="space-y-4">
-            {/* Last Login */}
-            <div className="flex items-center justify-between bg-gray-50 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                  <CalendarDaysIcon className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">
-                    Last Login
-                  </p>
-                  <p className="text-xs text-gray-500">2 hours ago</p>
-                </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Gender</label>
+                <select 
+                  name="gender"
+                  value={profile.gender} // ✅ Shows DB Data
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 border-transparent focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition outline-none font-medium text-gray-700 cursor-pointer"
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
               </div>
-              <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
-                <ArrowPathIcon className="w-4 h-4" />
-                View
-              </button>
-            </div>
-
-            {/* Reward Points */}
-            <div className="flex items-center justify-between bg-gray-50 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
-                  <TrophyIcon className="w-5 h-5 text-yellow-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">
-                    Reward Points
-                  </p>
-                  <p className="text-xs text-gray-500">156</p>
-                </div>
-              </div>
-              <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700">
-                Redeem
-              </button>
             </div>
           </div>
+
+          {/* Sidebar Widgets (Security/Activity) */}
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+              <h2 className="text-lg font-bold text-gray-900 mb-6">Security</h2>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition cursor-pointer">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600"><LockClosedIcon className="w-5 h-5" /></div>
+                    <div><p className="font-semibold text-sm text-gray-900">Two-Factor Auth</p><p className="text-xs text-green-600 font-medium">Enabled</p></div>
+                  </div>
+                  <KeyIcon className="w-4 h-4 text-gray-400" />
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition cursor-pointer">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600"><ShieldCheckIcon className="w-5 h-5" /></div>
+                    <div><p className="font-semibold text-sm text-gray-900">Privacy Settings</p><p className="text-xs text-gray-500">Public Profile</p></div>
+                  </div>
+                  <Cog6ToothIcon className="w-4 h-4 text-gray-400" />
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
-      </div>
-      {/* ================= QR MODAL ================= */}
+
+        {/* QR Modal */}
         {showQR && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-2xl w-80 text-center">
-              <h3 className="font-semibold mb-4">My Profile QR</h3>
-              <div className="w-40 h-40 mx-auto bg-gray-100 flex items-center justify-center rounded-lg">
-                QR CODE
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white p-8 rounded-3xl w-full max-w-sm text-center shadow-2xl">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">My Camper Pass</h3>
+              <p className="text-gray-500 text-sm mb-6">Scan to share your profile</p>
+              <div className="w-48 h-48 mx-auto bg-gray-900 flex items-center justify-center rounded-2xl mb-6 shadow-inner">
+                <QrCode size={120} className="text-white" />
               </div>
-              <button
-                onClick={() => setShowQR(false)}
-                className="mt-6 w-full bg-emerald-600 text-white py-2 rounded-lg"
-              >
-                Close
-              </button>
+              <p className="text-xs text-gray-400 font-mono mb-6 uppercase">{profile._id}</p>
+              <button onClick={() => setShowQR(false)} className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-3 rounded-xl transition">Close</button>
             </div>
           </div>
         )}
+
       </main>
     </div>
   );

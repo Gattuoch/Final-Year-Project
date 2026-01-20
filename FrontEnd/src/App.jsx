@@ -18,7 +18,6 @@ import Experience from "./Component/Home/Experience";
 import BrowseCamps from "./Component/Home/BrowseCamps";
 
 // Camps Page Components
-
 import BrowseALLCamps from "./Component/Home/BrowseCamps.jsx";
 
 // About Page Components
@@ -54,9 +53,10 @@ import BookingCard from "./Component/Camper/Bookings/BookingCard.jsx";
 import Payments from "./Component/Camper/Activity/Payments.jsx";
 import MyReservations from "./Component/Camper/Bookings/MyReservations.jsx";
 import Booking from "./Component/Camper/Bookings/Booking.jsx";
-import Confirmation from "./Component/Camper/Bookings/Confirmation.jsx"; // Renamed for clarity (was Confirmation.jsx)
+import Confirmation from "./Component/Camper/Bookings/Confirmation.jsx"; 
 import CampsiteDirectory from "./Component/Camper/Bookings/CampsiteDirectory.jsx";
-
+import CamperDashboard from "./Component/Camper/main/CamperDashboard.jsx";
+import MyProfile from "./Component/Camper/Main/MyProfile.jsx";
 
 function App() {
   return (
@@ -182,10 +182,10 @@ function App() {
         {/* CAMPER DASHBOARD ROUTES                */}
         {/* ======================================================== */}
         
-        {/* 1. Dashboard Home */}
+        {/* 1. Dashboard Home - Updated to use CamperDashboard component */}
         <Route
           path="/camper-dashboard"
-          element={<BookingCard />}
+          element={<CamperDashboard />}
         />
         
         {/* 2. My Reservations List */}
@@ -202,6 +202,9 @@ function App() {
         
         {/* 6. Payments History */}
         <Route path="/camper-dashboard/payments" element={<Payments />} />
+
+        {/* 6. profile  */}
+        <Route path="/camper-dashboard/profile" element={<MyProfile/>} />
 
       </Routes>
     </>
