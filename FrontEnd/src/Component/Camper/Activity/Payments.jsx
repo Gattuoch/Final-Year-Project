@@ -88,12 +88,16 @@ export default function Payments() {
             </p>
           </div>
 
-          <button
-            onClick={() => navigate("/camper-dashboard/campsite-directory")}
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-medium transition shadow-lg shadow-emerald-200"
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium"
+            onClick={() =>
+              navigate("/camper-dashboard/campsite-directory")
+            }
           >
             <FaPlus size={14} /> New Transaction
-          </button>
+          </motion.button>
         </motion.div>
 
         {/* ================= STATS ROW ================= */}

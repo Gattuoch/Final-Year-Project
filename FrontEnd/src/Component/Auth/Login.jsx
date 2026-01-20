@@ -249,7 +249,7 @@ export const Login = () => {
                     <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                     className="w-5 h-5 border-[3px] border-[#007ba7] border-t-transparent rounded-full" />
                   ) : (
-                    "AUTHENTICATE"
+                    "Login"
                   )}
                 </motion.button>
               </form>

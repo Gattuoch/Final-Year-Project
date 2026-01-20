@@ -62,6 +62,7 @@ import AccountSetting from "./Component/Camper/Activity/AccountSetting.jsx";
 import SettingsPage from "./Component/Camper/Activity/SettingsPage.jsx";
 import SecurityPassword from "./Component/Camper/Activity/SecurityPassword.jsx";
 import NotificationPreferences from "./Component/Camper/UPDATES/NotificationPreferences.jsx";
+import ContactSupport from "./Component/Camper/Support/ContactSupport.jsx";
 
 
 function App() {
