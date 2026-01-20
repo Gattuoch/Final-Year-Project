@@ -55,8 +55,14 @@ import MyReservations from "./Component/Camper/Bookings/MyReservations.jsx";
 import Booking from "./Component/Camper/Bookings/Booking.jsx";
 import Confirmation from "./Component/Camper/Bookings/Confirmation.jsx"; 
 import CampsiteDirectory from "./Component/Camper/Bookings/CampsiteDirectory.jsx";
-import CamperDashboard from "./Component/Camper/main/CamperDashboard.jsx";
+import CamperDashboard from "./Component/Camper/Main/CamperDashboard.jsx";
 import MyProfile from "./Component/Camper/Main/MyProfile.jsx";
+import Notifications from "./Component/Camper/UPDATES/Notifications.jsx";
+import AccountSetting from "./Component/Camper/Activity/AccountSetting.jsx";
+import SettingsPage from "./Component/Camper/Activity/SettingsPage.jsx";
+import SecurityPassword from "./Component/Camper/Activity/SecurityPassword.jsx";
+import NotificationPreferences from "./Component/Camper/Activity/NotificationPreferences.jsx";
+
 
 function App() {
   return (
@@ -202,6 +208,12 @@ function App() {
         
         {/* 6. Payments History */}
         <Route path="/camper-dashboard/payments" element={<Payments />} />
+        <Route path="/camper-dashboard/profile" element={<MyProfile/>} />
+        <Route path="/camper-dashboard/notifications" element={<Notifications/>} />
+        <Route path="/camper-dashboard/settings" element={<SettingsPage/>}/>
+        <Route path="/camper-dashboard/settings/security-password" element={<SecurityPassword/>} />
+         <Route path="/camper-dashboard/settings/notification" element={<NotificationPreferences/>} />
+
 
         {/* 6. profile  */}
         <Route path="/camper-dashboard/profile" element={<MyProfile/>} />
