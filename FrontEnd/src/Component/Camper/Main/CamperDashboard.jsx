@@ -19,7 +19,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import DashboardHeader from "./DashboardHeader";
 
 /* ================= MAIN DASHBOARD ================= */
-export default function Dashboard() {
+export default function CamperDashboard() {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
       <Sidebar />

@@ -78,7 +78,7 @@ export default function Sidebar() {
           {/* TRIPS */}
           <Section title="MY TRIPS">
             <NavItem
-              to="/camper-dashboard/search"
+              to="/camper-dashboard/campsite-directory"
               icon={MagnifyingGlassIcon}
               label="Find a Campsite"
               onClick={closeSidebar}
