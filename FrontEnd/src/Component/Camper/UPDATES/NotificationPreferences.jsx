@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
-import AccountSetting from "./AccountSetting";
+import AccountSetting from "../Activity/AccountSetting";
 
 export default function NotificationPreferences() {
   const [preferences, setPreferences] = useState({

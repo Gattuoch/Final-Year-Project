@@ -61,7 +61,8 @@ import Notifications from "./Component/Camper/UPDATES/Notifications.jsx";
 import AccountSetting from "./Component/Camper/Activity/AccountSetting.jsx";
 import SettingsPage from "./Component/Camper/Activity/SettingsPage.jsx";
 import SecurityPassword from "./Component/Camper/Activity/SecurityPassword.jsx";
-import NotificationPreferences from "./Component/Camper/Activity/NotificationPreferences.jsx";
+import NotificationPreferences from "./Component/Camper/UPDATES/NotificationPreferences.jsx";
+import ContactSupport from "./Component/Camper/Support/ContactSupport.jsx";
 
 
 function App() {
@@ -213,6 +214,11 @@ function App() {
         <Route path="/camper-dashboard/settings" element={<SettingsPage/>}/>
         <Route path="/camper-dashboard/settings/security-password" element={<SecurityPassword/>} />
          <Route path="/camper-dashboard/settings/notification" element={<NotificationPreferences/>} />
+        
+
+         <Route path="/camper-dashboard/support" element={<ContactSupport/>} />
+
+         {/* <Route path="/camper-dashboard/reservations/new-booking" element={</>} /> */}
 
 
         {/* 6. profile  */}

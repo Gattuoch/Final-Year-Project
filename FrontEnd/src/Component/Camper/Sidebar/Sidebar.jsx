@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
   UserIcon,
@@ -15,9 +15,12 @@ import {
   Bars3Icon,
 } from "@heroicons/react/24/outline";
 import logoIcon from "../../../assets/logo-icon.png";
+import LogoutConfirm from "./LogoutConfirm";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
+
   const closeSidebar = () => setIsOpen(false);
 
   return (
@@ -44,7 +47,7 @@ export default function Sidebar() {
         <div className="lg:hidden flex items-center justify-between px-4 py-3">
           <span />
           <button onClick={closeSidebar}>
-            <XMarkIcon className="w-6 h-6" />
+            <XMarkIcon className="w-6 h-6 text-gray-700" />
           </button>
         </div>
 
@@ -64,7 +67,6 @@ export default function Sidebar() {
 
         {/* ================= Navigation ================= */}
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
-          {/* HOME */}
           <Section title="HOME">
             <NavItem
               to="/camper-dashboard"
@@ -75,7 +77,6 @@ export default function Sidebar() {
             />
           </Section>
 
-          {/* TRIPS */}
           <Section title="MY TRIPS">
             <NavItem
               to="/camper-dashboard/campsite-directory"
@@ -98,17 +99,15 @@ export default function Sidebar() {
             />
           </Section>
 
-          {/* PAYMENTS */}
           <Section title="PAYMENTS">
             <NavItem
               to="/camper-dashboard/payments"
               icon={CreditCardIcon}
-              label="Payments "
+              label="Payments"
               onClick={closeSidebar}
             />
           </Section>
 
-          {/* UPDATES */}
           <Section title="UPDATES">
             <NavItem
               to="/camper-dashboard/notifications"
@@ -119,7 +118,6 @@ export default function Sidebar() {
             />
           </Section>
 
-          {/* ACCOUNT */}
           <Section title="ACCOUNT">
             <NavItem
               to="/camper-dashboard/profile"
@@ -133,15 +131,18 @@ export default function Sidebar() {
               label="Settings"
               onClick={closeSidebar}
             />
-            <NavItem
-              to="/logout"
+
+            {/* 🔴 LOGOUT (BUTTON, NOT LINK) */}
+            <LogoutButton
               icon={ArrowRightOnRectangleIcon}
               label="Logout"
-              onClick={closeSidebar}
+              onClick={() => {
+                closeSidebar();
+                setShowLogout(true);
+              }}
             />
           </Section>
 
-          {/* HELP */}
           <Section title="HELP">
             <NavItem
               to="/camper-dashboard/support"
@@ -162,6 +163,12 @@ export default function Sidebar() {
           <Bars3Icon className="w-6 h-6 text-gray-700" />
         </button>
       )}
+
+      {/* ================= Logout Confirmation ================= */}
+      <LogoutConfirm
+        open={showLogout}
+        onClose={() => setShowLogout(false)}
+      />
     </>
   );
 }
@@ -205,5 +212,24 @@ function NavItem({ icon: Icon, label, to, badge, onClick, end = false }) {
         </span>
       )}
     </NavLink>
+  );
+}
+
+/* ================= Logout Button ================= */
+function LogoutButton({ icon: Icon, label, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="
+        w-full flex items-center gap-3 px-4 py-3 rounded-xl transition
+        bg-red-50 text-red-600
+        hover:bg-red-600 hover:text-white
+      "
+    >
+      <Icon className="w-5 h-5" />
+      <span className="flex-1 text-sm font-medium text-left">
+        {label}
+      </span>
+    </button>
   );
 }
