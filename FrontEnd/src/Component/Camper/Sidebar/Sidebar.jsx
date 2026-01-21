@@ -23,6 +23,7 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [counts, setCounts] = useState({ trips: 0, notifications: 0 });
   const navigate = useNavigate();
+  const [showLogout, setShowLogout] = useState(false);
 
   const closeSidebar = () => setIsOpen(false);
 
@@ -212,13 +213,13 @@ export default function Sidebar() {
           </button>
 
           {/* Logout Button */}
-          <button
+          {/* <button
             onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-600 hover:bg-red-50 hover:shadow-sm transition-all duration-200 text-sm font-medium"
           >
             <ArrowRightOnRectangleIcon className="w-5 h-5" />
             Logout
-          </button>
+          </button> */}
         </div>
 
       </aside>

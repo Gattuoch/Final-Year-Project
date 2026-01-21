@@ -88,13 +88,38 @@ export default function CamperDashboard() {
         </div>
 
         {/* ================= QUICK ACTIONS ================= */}
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
-          <ActionCard title="Book Campsite" subtitle="Browse locations" icon={<FaSearch />} primary link="/camper-dashboard/campsite-directory" />
-          <ActionCard title="My Reservations" subtitle="View details" icon={<FaCalendarPlus />} link="/camper-dashboard/reservations" />
-          <ActionCard title="Support" subtitle="Get help" icon={<FaExclamationTriangle />} />
-          <ActionCard title="Profile" subtitle="Edit settings" icon={<FaHotel />} />
-        </div>
+<h2 className="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+  <ActionCard
+    title="Book Campsite"
+    subtitle="Browse locations"
+    icon={<FaSearch />}
+    primary
+    link="/camper-dashboard/campsite-directory"
+  />
+
+  <ActionCard
+    title="My Reservations"
+    subtitle="View details"
+    icon={<FaCalendarPlus />}
+    link="/camper-dashboard/reservations"
+  />
+
+  <ActionCard
+    title="Support"
+    subtitle="Get help"
+    icon={<FaExclamationTriangle />}
+    link="/camper-dashboard/support"
+  />
+
+  <ActionCard
+    title="Profile"
+    subtitle="Edit settings"
+    icon={<FaHotel />}
+    link="/camper-dashboard/settings"
+  />
+</div>
 
         {/* ================= BOOKINGS + NOTIFICATIONS ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

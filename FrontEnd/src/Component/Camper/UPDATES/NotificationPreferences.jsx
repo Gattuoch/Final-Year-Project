@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 import Sidebar from "../Sidebar/Sidebar";
 import AccountSetting from "../Activity/AccountSetting";
 
@@ -71,6 +72,7 @@ export default function NotificationPreferences() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
+      <Toaster position="top-right" reverseOrder={false} />
 
       <div className="flex-1 p-4 sm:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

@@ -10,6 +10,7 @@ import {
   FaCheckDouble,
   FaTrashAlt
 } from "react-icons/fa";
+import toast, { Toaster } from "react-hot-toast";
 import Sidebar from "../Sidebar/Sidebar";
 
 export default function Notifications() {
@@ -108,6 +109,7 @@ export default function Notifications() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
+      <Toaster position="top-right" reverseOrder={false} />
 
       <main className="flex-1 p-4 lg:p-10 overflow-y-auto">
         

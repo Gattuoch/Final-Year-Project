@@ -223,6 +223,7 @@ function App() {
         {/* 6. profile  */}
         <Route path="/camper-dashboard/profile" element={<MyProfile/>} /> 
         <Route path="/camper-dashboard/tickets" element={<DayVisitTickets/>} />
+        <Route path="/camper-dashboard/support" element={<ContactSupport/>} />
 
       </Routes>
     </>
