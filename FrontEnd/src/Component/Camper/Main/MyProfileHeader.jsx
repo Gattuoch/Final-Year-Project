@@ -19,25 +19,25 @@ const MyProfileHeader = ({ onSave, loading, user }) => {
         </div>
 
         {/* RIGHT: Global Icons + Page Actions */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        {/* <div className="flex items-center gap-3 sm:gap-4">
           
           {/* Notification Icon (Consistent with Dashboard) */}
-          <div className="relative cursor-pointer p-2 hover:bg-gray-100 rounded-full transition hidden sm:block">
+          {/* <div className="relative cursor-pointer p-2 hover:bg-gray-100 rounded-full transition hidden sm:block">
             <FaBell className="text-xl text-gray-600" />
             <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
-          </div>
+          </div> */}
 
           {/* Divider */}
-          <div className="h-8 w-px bg-gray-200 hidden sm:block"></div>
+          {/* <div className="h-8 w-px bg-gray-200 hidden sm:block"></div> */}
 
           {/* Export Button */}
-          <button className="hidden md:flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-gray-200 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition">
+          {/* <button className="hidden md:flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-gray-200 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition">
             <Download size={18} />
             <span className="hidden lg:inline">Export</span>
-          </button>
+          </button> */}
 
           {/* Save Button (Primary Action) */}
-          <button 
+          {/* <button 
             onClick={onSave}
             disabled={loading}
             className={`flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition shadow-md hover:shadow-lg
@@ -49,14 +49,14 @@ const MyProfileHeader = ({ onSave, loading, user }) => {
               <FiSave size={18} />
             )}
             {loading ? "Saving..." : "Save Changes"}
-          </button>
+          </button> */}
 
           {/* User Icon (Consistent with Dashboard) */}
-          <div className="hidden sm:block pl-2">
+          {/* <div className="hidden sm:block pl-2">
              <FaUserCircle className="text-3xl text-gray-300" />
-          </div>
+          </div> */}
 
-        </div>
+        {/* </div> */}
 
       </div>
     </div>

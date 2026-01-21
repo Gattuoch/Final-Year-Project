@@ -35,15 +35,16 @@ const DashboardHeader = () => {
         <div className="flex items-center gap-4">
           
           {/* Notification Icon */}
-          <div className="relative cursor-pointer p-2 hover:bg-gray-100 rounded-full transition">
+          <div className="relative cursor-pointer p-2 hover:bg-gray-100 rounded-full transition"
+          onClick={() => navigate("/camper-dashboard/notifications")}>
             <FaBell className="text-xl text-gray-600" />
             <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
           </div>
 
-          {/* Profile Icon (Optional Visual) */}
+          {/* Profile Icon (Optional Visual)
           <div className="hidden sm:block">
              <FaUserCircle className="text-3xl text-gray-300" />
-          </div>
+          </div> */}
 
           {/* New Booking Button */}
           <button

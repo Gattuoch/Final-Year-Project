@@ -9,6 +9,7 @@ import {
   HomeModernIcon 
 } from "@heroicons/react/24/solid";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Booking() {
   const navigate = useNavigate();
@@ -69,16 +70,21 @@ export default function Booking() {
   const totalCost = pricePerNight * (nights || 0);
 
   const handleBookNow = async () => {
-    const token = localStorage.getItem("token"); // Matches your new Login.jsx
-    
+    const token = localStorage.getItem("token");
+
     if (!token) {
-      alert("You must be logged in to book a spot.");
-      navigate("/login"); // Auto-redirect to login
+      toast.error("You must be logged in to book a spot.", { duration: 3000 });
+      navigate("/login");
       return;
     }
 
     if (!selectedTent) {
-      alert("Please select a tent from the list to proceed.");
+      toast.error("Please select a tent to proceed.", { duration: 3000 });
+      return;
+    }
+
+    if (!checkIn || !checkOut) {
+      toast.error("Please select check-in and check-out dates.", { duration: 3000 });
       return;
     }
 
@@ -88,17 +94,23 @@ export default function Booking() {
       const response = await axios.post(
         "http://localhost:5000/api/bookings", 
         {
-          tentId: selectedTent._id, // ✅ Sending the correct TENT ID
+          tentId: selectedTent._id,
           checkIn,
           checkOut,
           guests: adults,
         },
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (response.data.success) {
+        toast.success(
+          <div className="flex items-center gap-2">
+            <CheckCircleIcon className="w-5 h-5 text-white" />
+            Booking created successfully!
+          </div>,
+          { duration: 3000, style: { background: "#16a34a", color: "white" } }
+        );
+
         navigate("/camper-dashboard/reservations/confirm-booking", { 
           state: { 
             bookingId: response.data.booking._id,
@@ -108,9 +120,9 @@ export default function Booking() {
       }
 
     } catch (error) {
-      console.error("Booking Error:", error);
+      console.error(error);
       const msg = error.response?.data?.error || "Failed to create booking.";
-      alert(msg);
+      toast.error(msg, { duration: 3000, style: { background: "#dc2626", color: "white" } });
     } finally {
       setCreating(false);
     }
@@ -121,6 +133,8 @@ export default function Booking() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
+      {/* Toast Container */}
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="hidden lg:block w-72"><Sidebar /></div>
 
       <div className="flex-1 p-4 lg:p-10 max-w-7xl mx-auto">

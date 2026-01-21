@@ -63,9 +63,11 @@ import SettingsPage from "./Component/Camper/Activity/SettingsPage.jsx";
 import SecurityPassword from "./Component/Camper/Activity/SecurityPassword.jsx";
 import NotificationPreferences from "./Component/Camper/UPDATES/NotificationPreferences.jsx";
 import ContactSupport from "./Component/Camper/Support/ContactSupport.jsx";
+import Chapa from "./Component/Camper/Activity/Chapa.jsx";
+import DayVisitTickets from "./Component/Camper/Bookings/DayVisitTickets.jsx";
 
 
-function App() {
+function App() { 
   return (
     <>
       <Toaster />
@@ -80,7 +82,7 @@ function App() {
               <Home />
               <Hero />
               <WhyChoose />
-              <FeaturedCamps />
+              <FeaturedCamps /> 
               <HowItWorks />
               <Testimonials />
               <CTASection />
@@ -206,6 +208,8 @@ function App() {
         
         {/* 5. Payment / Confirmation Page */}
         <Route path="/camper-dashboard/reservations/confirm-booking" element={<Confirmation />} />
+        {/* <Route path="/camper-dashboard/reservations/confirm-booking/stripe" element={<StripePaymentGateway />} /> */}
+       <Route path="/camper-dashboard/reservations/confirm-booking/chapa" element={<Chapa />} />
         
         {/* 6. Payments History */}
         <Route path="/camper-dashboard/payments" element={<Payments />} />
@@ -222,7 +226,8 @@ function App() {
 
 
         {/* 6. profile  */}
-        <Route path="/camper-dashboard/profile" element={<MyProfile/>} />
+        <Route path="/camper-dashboard/profile" element={<MyProfile/>} /> 
+        <Route path="/camper-dashboard/tickets" element={<DayVisitTickets/>} />
 
       </Routes>
     </>

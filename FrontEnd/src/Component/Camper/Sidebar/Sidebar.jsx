@@ -91,12 +91,12 @@ export default function Sidebar() {
               badge="3"
               onClick={closeSidebar}
             />
-            <NavItem
+            {/* <NavItem
               to="/camper-dashboard/tickets"
               icon={TicketIcon}
               label="Day Visits"
               onClick={closeSidebar}
-            />
+            /> */}
           </Section>
 
           <Section title="PAYMENTS">

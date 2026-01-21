@@ -1,22 +1,48 @@
 import { useState } from "react";
 import { EnvelopeIcon, PhoneIcon, ClockIcon } from "@heroicons/react/24/outline";
 import Sidebar from "../Sidebar/Sidebar";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function ContactSupport() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Support request submitted!"); // Replace with API call
-    setForm({ name: "", email: "", subject: "", message: "" });
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/support", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success(data.message || "Support request submitted!");
+        setForm({ name: "", email: "", subject: "", message: "" });
+      } else {
+        toast.error(data.error || "Something went wrong!");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Server error. Try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="flex min-h-screen bg-gray-100">
+      {/* Toast container */}
+      <Toaster position="top-right" />
+
       {/* Sidebar */}
       <Sidebar />
 
@@ -93,9 +119,12 @@ export default function ContactSupport() {
 
             <button
               type="submit"
-              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium"
+              disabled={loading}
+              className={`px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              Send Message
+              {loading ? "Sending..." : "Send Message"}
             </button>
           </form>
         </div>
