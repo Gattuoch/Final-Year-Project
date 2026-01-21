@@ -218,11 +218,6 @@ function App() {
         <Route path="/camper-dashboard/settings" element={<SettingsPage/>}/>
         <Route path="/camper-dashboard/settings/security-password" element={<SecurityPassword/>} />
          <Route path="/camper-dashboard/settings/notification" element={<NotificationPreferences/>} />
-        
-
-         <Route path="/camper-dashboard/support" element={<ContactSupport/>} />
-
-         {/* <Route path="/camper-dashboard/reservations/new-booking" element={</>} /> */}
 
 
         {/* 6. profile  */}
