@@ -18,11 +18,11 @@ import Logo from "../../../assets/super-admin-image.png";
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/super-admin" },
   { label: "Camps", icon: Tent, path: "/super-admin/camps" },
-  { label: "Events", icon: Calendar, path: "/super-admin/events" },
-  { label: "Bookings", icon: BookOpen, path: "/super-admin/bookings" },
+  // { label: "Events", icon: Calendar, path: "/super-admin/events" },
+  // { label: "Bookings", icon: BookOpen, path: "/super-admin/bookings" },
   { label: "Users", icon: Users, path: "/super-admin/users" },
-  { label: "Finance", icon: DollarSign, path: "/super-admin/finance" },
-  { label: "Analytics", icon: BarChart2, path: "/super-admin/analytics" },
+  // { label: "Finance", icon: DollarSign, path: "/super-admin/finance" },
+  // { label: "Analytics", icon: BarChart2, path: "/super-admin/analytics" },
   { label: "Settings", icon: Settings, path: "/super-admin/settings" },
 ];
 
