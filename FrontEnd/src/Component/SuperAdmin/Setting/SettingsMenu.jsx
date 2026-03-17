@@ -20,8 +20,8 @@ const menuItems = [
   { label: "Notifications", icon: FiBell, path: "/super-admin/settings/notifications" },
   { label: "Security", icon: FiShield, path: "/super-admin/settings/security" },
   { label: "Email", icon: FiMail, path: "/super-admin/settings/email" },
-  { label: "Integrations", icon: TbPlug, path: "/super-admin/settings/Integration" },
-  { label: "Backup", icon: FiDatabase, path: "/super-admin/settings/backup" },
+  // { label: "Integrations", icon: TbPlug, path: "/super-admin/settings/Integration" },
+  // { label: "Backup", icon: FiDatabase, path: "/super-admin/settings/backup" },
 ];
 
 const SettingsMenu = () => {
