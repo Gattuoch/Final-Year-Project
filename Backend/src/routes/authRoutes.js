@@ -49,17 +49,22 @@ router.post("/debug/decode-token", async (req, res) => {
 // Return current authenticated user's profile
 router.get("/profile", verifyToken, async (req, res) => {
   try {
+    // The user is already attached to req.user by verifyToken middleware
     const user = req.user;
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // remove sensitive fields
+    // Convert Mongoose doc to plain object and strip sensitive data
     const userObj = user.toObject ? user.toObject() : { ...user };
     delete userObj.passwordHash;
+    delete userObj.__v;
 
-    // Prevent client-side caching
+    // Set headers to prevent caching sensitive profile data
     res.set("Cache-Control", "no-store");
-
-    return res.json({ message: "Profile fetched", user: userObj });
+    
+    return res.json({ 
+      success: true, 
+      user: userObj // Frontend uses: const { user } = res.data;
+    });
   } catch (err) {
     console.error("/profile error:", err);
     return res.status(500).json({ message: "Failed to fetch profile" });

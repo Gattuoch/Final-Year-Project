@@ -99,12 +99,12 @@ export const createBooking = async (req, res) => {
 export const getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.find()
-      .populate("camperId", "fullName email")
+      .populate("camperId", "firstName lastName email") // Changed to match your Profile schema
       .populate("tentId", "name pricePerNight")
       .populate("campId", "name location")
       .sort({ createdAt: -1 });
       
-    res.json({ success: true, bookings });
+    res.json({ success: true, bookings }); // Aligned to "bookings"
   } catch (err) {
     res.status(500).json({ success: false, error: "Failed to fetch bookings." });
   }
@@ -113,12 +113,13 @@ export const getAllBookings = async (req, res) => {
 // ✅ GET MY BOOKINGS (Camper)
 export const getMyBookings = async (req, res) => {
   try {
+    // Note: Ensuring we use req.user.id from your verifyToken middleware
     const bookings = await Booking.find({ camperId: req.user.id })
       .populate("tentId", "name pricePerNight images")
       .populate("campId", "name location")
       .sort({ createdAt: -1 });
 
-    res.json({ success: true, bookings });
+    res.json({ success: true, bookings }); // Aligned to "bookings"
   } catch (err) {
     res.status(500).json({ success: false, error: "Failed to fetch your bookings." });
   }
