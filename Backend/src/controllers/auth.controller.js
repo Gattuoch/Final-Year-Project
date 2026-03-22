@@ -1,0 +1,131 @@
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import User from "../models/User.model.js";
+import { registerValidator, loginValidator } from "../validators/auth.validator.js";
+
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET;
+
+/* ============================================================
+   🧾 AUTH CONTROLLER - Registration & Login for All Roles
+   ============================================================ */
+
+// ==================== REGISTER ====================
+export const register = async (req, res) => {
+  try {
+    // Validate input
+    const { error } = registerValidator.validate(req.body, { abortEarly: false });
+    if (error) {
+      const messages = error.details.map((d) => d.message);
+      return res.status(400).json({ success: false, error: messages.join(", ") });
+    }
+
+    let {
+      fullName,
+      email,
+      password,
+      role,
+      phone,
+      businessName,
+      description,
+      location,
+      licenseUrl,
+      contactEmail,
+    } = req.body;
+
+    email = email.toLowerCase().trim();
+    fullName = fullName.trim();
+
+    // Prevent duplicate email
+    const exists = await User.findOne({ email });
+    if (exists)
+      return res.status(400).json({ success: false, error: "This email is already registered." });
+
+    // Do not pre-hash here — store the raw password into `passwordHash`
+    // so the model's pre-save hook will hash it exactly once.
+    const userData = { fullName, email, passwordHash: password, phone, role };
+
+    // Special logic for Camp Managers
+    if (role === "manager" || role === "camp_manager") {
+      userData.businessInfo = { businessName, description, location, licenseUrl, contactEmail, status: "pending" };
+      userData.role = "manager";
+    }
+
+    const newUser = await User.create(userData);
+
+    const message =
+      role === "manager"
+        ? "Registration successful! Await admin approval before accessing manager dashboard."
+        : "Registration successful! You can now log in.";
+
+    return res.status(201).json({
+      success: true,
+      message,
+      user: {
+        id: newUser._id,
+        email: newUser.email,
+        role: newUser.role,
+        status: newUser.role === "manager" ? newUser.businessInfo?.status : "active",
+      },
+    });
+  } catch (err) {
+    console.error("❌ Registration error:", err);
+    return res.status(500).json({
+      success: false,
+      error: "An internal server error occurred during registration.",
+    });
+  }
+};
+
+// ==================== LOGIN ====================
+export const login = async (req, res) => {
+  try {
+    // Validate login credentials
+    const { error } = loginValidator.validate(req.body);
+    if (error)
+      return res.status(400).json({ success: false, error: error.details[0].message });
+
+    let { email, password } = req.body;
+    email = email.toLowerCase().trim();
+
+    // Find user and include the passwordHash (schema selects it false by default)
+    const user = await User.findOne({ email }).select('+passwordHash');
+    if (!user)
+      return res.status(400).json({ success: false, error: "Invalid email or password." });
+
+    // Check password match via model helper (uses passwordHash)
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch)
+      return res.status(400).json({ success: false, error: "Invalid email or password." });
+
+    // Enforce password rules per role
+    // Enforce role status
+    if (user.role === "manager" || user.role === "camp_manager") {
+      if (!user.isInternal && user.businessInfo?.status !== "approved") {
+        return res.status(403).json({ success: false, error: "Your manager account is pending approval. Please wait for admin confirmation." });
+      }
+    }
+
+    // Check account activity
+    if (user.isActive === false) {
+      return res.status(403).json({ success: false, error: "Your account has been deactivated. Contact support." });
+    }
+
+  // Generate JWT token (include both id and sub for compatibility)
+  const token = jwt.sign({ id: user._id, sub: user._id, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
+
+    // NOTE: frontend expects `accessToken` and `refreshToken` keys — provide them for compatibility
+    return res.status(200).json({
+      success: true,
+      message: "Login successful.",
+      accessToken: token,
+      refreshToken: null,
+      role: user.role,
+      user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role },
+    });
+  } catch (err) {
+    console.error("❌ Login error:", err);
+    return res.status(500).json({ success: false, error: "An internal server error occurred during login." });
+  }
+};
