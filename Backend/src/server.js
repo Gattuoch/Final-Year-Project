@@ -26,9 +26,9 @@ import createSystemAdmin from "./routes/createSystemAdmin.js";
 import usersuperadmindashboard from "./routes/dashboard.routes.js";
 import adminuser from "./routes/admin.user.routes.js";
 import createuserRoutes from "./routes/createuser.controller.js";
-import supportRoutes from "./routes/support.js"
+import supportRoutes from "./routes/supportRoutes.js";
+
 import usersProfileRoutes from "./routes/users.js"
-import ticketRoutes from "./routes/ticketRoutes.js";
 
 // --- UTILS ---
 import seedSuperAdmin from "./utils/createSuperAdmin.js";
@@ -68,7 +68,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/support", supportRoutes);
-app.use("/api", ticketRoutes);
 
 // Core Features
 app.use("/api/camps", campRoutes); 
@@ -122,7 +121,7 @@ app.post("/api/chapa/initialize", async (req, res) => {
       "https://api.chapa.co/v1/transaction/initialize",
       {
         amount, currency, email, first_name, last_name, phone_number, tx_ref,
-        return_url: "",
+        return_url:"",
         customization: { title: "EthioCampsPay", description: "Camp Reservation Payment" },
       },
       { headers: { Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}`, "Content-Type": "application/json" } }

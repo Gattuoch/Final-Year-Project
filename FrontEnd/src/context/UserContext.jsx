@@ -11,22 +11,23 @@ export const UserProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      // No need to read from localStorage – token is already in api interceptor
-      const res = await api.get("/auth/profile");
+      // Set a timeout of 10 seconds for the request
+      const res = await api.get("/auth/profile", { timeout: 10000 });
       if (res.data && res.data.user) {
         setUser(res.data.user);
-        // Optionally sync with localStorage (for other parts of the app)
         localStorage.setItem("user", JSON.stringify(res.data.user));
       } else {
-        // If profile fails, clear stored user
+        setUser(null);
         localStorage.removeItem("user");
       }
     } catch (err) {
       console.error("User fetch failed", err);
-      // If unauthorized, token might be invalid – clear storage
       if (err.response?.status === 401) {
+        setUser(null);
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+      } else {
+        setUser(null);
       }
     } finally {
       setLoadingUser(false);

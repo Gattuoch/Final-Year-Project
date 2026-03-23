@@ -1,9 +1,10 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { UserProvider } from "./context/UserContext";
+import { useState, useEffect } from "react";
+import { UserProvider, useUser } from "./context/UserContext";
 
-// Home Components
-import Navbar from "./Component/Home/Navar";
+/* ================= HOME COMPONENTS ================= */
+import Navbar from "./Component/Home/Navar.jsx"; // CORRECTED
 import Footer from "./Component/Home/Footer";
 import Home from "./Component/Home/Home";
 import Hero from "./Component/Home/Hero";
@@ -13,31 +14,31 @@ import HowItWorks from "./Component/Home/HowItWorks";
 import Testimonials from "./Component/Home/Testimonials";
 import CTASection from "./Component/Home/CTASection";
 
-// Feature Page Components
+/* ================= FEATURE PAGE ================= */
 import PlatformFeatures from "./Component/Home/PlatformFeatures";
 import Experience from "./Component/Home/Experience";
 import BrowseCamps from "./Component/Home/BrowseCamps";
 
-// Camps Page Components
+/* ================= CAMPS PAGE ================= */
 import BrowseALLCamps from "./Component/Home/BrowseCamps.jsx";
 
-// About Page Components
+/* ================= ABOUT PAGE ================= */
 import About from "./Component/Home/About";
 import CoreValues from "./Component/Home/CoreValues";
 import { GrowingCommunity } from "./Component/Home/GrowingCommunity";
 
-// Contact Page Components
+/* ================= CONTACT PAGE ================= */
 import GetInTouch from "./Component/Home/Contact/GetIntouch";
 import FormContact from "./Component/Home/Contact/FormContact2";
 
-// Auth
+/* ================= AUTH ================= */
 import { Login } from "./Component/Auth/Login";
 import SignUp from "./Component/Auth/SignUp";
 import OTPVerification from "./Component/Auth/OTPVerification";
 import { RequestPasswordReset } from "./Component/Auth/RequestPasswordReset";
 import { ResetPassword } from "./Component/Auth/ResetPassword";
 
-// Super Admin
+/* ================= SUPER ADMIN ================= */
 import Dashboard from "./Component/SuperAdmin/pages/Dashboard.jsx";
 import CampManagement from "./Component/SuperAdmin/Camps/CampManagement.jsx";
 import UserManagement from "./Component/SuperAdmin/Users/UserManagement.jsx";
@@ -55,7 +56,7 @@ import BookingsManagement from "./Component/SuperAdmin/Bookings/BookingsManageme
 import FinanceManagement from "./Component/SuperAdmin/Finance/FinanceManagement.jsx";
 import AnalyticsDashboard from "./Component/SuperAdmin/Analytics/AnalyticsDashboard.jsx";
 
-// Camp Admin Components
+/* ================= CAMP ADMIN ================= */
 import CampAdminCampManagement from "./Component/CampAdmin/CampManagement/CampManagement.jsx";
 import CampAdminLayout from "./Component/CampAdmin/CampAdminLayout.jsx";
 import CampAdminDashboard from "./Component/CampAdmin/Dashboard/AdminDashboard.jsx";
@@ -64,12 +65,12 @@ import PaymentsManagement from "./Component/CampAdmin/Payments/PaymentsManagemen
 import SystemSettings from "./Component/CampAdmin/Settings/SystemSettings.jsx";
 import NotificationManagement from "./Component/CampAdmin/Notifications/NotificationManagement.jsx";
 
-// Camper Dashboard Components
+/* ================= CAMPER DASHBOARD ================= */
 import BookingCard from "./Component/Camper/Bookings/BookingCard.jsx";
 import Payments from "./Component/Camper/Activity/Payments.jsx";
 import MyReservations from "./Component/Camper/Bookings/MyReservations.jsx";
 import Booking from "./Component/Camper/Bookings/Booking.jsx";
-import Confirmation from "./Component/Camper/Bookings/Confirmation.jsx"; 
+import Confirmation from "./Component/Camper/Bookings/Confirmation.jsx";
 import CampsiteDirectory from "./Component/Camper/Bookings/CampsiteDirectory.jsx";
 import CamperDashboard from "./Component/Camper/Main/CamperDashboard.jsx";
 import MyProfile from "./Component/Camper/Main/MyProfile.jsx";
@@ -82,30 +83,91 @@ import ContactSupport from "./Component/Camper/Support/ContactSupport.jsx";
 import Chapa from "./Component/Camper/Activity/Chapa.jsx";
 import DayVisitTickets from "./Component/Camper/Bookings/DayVisitTickets.jsx";
 
+// Helper: role → dashboard path
+const getDashboardPath = (role) => {
+  switch (role) {
+    case "camper":
+      return "/camper-dashboard";
+    case "manager":
+    case "camp_manager":
+      return "/manager-dashboard";
+    case "ticket_officer":
+      return "/ticket-dashboard";
+    case "admin":
+    case "system_admin":
+    case "super_admin":
+      return "/super-admin";
+    case "security_officer":
+      return "/security_officer";
+    default:
+      return "/";
+  }
+};
 
-function App() { 
+// Component that guards the home page
+const HomeLayout = () => {
+  const { user, loadingUser } = useUser();
+  const [fetchTimeout, setFetchTimeout] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loadingUser) {
+        setFetchTimeout(true);
+        console.warn("User fetch timed out – check your server or network.");
+      }
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [loadingUser]);
+
+  if (loadingUser) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#007ba7] mb-4" />
+        <p className="text-gray-600">Loading your session...</p>
+        {fetchTimeout && (
+          <p className="text-red-500 text-sm mt-2">
+            Taking too long. Check your internet or try refreshing.
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  if (user) {
+    const dashboardPath = getDashboardPath(user.role);
+    return <Navigate to={dashboardPath} replace />;
+  }
+
+  return (
+    <>
+      <Navbar />
+      <Home />
+      <Hero />
+      <WhyChoose />
+      <FeaturedCamps />
+      <HowItWorks />
+      <Testimonials />
+      <CTASection />
+      <Footer />
+    </>
+  );
+};
+
+function App() {
   return (
     <UserProvider>
-      <Toaster />
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 4000,
+          style: { fontSize: "14px" },
+        }}
+      />
 
       <Routes>
         {/* HOME */}
-        <Route
-          path="/"
-          element={
-            <>
-              <Navbar />
-              <Home />
-              <Hero />
-              <WhyChoose />
-              <FeaturedCamps /> 
-              <HowItWorks />
-              <Testimonials />
-              <CTASection />
-              <Footer />
-            </>
-          }
-        />
+        <Route path="/" element={<HomeLayout />} />
 
         {/* FEATURES */}
         <Route
@@ -209,63 +271,55 @@ function App() {
           path="/super-admin/settings/backup"
           element={<BackupSettings />}
         />
-
         <Route
           path="/super-admin/create-system-admin"
           element={<CreateSystemAdmin />}
         />
 
-        {/* ======================================================== */}
-        {/* CAMP ADMIN ROUTES                      */}
-        {/* ======================================================== */}
+        {/* CAMP ADMIN */}
         <Route path="/manager-dashboard" element={<CampAdminLayout />}>
-           <Route index element={<Navigate to="dashboard" replace />} />
-           <Route path="dashboard" element={<CampAdminDashboard />} />
-           <Route path="camps" element={<CampAdminCampManagement />} />
-           <Route path="reservations" element={<ReservationManagement />} />
-           <Route path="payments" element={<PaymentsManagement />} />
-           <Route path="settings" element={<SystemSettings />} />
-           <Route path="notifications" element={<NotificationManagement />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<CampAdminDashboard />} />
+          <Route path="camps" element={<CampAdminCampManagement />} />
+          <Route path="reservations" element={<ReservationManagement />} />
+          <Route path="payments" element={<PaymentsManagement />} />
+          <Route path="settings" element={<SystemSettings />} />
+          <Route path="notifications" element={<NotificationManagement />} />
         </Route>
 
-        {/* ======================================================== */}
-        {/* CAMPER DASHBOARD ROUTES                */}
-        {/* ======================================================== */}
-        
-        {/* 1. Dashboard Home - Updated to use CamperDashboard component */}
+        {/* CAMPER DASHBOARD */}
+        <Route path="/camper-dashboard" element={<CamperDashboard />} />
         <Route
-          path="/camper-dashboard"
-          element={<CamperDashboard />}
+          path="/camper-dashboard/reservations"
+          element={<MyReservations />}
         />
-        
-        {/* 2. My Reservations List */}
-        <Route path="/camper-dashboard/reservations" element={<MyReservations />} />
-        
-        {/* 3. Search / Directory (Clicked from "New Booking") */}
-        <Route path="/camper-dashboard/campsite-directory" element={<CampsiteDirectory />} />
-        
-        {/* 4. Specific Camp Details & Create Booking (Dynamic ID) */}
+        <Route
+          path="/camper-dashboard/campsite-directory"
+          element={<CampsiteDirectory />}
+        />
         <Route path="/camper-dashboard/book/:id" element={<Booking />} />
-        
-        {/* 5. Payment / Confirmation Page */}
-        <Route path="/camper-dashboard/reservations/confirm-booking" element={<Confirmation />} />
-        {/* <Route path="/camper-dashboard/reservations/confirm-booking/stripe" element={<StripePaymentGateway />} /> */}
-       <Route path="/camper-dashboard/reservations/confirm-booking/chapa" element={<Chapa />} />
-        
-        {/* 6. Payments History */}
+        <Route
+          path="/camper-dashboard/reservations/confirm-booking"
+          element={<Confirmation />}
+        />
+        <Route
+          path="/camper-dashboard/reservations/confirm-booking/chapa"
+          element={<Chapa />}
+        />
         <Route path="/camper-dashboard/payments" element={<Payments />} />
-        <Route path="/camper-dashboard/profile" element={<MyProfile/>} />
-        <Route path="/camper-dashboard/notifications" element={<Notifications/>} />
-        <Route path="/camper-dashboard/settings" element={<SettingsPage/>}/>
-        <Route path="/camper-dashboard/settings/security-password" element={<SecurityPassword/>} />
-         <Route path="/camper-dashboard/settings/notification" element={<NotificationPreferences/>} />
-
-
-        {/* 6. profile  */}
-        <Route path="/camper-dashboard/profile" element={<MyProfile/>} /> 
-        <Route path="/camper-dashboard/tickets" element={<DayVisitTickets/>} />
-        <Route path="/camper-dashboard/support" element={<ContactSupport/>} />
-
+        <Route path="/camper-dashboard/profile" element={<MyProfile />} />
+        <Route path="/camper-dashboard/notifications" element={<Notifications />} />
+        <Route path="/camper-dashboard/settings" element={<SettingsPage />} />
+        <Route
+          path="/camper-dashboard/settings/security-password"
+          element={<SecurityPassword />}
+        />
+        <Route
+          path="/camper-dashboard/settings/notification"
+          element={<NotificationPreferences />}
+        />
+        <Route path="/camper-dashboard/tickets" element={<DayVisitTickets />} />
+        <Route path="/camper-dashboard/support" element={<ContactSupport />} />
       </Routes>
     </UserProvider>
   );

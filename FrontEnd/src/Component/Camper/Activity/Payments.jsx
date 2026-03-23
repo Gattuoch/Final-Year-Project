@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
@@ -12,10 +11,14 @@ import {
   FaPlus,
   FaEllipsisV
 } from "react-icons/fa";
+import { useUser } from "../../../context/UserContext";
+import api from "../../../services/api";
 import Sidebar from "../Sidebar/Sidebar";
+import toast from "react-hot-toast";
 
 export default function Payments() {
   const navigate = useNavigate();
+  const { user } = useUser();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -29,37 +32,39 @@ export default function Payments() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        // Using the existing booking endpoint as the source of truth for payments
-        const res = await axios.get("http://localhost:5000/api/bookings/my-bookings", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (res.data.success) {
-          const bookings = res.data.data;
-          
-          // 1. Calculate Stats
-          const newStats = bookings.reduce((acc, curr) => {
-            acc.count++;
-            const amount = curr.totalPrice || 0;
-            
-            if (curr.paymentStatus === 'paid') {
-              acc.totalPaid += amount;
-            } else if (curr.paymentStatus === 'unpaid' && curr.status !== 'cancelled') {
-              acc.pending += amount;
-            } else if (curr.status === 'cancelled') {
-              acc.refunded += amount; // Assuming cancelled = refunded for this view
-            }
-            return acc;
-          }, { totalPaid: 0, pending: 0, refunded: 0, count: 0 });
-
-          setStats(newStats);
-          setTransactions(bookings); // Store all bookings as transactions
+        setLoading(true);
+        const res = await api.get("/bookings/my-bookings");
+        
+        // Handle both possible response structures: res.data.bookings or res.data.data
+        const bookings = res.data?.bookings || res.data?.data || [];
+        
+        if (!Array.isArray(bookings)) {
+          console.warn("Bookings is not an array:", bookings);
+          setTransactions([]);
+          setStats({ totalPaid: 0, pending: 0, refunded: 0, count: 0 });
+          return;
         }
+
+        // Calculate Stats
+        const newStats = bookings.reduce((acc, curr) => {
+          acc.count++;
+          const amount = curr.totalPrice || 0;
+          
+          if (curr.paymentStatus === 'paid') {
+            acc.totalPaid += amount;
+          } else if (curr.paymentStatus === 'unpaid' && curr.status !== 'cancelled') {
+            acc.pending += amount;
+          } else if (curr.status === 'cancelled') {
+            acc.refunded += amount; // Assuming cancelled = refunded for this view
+          }
+          return acc;
+        }, { totalPaid: 0, pending: 0, refunded: 0, count: 0 });
+
+        setStats(newStats);
+        setTransactions(bookings);
       } catch (err) {
         console.error("Payment fetch error:", err);
+        toast.error("Failed to load payment data.");
       } finally {
         setLoading(false);
       }
@@ -91,10 +96,8 @@ export default function Payments() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium"
-            onClick={() =>
-              navigate("/camper-dashboard/campsite-directory")
-            }
+            className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2"
+            onClick={() => navigate("/camper-dashboard/campsite-directory")}
           >
             <FaPlus size={14} /> New Transaction
           </motion.button>
@@ -205,7 +208,19 @@ export default function Payments() {
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               {loading ? (
-                <div className="p-8 text-center text-gray-400">Loading transactions...</div>
+                // Skeleton Loader
+                <div className="p-4 space-y-4">
+                  {[1,2,3].map(i => (
+                    <div key={i} className="flex items-center gap-4 p-4 animate-pulse">
+                      <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                      <div className="flex-1">
+                        <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+                      </div>
+                      <div className="w-20 h-6 bg-gray-200 rounded"></div>
+                    </div>
+                  ))}
+                </div>
               ) : transactions.length === 0 ? (
                 <div className="p-10 text-center flex flex-col items-center">
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-400">
@@ -216,10 +231,7 @@ export default function Payments() {
               ) : (
                 <div className="divide-y divide-gray-50">
                   {transactions.map((tx) => (
-                    <TransactionRow 
-                      key={tx._id} 
-                      tx={tx} 
-                    />
+                    <TransactionRow key={tx._id} tx={tx} />
                   ))}
                 </div>
               )}
