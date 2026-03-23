@@ -72,15 +72,15 @@ export const Login = () => {
           case "camper":
             navigate("/camper-dashboard");
             break;
+          case "manager":
           case "camp_manager":
             navigate("/manager-dashboard");
             break;
           case "ticket_officer":
             navigate("/ticket-dashboard");
             break;
+          case "admin":
           case "system_admin":
-            navigate("/admin-dashboard");
-            break;
           case "super_admin":
             navigate("/super-admin");
             break;

@@ -52,8 +52,8 @@ export const getUserGrowth = async (req, res) => {
     ]);
 
     const months = [
-      "Jan","Feb","Mar","Apr","May","Jun",
-      "Jul","Aug","Sep","Oct","Nov","Dec",
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
     ];
 
     const formatted = months.map((m, i) => ({
@@ -339,6 +339,149 @@ export const getRefundSummary = asyncHandler(async (req, res) => {
   res.json(data);
 });
 
+/* ================= PLATFORM ANALYTICS ================= */
+export const getPlatformAnalytics = asyncHandler(async (req, res) => {
+  // Currently returning mock data specifically aligned with Ethiopian regions.
+  // In a full implementation, you'd aggregate real data by filtering bookings
+  // and users by created date to match the 'Last 30 Days', 'Last 90 Days', etc.
+
+  const mockData = {
+    "Last 30 Days": {
+      acquisition: [
+        { name: 'Week 1', active: 4000, new: 2400 },
+        { name: 'Week 2', active: 3000, new: 1398 },
+        { name: 'Week 3', active: 2000, new: 9800 },
+        { name: 'Week 4', active: 2780, new: 3908 },
+      ],
+      demographics: [
+        { name: '18-24', value: 400 },
+        { name: '25-34', value: 300 },
+        { name: '35-44', value: 300 },
+        { name: '45+', value: 200 },
+      ],
+      funnel: [
+        { name: 'Site Visit', count: 4000 },
+        { name: 'Search', count: 3000 },
+        { name: 'Checkout', count: 2000 },
+        { name: 'Booking', count: 1500 },
+      ],
+      regions: [
+        { name: 'Addis Ababa', value: 85 },
+        { name: 'Oromia', value: 45 },
+        { name: 'Amhara', value: 30 },
+        { name: 'Tigray', value: 15 },
+        { name: 'SNNPR', value: 20 }
+      ],
+      metrics: [
+        { label: "Bounce Rate", value: "32.4%", change: "-2.1%" },
+        { label: "Avg Session Duration", value: "4m 12s", change: "+14s" },
+        { label: "Pages per Session", value: "4.8", change: "+0.2" },
+        { label: "Return Visitor %", value: "45.8%", change: "+5.1%" },
+      ]
+    },
+    "Last 90 Days": {
+      acquisition: [
+        { name: 'Month 1', active: 12000, new: 7400 },
+        { name: 'Month 2', active: 15000, new: 8398 },
+        { name: 'Month 3', active: 18000, new: 9800 },
+      ],
+      demographics: [
+        { name: '18-24', value: 1200 },
+        { name: '25-34', value: 900 },
+        { name: '35-44', value: 700 },
+        { name: '45+', value: 500 },
+      ],
+      funnel: [
+        { name: 'Site Visit', count: 12000 },
+        { name: 'Search', count: 8000 },
+        { name: 'Checkout', count: 6000 },
+        { name: 'Booking', count: 4500 },
+      ],
+      regions: [
+        { name: 'Addis Ababa', value: 220 },
+        { name: 'Oromia', value: 120 },
+        { name: 'Amhara', value: 80 },
+        { name: 'Tigray', value: 40 },
+        { name: 'SNNPR', value: 50 }
+      ],
+      metrics: [
+        { label: "Bounce Rate", value: "30.1%", change: "-4.4%" },
+        { label: "Avg Session Duration", value: "5m 02s", change: "+1m 04s" },
+        { label: "Pages per Session", value: "5.2", change: "+0.6" },
+        { label: "Return Visitor %", value: "48.2%", change: "+7.5%" },
+      ]
+    },
+    "This Year": {
+      acquisition: [
+        { name: 'Q1', active: 30000, new: 15000 },
+        { name: 'Q2', active: 35000, new: 18000 },
+        { name: 'Q3', active: 42000, new: 22000 },
+        { name: 'Q4', active: 50000, new: 28000 },
+      ],
+      demographics: [
+        { name: '18-24', value: 4000 },
+        { name: '25-34', value: 3500 },
+        { name: '35-44', value: 2500 },
+        { name: '45+', value: 1500 },
+      ],
+      funnel: [
+        { name: 'Site Visit', count: 50000 },
+        { name: 'Search', count: 32000 },
+        { name: 'Checkout', count: 24000 },
+        { name: 'Booking', count: 18000 },
+      ],
+      regions: [
+        { name: 'Addis Ababa', value: 800 },
+        { name: 'Oromia', value: 400 },
+        { name: 'Amhara', value: 250 },
+        { name: 'Tigray', value: 100 },
+        { name: 'SNNPR', value: 150 }
+      ],
+      metrics: [
+        { label: "Bounce Rate", value: "28.5%", change: "-6.0%" },
+        { label: "Avg Session Duration", value: "5m 45s", change: "+1m 47s" },
+        { label: "Pages per Session", value: "6.1", change: "+1.5" },
+        { label: "Return Visitor %", value: "55.0%", change: "+14.3%" },
+      ]
+    },
+    "All Time": {
+      acquisition: [
+        { name: '2022', active: 100000, new: 80000 },
+        { name: '2023', active: 150000, new: 90000 },
+        { name: '2024', active: 250000, new: 120000 },
+        { name: '2025', active: 350000, new: 150000 },
+      ],
+      demographics: [
+        { name: '18-24', value: 12000 },
+        { name: '25-34', value: 10000 },
+        { name: '35-44', value: 8000 },
+        { name: '45+', value: 5000 },
+      ],
+      funnel: [
+        { name: 'Site Visit', count: 150000 },
+        { name: 'Search', count: 90000 },
+        { name: 'Checkout', count: 60000 },
+        { name: 'Booking', count: 45000 },
+      ],
+      regions: [
+        { name: 'Addis Ababa', value: 2500 },
+        { name: 'Oromia', value: 1200 },
+        { name: 'Amhara', value: 800 },
+        { name: 'Tigray', value: 300 },
+        { name: 'SNNPR', value: 400 }
+      ],
+      metrics: [
+        { label: "Bounce Rate", value: "29.2%", change: "--" },
+        { label: "Avg Session Duration", value: "5m 10s", change: "--" },
+        { label: "Pages per Session", value: "5.5", change: "--" },
+        { label: "Return Visitor %", value: "50.5%", change: "--" },
+      ]
+    }
+  };
+
+  res.json(mockData);
+});
+
 /* ================= EXPORT DEFAULT ================= */
 export default {
   getUsersTable,
@@ -347,6 +490,7 @@ export default {
   getVisitorChart,
   getBookingActivity,
   getRefundSummary,
+  getPlatformAnalytics,
 };
 
 

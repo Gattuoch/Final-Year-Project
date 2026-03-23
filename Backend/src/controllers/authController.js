@@ -148,12 +148,10 @@ export const login = async (req, res) => {
     }
 
     // Role Specific Security
-    if ((user.role === "admin" || user.role === "super_admin") && password.length < 15) {
-      return res.status(403).json({ success: false, error: "Admin passwords must be 15+ chars." });
-    }
-    if (user.role === "camp_manager") {
-      if (password.length < 12) return res.status(403).json({ success: false, error: "Manager passwords must be 12+ chars." });
-      if (user.businessInfo?.status !== "approved") return res.status(403).json({ success: false, error: "Manager account pending approval." });
+    if (user.role === "camp_manager" || user.role === "manager") {
+      if (!user.isInternal && user.businessInfo?.status !== "approved") {
+        return res.status(403).json({ success: false, error: "Manager account pending approval." });
+      }
     }
 
   // include both `id` and `sub` for compatibility with different middlewares

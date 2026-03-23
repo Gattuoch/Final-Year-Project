@@ -1155,7 +1155,7 @@ const CampManagement = () => {
         <main className="flex-1 w-full">
           <CampHeader setSidebarOpen={setSidebarOpen} onAdd={() => setCreateOpen(true)} />
 
-          <div className="p-3 sm:p-4 md:p-6">
+          <div className="p-4 md:p-6 lg:p-8 overflow-y-auto h-[calc(100vh-64px)]">
             {/* ---------------- STATS ---------------- */}
             <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
               {stats.map((s) => (

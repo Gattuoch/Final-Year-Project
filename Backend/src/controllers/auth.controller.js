@@ -47,8 +47,9 @@ export const register = async (req, res) => {
     const userData = { fullName, email, passwordHash: password, phone, role };
 
     // Special logic for Camp Managers
-    if (role === "manager") {
+    if (role === "manager" || role === "camp_manager") {
       userData.businessInfo = { businessName, description, location, licenseUrl, contactEmail, status: "pending" };
+      userData.role = "manager";
     }
 
     const newUser = await User.create(userData);
@@ -99,17 +100,11 @@ export const login = async (req, res) => {
       return res.status(400).json({ success: false, error: "Invalid email or password." });
 
     // Enforce password rules per role
-    if ((user.role === "admin" || user.role === "superadmin") && password.length < 15) {
-      return res.status(403).json({ success: false, error: "Admin or Super Admin passwords must be at least 15 characters long." });
-    }
-
-    if (user.role === "manager" && password.length < 12) {
-      return res.status(403).json({ success: false, error: "Camp Manager passwords must be at least 12 characters long." });
-    }
-
-    // Restrict unapproved camp managers
-    if (user.role === "manager" && user.businessInfo?.status !== "approved") {
-      return res.status(403).json({ success: false, error: "Your manager account is pending approval. Please wait for admin confirmation." });
+    // Enforce role status
+    if (user.role === "manager" || user.role === "camp_manager") {
+      if (!user.isInternal && user.businessInfo?.status !== "approved") {
+        return res.status(403).json({ success: false, error: "Your manager account is pending approval. Please wait for admin confirmation." });
+      }
     }
 
     // Check account activity

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import {
   TicketIcon,
@@ -30,10 +31,44 @@ export default function DayVisitTickets() {
     setOpen(true);
   };
 
-  const handlePurchase = () => {
-    toast.success("Ticket purchased successfully!", { duration: 3000 });
-    setOpen(false);
-  };
+const handlePurchase = async (ticketData) => {
+  try {
+    // Validation
+    if (!ticketData.visitDate) {
+      toast.error("Please select a visit date");
+      return;
+    }
+
+    if (!ticketData.quantity || ticketData.quantity < 1) {
+      toast.error("Please enter a valid ticket quantity");
+      return;
+    }
+
+    // Send request to backend
+    const response = await axios.post(
+      "http://localhost:5000/api/tickets",
+      ticketData
+    );
+
+    // Success message
+    if (response.data) {
+      toast.success("🎟 Ticket booked successfully!");
+
+      console.log("Ticket Saved:", response.data);
+
+      setOpen(false);
+    }
+  } catch (error) {
+    console.error("Ticket booking error:", error);
+
+    // Backend error message
+    if (error.response && error.response.data.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("Server error. Please try again later.");
+    }
+  }
+};
 
   return (
     <>
@@ -230,7 +265,18 @@ function PurchaseTicketModal({ ticketType, prices, onClose, onConfirm }) {
           </div>
 
           <button
-            onClick={onConfirm}
+            onClick={() =>
+              onConfirm({
+                ticketType,
+                category: selected,
+                visitDate: date,
+                visitTime: time,
+                quantity,
+                subtotal,
+                serviceFee,
+                total,
+              })
+            }
             className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2"
           >
             <TicketIcon className="w-5 h-5" />

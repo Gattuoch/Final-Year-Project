@@ -3,7 +3,7 @@ import Joi from "joi";
 export const registerValidator = Joi.object({
   fullName: Joi.string().min(2).max(50).required(),
   email: Joi.string().email().required(),
-  role: Joi.string().valid("camper", "camp_manager").default("camper"),
+  role: Joi.string().valid("camper", "camp_manager", "manager", "admin", "system_admin", "user").default("camper"),
   country: Joi.string().optional(),
   
   // STRICT UPDATE: Only allows digits (0-9). No spaces, dashes, or plus signs.
@@ -15,7 +15,7 @@ export const registerValidator = Joi.object({
     }),
 
   password: Joi.when("role", {
-    is: "camp_manager",
+    is: Joi.string().valid("manager", "camp_manager"),
     then: Joi.string()
       .min(12)
       .max(50)

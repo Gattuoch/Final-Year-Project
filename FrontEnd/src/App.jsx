@@ -1,9 +1,7 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { UserProvider } from "./context/UserContext";
 
-/* ================= HOME COMPONENTS ================= */
-
+// Home Components
 import Navbar from "./Component/Home/Navar";
 import Footer from "./Component/Home/Footer";
 import Home from "./Component/Home/Home";
@@ -14,90 +12,83 @@ import HowItWorks from "./Component/Home/HowItWorks";
 import Testimonials from "./Component/Home/Testimonials";
 import CTASection from "./Component/Home/CTASection";
 
-/* ================= FEATURE PAGE ================= */
-
+// Feature Page Components
 import PlatformFeatures from "./Component/Home/PlatformFeatures";
 import Experience from "./Component/Home/Experience";
 import BrowseCamps from "./Component/Home/BrowseCamps";
 
-/* ================= CAMPS PAGE ================= */
+// Camps Page Components
+import BrowseALLCamps from "./Component/Home/BrowseCamps.jsx";
 
-import BrowseALLCamps from "./Component/Home/BrowseCamps";
-
-/* ================= ABOUT PAGE ================= */
-
+// About Page Components
 import About from "./Component/Home/About";
 import CoreValues from "./Component/Home/CoreValues";
 import { GrowingCommunity } from "./Component/Home/GrowingCommunity";
 
-/* ================= CONTACT PAGE ================= */
-
+// Contact Page Components
 import GetInTouch from "./Component/Home/Contact/GetIntouch";
 import FormContact from "./Component/Home/Contact/FormContact2";
 
-/* ================= AUTH ================= */
-
+// Auth
 import { Login } from "./Component/Auth/Login";
 import SignUp from "./Component/Auth/SignUp";
 import OTPVerification from "./Component/Auth/OTPVerification";
 import { RequestPasswordReset } from "./Component/Auth/RequestPasswordReset";
 import { ResetPassword } from "./Component/Auth/ResetPassword";
 
-/* ================= SUPER ADMIN ================= */
+// Super Admin
+import Dashboard from "./Component/SuperAdmin/pages/Dashboard.jsx";
+import CampManagement from "./Component/SuperAdmin/Camps/CampManagement.jsx";
+import UserManagement from "./Component/SuperAdmin/Users/UserManagement.jsx";
+import PlatformSettings from "./Component/SuperAdmin/Setting/PlatformSettings.jsx";
+import PaymentSettings from "./Component/SuperAdmin/Setting/PaymentSettings.jsx";
+import NotificationSettings from "./Component/SuperAdmin/Setting/NotificationSettings.jsx";
+import GeneralSettings from "./Component/SuperAdmin/Setting/GeneralSettings.jsx";
+import SecuritySettings from "./Component/SuperAdmin/Setting/SecuritySettings.jsx";
+import EmailSettings from "./Component/SuperAdmin/Setting/EmailSettings.jsx";
+import IntegrationSettings from "./Component/SuperAdmin/Setting/IntegrationSettings.jsx";
+import BackupSettings from "./Component/SuperAdmin/Setting/BackupSettings.jsx";
+import CreateSystemAdmin from "./Component/SuperAdmin/CreateSystemAdmin/CreateSystemAdmin.jsx";
+import EventsManagement from "./Component/SuperAdmin/Events/EventsManagement.jsx";
+import BookingsManagement from "./Component/SuperAdmin/Bookings/BookingsManagement.jsx";
+import FinanceManagement from "./Component/SuperAdmin/Finance/FinanceManagement.jsx";
+import AnalyticsDashboard from "./Component/SuperAdmin/Analytics/AnalyticsDashboard.jsx";
 
-import Dashboard from "./Component/SuperAdmin/pages/Dashboard";
-import CampManagement from "./Component/SuperAdmin/Camps/CampManagement";
-import UserManagement from "./Component/SuperAdmin/Users/UserManagement";
+// Camp Admin Components
+import CampAdminCampManagement from "./Component/CampAdmin/CampManagement/CampManagement.jsx";
+import CampAdminLayout from "./Component/CampAdmin/CampAdminLayout.jsx";
+import CampAdminDashboard from "./Component/CampAdmin/Dashboard/AdminDashboard.jsx";
+import ReservationManagement from "./Component/CampAdmin/Reservations/ReservationManagement.jsx";
+import PaymentsManagement from "./Component/CampAdmin/Payments/PaymentsManagement.jsx";
+import SystemSettings from "./Component/CampAdmin/Settings/SystemSettings.jsx";
+import NotificationManagement from "./Component/CampAdmin/Notifications/NotificationManagement.jsx";
 
-import PlatformSettings from "./Component/SuperAdmin/Setting/PlatformSettings";
-import PaymentSettings from "./Component/SuperAdmin/Setting/PaymentSettings";
-import NotificationSettings from "./Component/SuperAdmin/Setting/NotificationSettings";
-import GeneralSettings from "./Component/SuperAdmin/Setting/GeneralSettings";
-import SecuritySettings from "./Component/SuperAdmin/Setting/SecuritySettings";
-import EmailSettings from "./Component/SuperAdmin/Setting/EmailSettings";
-import CreateSystemAdmin from "./Component/SuperAdmin/CreateSystemAdmin/CreateSystemAdmin";
+// Camper Dashboard Components
+import BookingCard from "./Component/Camper/Bookings/BookingCard.jsx";
+import Payments from "./Component/Camper/Activity/Payments.jsx";
+import MyReservations from "./Component/Camper/Bookings/MyReservations.jsx";
+import Booking from "./Component/Camper/Bookings/Booking.jsx";
+import Confirmation from "./Component/Camper/Bookings/Confirmation.jsx"; 
+import CampsiteDirectory from "./Component/Camper/Bookings/CampsiteDirectory.jsx";
+import CamperDashboard from "./Component/Camper/Main/CamperDashboard.jsx";
+import MyProfile from "./Component/Camper/Main/MyProfile.jsx";
+import Notifications from "./Component/Camper/UPDATES/Notifications.jsx";
+import AccountSetting from "./Component/Camper/Activity/AccountSetting.jsx";
+import SettingsPage from "./Component/Camper/Activity/SettingsPage.jsx";
+import SecurityPassword from "./Component/Camper/Activity/SecurityPassword.jsx";
+import NotificationPreferences from "./Component/Camper/UPDATES/NotificationPreferences.jsx";
+import ContactSupport from "./Component/Camper/Support/ContactSupport.jsx";
+import Chapa from "./Component/Camper/Activity/Chapa.jsx";
+import DayVisitTickets from "./Component/Camper/Bookings/DayVisitTickets.jsx";
 
-/* ================= CAMPER DASHBOARD ================= */
 
-import CamperDashboard from "./Component/Camper/Main/CamperDashboard";
-import MyReservations from "./Component/Camper/Bookings/MyReservations";
-import Booking from "./Component/Camper/Bookings/Booking";
-import Confirmation from "./Component/Camper/Bookings/Confirmation";
-import CampsiteDirectory from "./Component/Camper/Bookings/CampsiteDirectory";
-
-import Payments from "./Component/Camper/Activity/Payments";
-import MyProfile from "./Component/Camper/Main/MyProfile";
-
-import Notifications from "./Component/Camper/UPDATES/Notifications";
-import NotificationPreferences from "./Component/Camper/UPDATES/NotificationPreferences";
-
-import SettingsPage from "./Component/Camper/Activity/SettingsPage";
-import SecurityPassword from "./Component/Camper/Activity/SecurityPassword";
-
-import ContactSupport from "./Component/Camper/Support/ContactSupport";
-
-import Chapa from "./Component/Camper/Activity/Chapa";
-import DayVisitTickets from "./Component/Camper/Bookings/DayVisitTickets";
-
-function App() {
+function App() { 
   return (
-    <UserProvider>
-
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-        toastOptions={{
-          duration: 4000,
-          style: {
-            fontSize: "14px",
-          },
-        }}
-      />
+    <>
+      <Toaster />
 
       <Routes>
-
-        {/* ================= HOME ================= */}
-
+        {/* HOME */}
         <Route
           path="/"
           element={
@@ -106,7 +97,7 @@ function App() {
               <Home />
               <Hero />
               <WhyChoose />
-              <FeaturedCamps />
+              <FeaturedCamps /> 
               <HowItWorks />
               <Testimonials />
               <CTASection />
@@ -115,8 +106,7 @@ function App() {
           }
         />
 
-        {/* ================= FEATURES ================= */}
-
+        {/* FEATURES */}
         <Route
           path="/features"
           element={
@@ -131,8 +121,7 @@ function App() {
           }
         />
 
-        {/* ================= CAMPS ================= */}
-
+        {/* CAMPS */}
         <Route
           path="/camps"
           element={
@@ -146,8 +135,7 @@ function App() {
           }
         />
 
-        {/* ================= ABOUT ================= */}
-
+        {/* ABOUT */}
         <Route
           path="/about"
           element={
@@ -161,8 +149,7 @@ function App() {
           }
         />
 
-        {/* ================= CONTACT ================= */}
-
+        {/* CONTACT */}
         <Route
           path="/contact"
           element={
@@ -175,106 +162,111 @@ function App() {
           }
         />
 
-        {/* ================= AUTH ================= */}
-
+        {/* AUTH */}
         <Route path="/login" element={<Login />} />
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/verify" element={<OTPVerification />} />
         <Route path="/forgot-password" element={<RequestPasswordReset />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 
-        {/* ================= SUPER ADMIN ================= */}
-
+        {/* SUPER ADMIN */}
         <Route path="/super-admin" element={<Dashboard />} />
         <Route path="/super-admin/camps" element={<CampManagement />} />
+        <Route path="/super-admin/events" element={<EventsManagement />} />
+        <Route path="/super-admin/bookings" element={<BookingsManagement />} />
         <Route path="/super-admin/users" element={<UserManagement />} />
+        <Route path="/super-admin/finance" element={<FinanceManagement />} />
+        <Route path="/super-admin/analytics" element={<AnalyticsDashboard />} />
 
-        {/* ADMIN SETTINGS */}
-
+        {/* SETTINGS */}
         <Route path="/super-admin/settings" element={<GeneralSettings />} />
-        <Route path="/super-admin/settings/platform" element={<PlatformSettings />} />
-        <Route path="/super-admin/settings/payment" element={<PaymentSettings />} />
-        <Route path="/super-admin/settings/notifications" element={<NotificationSettings />} />
-        <Route path="/super-admin/settings/security" element={<SecuritySettings />} />
-        <Route path="/super-admin/settings/email" element={<EmailSettings />} />
+        <Route
+          path="/super-admin/settings/platform"
+          element={<PlatformSettings />}
+        />
+        <Route
+          path="/super-admin/settings/payment"
+          element={<PaymentSettings />}
+        />
+        <Route
+          path="/super-admin/settings/notifications"
+          element={<NotificationSettings />}
+        />
+        <Route
+          path="/super-admin/settings/security"
+          element={<SecuritySettings />}
+        />
+        <Route
+          path="/super-admin/settings/email"
+          element={<EmailSettings />}
+        />
+        <Route
+          path="/super-admin/settings/Integration"
+          element={<IntegrationSettings />}
+        />
+        <Route
+          path="/super-admin/settings/backup"
+          element={<BackupSettings />}
+        />
 
         <Route
           path="/super-admin/create-system-admin"
           element={<CreateSystemAdmin />}
         />
 
-        {/* ================= CAMPER DASHBOARD ================= */}
+        {/* ======================================================== */}
+        {/* CAMP ADMIN ROUTES                      */}
+        {/* ======================================================== */}
+        <Route path="/manager-dashboard" element={<CampAdminLayout />}>
+           <Route index element={<Navigate to="dashboard" replace />} />
+           <Route path="dashboard" element={<CampAdminDashboard />} />
+           <Route path="camps" element={<CampAdminCampManagement />} />
+           <Route path="reservations" element={<ReservationManagement />} />
+           <Route path="payments" element={<PaymentsManagement />} />
+           <Route path="settings" element={<SystemSettings />} />
+           <Route path="notifications" element={<NotificationManagement />} />
+        </Route>
 
-        <Route path="/camper-dashboard" element={<CamperDashboard />} />
-
+        {/* ======================================================== */}
+        {/* CAMPER DASHBOARD ROUTES                */}
+        {/* ======================================================== */}
+        
+        {/* 1. Dashboard Home - Updated to use CamperDashboard component */}
         <Route
-          path="/camper-dashboard/reservations"
-          element={<MyReservations />}
+          path="/camper-dashboard"
+          element={<CamperDashboard />}
         />
+        
+        {/* 2. My Reservations List */}
+        <Route path="/camper-dashboard/reservations" element={<MyReservations />} />
+        
+        {/* 3. Search / Directory (Clicked from "New Booking") */}
+        <Route path="/camper-dashboard/campsite-directory" element={<CampsiteDirectory />} />
+        
+        {/* 4. Specific Camp Details & Create Booking (Dynamic ID) */}
+        <Route path="/camper-dashboard/book/:id" element={<Booking />} />
+        
+        {/* 5. Payment / Confirmation Page */}
+        <Route path="/camper-dashboard/reservations/confirm-booking" element={<Confirmation />} />
+        {/* <Route path="/camper-dashboard/reservations/confirm-booking/stripe" element={<StripePaymentGateway />} /> */}
+       <Route path="/camper-dashboard/reservations/confirm-booking/chapa" element={<Chapa />} />
+        
+        {/* 6. Payments History */}
+        <Route path="/camper-dashboard/payments" element={<Payments />} />
+        <Route path="/camper-dashboard/profile" element={<MyProfile/>} />
+        <Route path="/camper-dashboard/notifications" element={<Notifications/>} />
+        <Route path="/camper-dashboard/settings" element={<SettingsPage/>}/>
+        <Route path="/camper-dashboard/settings/security-password" element={<SecurityPassword/>} />
+         <Route path="/camper-dashboard/settings/notification" element={<NotificationPreferences/>} />
 
-        <Route
-          path="/camper-dashboard/campsite-directory"
-          element={<CampsiteDirectory />}
-        />
 
-        <Route
-          path="/camper-dashboard/book/:id"
-          element={<Booking />}
-        />
-
-        <Route
-          path="/camper-dashboard/reservations/confirm-booking"
-          element={<Confirmation />}
-        />
-
-        <Route
-          path="/camper-dashboard/reservations/confirm-booking/chapa"
-          element={<Chapa />}
-        />
-
-        <Route
-          path="/camper-dashboard/payments"
-          element={<Payments />}
-        />
-
-        <Route
-          path="/camper-dashboard/profile"
-          element={<MyProfile />}
-        />
-
-        <Route
-          path="/camper-dashboard/notifications"
-          element={<Notifications />}
-        />
-
-        <Route
-          path="/camper-dashboard/settings"
-          element={<SettingsPage />}
-        />
-
-        <Route
-          path="/camper-dashboard/settings/security-password"
-          element={<SecurityPassword />}
-        />
-
-        <Route
-          path="/camper-dashboard/settings/notification"
-          element={<NotificationPreferences />}
-        />
-
-        <Route
-          path="/camper-dashboard/tickets"
-          element={<DayVisitTickets />}
-        />
-
-        <Route
-          path="/camper-dashboard/support"
-          element={<ContactSupport />}
-        />
+        {/* 6. profile  */}
+        <Route path="/camper-dashboard/profile" element={<MyProfile/>} /> 
+        <Route path="/camper-dashboard/tickets" element={<DayVisitTickets/>} />
+        <Route path="/camper-dashboard/support" element={<ContactSupport/>} />
 
       </Routes>
-
-    </UserProvider>
+    </>
   );
 }
 

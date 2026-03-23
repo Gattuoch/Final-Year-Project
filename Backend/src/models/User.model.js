@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-const roles = ['camper', 'camp_manager', 'super_admin'];
+const roles = ['camper', 'camp_manager', 'super_admin', 'manager', 'admin', 'system_admin', 'user'];
 
 const AddressSchema = new mongoose.Schema({
   line1: { type: String, trim: true },
@@ -50,7 +50,7 @@ const UserSchema = new mongoose.Schema({
 UserSchema.index({ email: 1 }, { unique: true, collation: { locale: 'en', strength: 2 } });
 
 // Hash password when modified
-UserSchema.pre('save', async function(next) {
+UserSchema.pre('save', async function (next) {
   try {
     if (!this.isModified('passwordHash')) return next();
     const salt = await bcrypt.genSalt(12);
@@ -62,13 +62,13 @@ UserSchema.pre('save', async function(next) {
 });
 
 // Compare password helper
-UserSchema.methods.comparePassword = function(candidate) {
+UserSchema.methods.comparePassword = function (candidate) {
   // candidate is plain text password
   return bcrypt.compare(candidate, this.passwordHash);
 };
 
 // toJSON / toObject cleanup
-UserSchema.methods.toJSON = function() {
+UserSchema.methods.toJSON = function () {
   const obj = this.toObject({ virtuals: true });
   delete obj.passwordHash;
   return obj;

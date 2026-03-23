@@ -1,92 +1,85 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { motion } from "framer-motion";
 import {
   FaTicketAlt,
   FaCalendarCheck,
   FaWallet,
   FaStar,
-  FaSearch,
-  FaCalendarPlus,
-  FaExclamationTriangle,
   FaHotel,
-  FaCheck,
+  FaCalendarPlus,
+  FaSearch,
+  FaClock,
   FaGift,
+  FaExclamationTriangle,
+  FaCheck,
+  FaQrcode,
+  FaCalendarAlt,
 } from "react-icons/fa";
-import { useUser } from "../../../context/UserContext"
-import api from "../../../services/api";
+
 import Sidebar from "../Sidebar/Sidebar";
 import DashboardHeader from "./DashboardHeader";
-import toast from "react-hot-toast";
 
+/* ================= MAIN DASHBOARD ================= */
 export default function CamperDashboard() {
-  const { user } = useUser(); // Now user includes trustScore etc.
-  const [stats, setStats] = useState({ active: 0, upcoming: 0, wallet: "0.00", points: 0 });
+  const [stats, setStats] = useState({
+    active: 0,
+    upcoming: 0,
+    wallet: 0, // Placeholder if no wallet backend
+    points: 0  // Placeholder (Trust Score)
+  });
   const [recentBookings, setRecentBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Fetch Real Data
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await api.get("/bookings/my-bookings");
-        const bookings = res.data?.bookings || []; // safe fallback
-        const today = new Date();
+        const token = localStorage.getItem("token");
+        const userStr = localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) : {};
 
-        const activeCount = bookings.filter(
-          (b) => b.status === "confirmed" && new Date(b.checkIn) <= today && new Date(b.checkOut) >= today
-        ).length;
-        const upcomingCount = bookings.filter(
-          (b) => b.status === "confirmed" && new Date(b.checkIn) > today
-        ).length;
-
-        setStats({
-          active: activeCount,
-          upcoming: upcomingCount,
-          wallet: "0.00", // placeholder
-          points: user?.trustScore || 0, // from context
+        // 1. Fetch Bookings
+        const res = await axios.get("http://localhost:5000/api/bookings/my-bookings", {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        setRecentBookings(bookings.slice(0, 3));
+        if (res.data.success) {
+          const bookings = res.data.data;
+          const today = new Date();
+
+          // Calculate Stats
+          const activeCount = bookings.filter(b => b.status === "confirmed" && new Date(b.checkIn) <= today && new Date(b.checkOut) >= today).length;
+          const upcomingCount = bookings.filter(b => b.status === "confirmed" && new Date(b.checkIn) > today).length;
+
+          setStats({
+            active: activeCount,
+            upcoming: upcomingCount,
+            wallet: "0.00", // Dynamic if you implement wallet later
+            points: user.trustScore || 0,
+          });
+
+          // Get 3 most recent bookings
+          setRecentBookings(bookings.slice(0, 3));
+        }
       } catch (err) {
         console.error("Dashboard fetch error:", err);
-        toast.error("Failed to load dashboard data.");
       } finally {
         setLoading(false);
       }
     };
 
-    if (user) fetchData(); // wait for user to load
-    else setLoading(false); // if no user, stop loading
-  }, [user]);
-
-  // Loading skeletons
-  if (loading) {
-    return (
-      <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
-        <Sidebar />
-        <main className="flex-1 p-4 sm:p-6 overflow-y-auto">
-          <DashboardHeader />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 mt-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 animate-pulse">
-                <div className="w-12 h-12 bg-gray-200 rounded-lg mb-4"></div>
-                <div className="h-8 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              </div>
-            ))}
-          </div>
-          <div className="h-64 bg-gray-200 rounded-2xl animate-pulse"></div>
-        </main>
-      </div>
-    );
-  }
+    fetchData();
+  }, []);
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
       <Sidebar />
+
       <main className="flex-1 p-4 sm:p-6 overflow-y-auto">
         <DashboardHeader />
 
-        {/* Stats Cards */}
+        {/* ================= STATS ================= */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 mt-6">
           <StatCard icon={<FaTicketAlt />} title="Active Trips" value={stats.active} change="Current" color="blue" />
           <StatCard icon={<FaCalendarCheck />} title="Upcoming Bookings" value={stats.upcoming} change="Planned" color="purple" />
@@ -94,38 +87,44 @@ export default function CamperDashboard() {
           <StatCard icon={<FaStar />} title="Trust Score" value={stats.points} change="Level 1" color="orange" />
         </div>
 
-        {/* Quick Actions */}
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
-          <ActionCard
-            title="Book Campsite"
-            subtitle="Browse locations"
-            icon={<FaSearch />}
-            primary
-            link="/camper-dashboard/campsite-directory"
-          />
-          <ActionCard
-            title="My Reservations"
-            subtitle="View details"
-            icon={<FaCalendarPlus />}
-            link="/camper-dashboard/reservations"
-          />
-          <ActionCard
-            title="Support"
-            subtitle="Get help"
-            icon={<FaExclamationTriangle />}
-            link="/camper-dashboard/support"
-          />
-          <ActionCard
-            title="Profile"
-            subtitle="Edit settings"
-            icon={<FaHotel />}
-            link="/camper-dashboard/settings"
-          />
-        </div>
+        {/* ================= QUICK ACTIONS ================= */}
+<h2 className="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
 
-        {/* Recent Bookings & Notifications */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+  <ActionCard
+    title="Book Campsite"
+    subtitle="Browse locations"
+    icon={<FaSearch />}
+    primary
+    link="/camper-dashboard/campsite-directory"
+  />
+
+  <ActionCard
+    title="My Reservations"
+    subtitle="View details"
+    icon={<FaCalendarPlus />}
+    link="/camper-dashboard/reservations"
+  />
+
+  <ActionCard
+    title="Support"
+    subtitle="Get help"
+    icon={<FaExclamationTriangle />}
+    link="/camper-dashboard/support"
+  />
+
+  <ActionCard
+    title="Profile"
+    subtitle="Edit settings"
+    icon={<FaHotel />}
+    link="/camper-dashboard/settings"
+  />
+</div>
+
+        {/* ================= BOOKINGS + NOTIFICATIONS ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* RECENT BOOKINGS (Dynamic) */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -134,12 +133,12 @@ export default function CamperDashboard() {
           >
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">Recent Bookings</h2>
-              <a href="/camper-dashboard/reservations" className="text-green-600 font-medium hover:underline">
-                View All
-              </a>
+              <a href="/camper-dashboard/reservations" className="text-green-600 font-medium hover:underline">View All</a>
             </div>
 
-            {recentBookings.length > 0 ? (
+            {loading ? (
+              <p className="text-gray-500">Loading bookings...</p>
+            ) : recentBookings.length > 0 ? (
               recentBookings.map((b) => (
                 <BookingCard
                   key={b._id}
@@ -149,7 +148,7 @@ export default function CamperDashboard() {
                   date={`${new Date(b.checkIn).toLocaleDateString()} - ${new Date(b.checkOut).toLocaleDateString()}`}
                   meta={`${b.guests} Guests`}
                   price={`${b.totalPrice} ETB`}
-                  status={b.paymentStatus === "paid" ? "Confirmed" : "Pending"}
+                  status={b.paymentStatus === 'paid' ? "Confirmed" : "Pending"}
                 />
               ))
             ) : (
@@ -159,6 +158,7 @@ export default function CamperDashboard() {
             )}
           </motion.div>
 
+          {/* NOTIFICATIONS (Static for now, can be dynamic later) */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -195,39 +195,43 @@ export default function CamperDashboard() {
             </div>
           </motion.div>
         </div>
+
       </main>
     </div>
   );
 }
 
-// Stat Card Component
-const StatCard = ({ icon, title, value, change, color }) => {
-  const colorMap = {
-    blue: "bg-blue-100 text-blue-600",
-    green: "bg-green-100 text-green-600",
-    purple: "bg-purple-100 text-purple-600",
-    orange: "bg-orange-100 text-orange-600",
-  };
-  return (
-    <motion.div
-      whileHover={{ y: -4, scale: 1.02 }}
-      className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center cursor-pointer"
-    >
-      <div>
-        <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${colorMap[color]}`}>
-          {icon}
-        </div>
-        <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
-        <p className="text-gray-500 text-sm">{title}</p>
-      </div>
-      <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-medium">
-        {change}
-      </span>
-    </motion.div>
-  );
+/* ================= COMPONENTS ================= */
+
+const colorMap = {
+  blue: "bg-blue-100 text-blue-600",
+  green: "bg-green-100 text-green-600",
+  purple: "bg-purple-100 text-purple-600",
+  orange: "bg-orange-100 text-orange-600",
+  red: "bg-red-100 text-red-600",
+  yellow: "bg-yellow-100 text-yellow-600",
 };
 
-// Action Card Component
+/* ---- Stat Card ---- */
+const StatCard = ({ icon, title, value, change, color }) => (
+  <motion.div
+    whileHover={{ y: -4, scale: 1.02 }}
+    className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center cursor-pointer"
+  >
+    <div>
+      <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${colorMap[color]}`}>
+        {icon}
+      </div>
+      <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
+      <p className="text-gray-500 text-sm">{title}</p>
+    </div>
+    <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-medium">
+      {change}
+    </span>
+  </motion.div>
+);
+
+/* ---- Action Card ---- */
 const ActionCard = ({ title, subtitle, icon, primary, link }) => (
   <a href={link || "#"}>
     <motion.div
@@ -245,12 +249,14 @@ const ActionCard = ({ title, subtitle, icon, primary, link }) => (
         {icon}
       </div>
       <h3 className="text-lg font-bold">{title}</h3>
-      <p className={`text-sm ${primary ? "text-white/80" : "text-gray-500"}`}>{subtitle}</p>
+      <p className={`text-sm ${primary ? "text-white/80" : "text-gray-500"}`}>
+        {subtitle}
+      </p>
     </motion.div>
   </a>
 );
 
-// Booking Card Component
+/* ---- Booking Card (Dynamic) ---- */
 const BookingCard = ({ image, title, place, date, meta, price, status }) => (
   <motion.div
     whileHover={{ scale: 1.01 }}
@@ -270,40 +276,27 @@ const BookingCard = ({ image, title, place, date, meta, price, status }) => (
           </span>
         </div>
         <p className="text-sm text-gray-600 mt-0.5">{place}</p>
-        <p className="text-xs text-gray-400 mt-1">
-          {date} · {meta}
-        </p>
+        <p className="text-xs text-gray-400 mt-1">{date} · {meta}</p>
       </div>
     </div>
+
     <div className="text-right mt-3 sm:mt-0 w-full sm:w-auto flex flex-row sm:flex-col justify-between sm:items-end">
       <p className="text-lg font-bold text-green-700">{price}</p>
-      <a
-        href="/camper-dashboard/reservations"
-        className="text-sm text-gray-500 hover:text-green-600 underline decoration-gray-300 hover:decoration-green-600"
-      >
-        Details
-      </a>
+      <a href="/camper-dashboard/reservations" className="text-sm text-gray-500 hover:text-green-600 underline decoration-gray-300 hover:decoration-green-600">Details</a>
     </div>
   </motion.div>
 );
 
-// Notification Item Component
-const NotificationItem = ({ icon, title, text, time, color }) => {
-  const colorMap = {
-    blue: "bg-blue-100 text-blue-600",
-    green: "bg-green-100 text-green-600",
-    purple: "bg-purple-100 text-purple-600",
-  };
-  return (
-    <div className="flex gap-4 py-3 border-b border-gray-50 last:border-none hover:bg-gray-50 rounded-lg px-2 transition">
-      <div className={`w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center ${colorMap[color]}`}>
-        {icon}
-      </div>
-      <div className="flex-1">
-        <h4 className="font-semibold text-gray-800 text-sm">{title}</h4>
-        <p className="text-xs text-gray-500 leading-relaxed">{text}</p>
-        <p className="text-[10px] text-gray-400 mt-1">{time}</p>
-      </div>
+/* ---- Notification Item ---- */
+const NotificationItem = ({ icon, title, text, time, color }) => (
+  <div className="flex gap-4 py-3 border-b border-gray-50 last:border-none hover:bg-gray-50 rounded-lg px-2 transition">
+    <div className={`w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center ${colorMap[color]}`}>
+      {icon}
     </div>
-  );
-};
+    <div className="flex-1">
+      <h4 className="font-semibold text-gray-800 text-sm">{title}</h4>
+      <p className="text-xs text-gray-500 leading-relaxed">{text}</p>
+      <p className="text-[10px] text-gray-400 mt-1">{time}</p>
+    </div>
+  </div>
+);

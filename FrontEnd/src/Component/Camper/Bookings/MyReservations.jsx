@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   CalendarDaysIcon,
   MapPinIcon,
@@ -6,54 +7,56 @@ import {
   XCircleIcon,
   ClockIcon,
   BuildingOffice2Icon,
-  ExclamationCircleIcon, // for pending
+  ClipboardDocumentCheckIcon,
 } from "@heroicons/react/24/outline";
-import { useUser } from "../../../context/UserContext";
-import api from "../../../services/api";
+
 import Sidebar from "../Sidebar/Sidebar";
 import ReservationHeader from "./ReservationHeader";
-import toast from "react-hot-toast";
 
 export default function MyReservations() {
-  const [bookings, setBookings] = useState([]);
+  // ✅ Initialize as empty array to prevent "undefined" errors
+  const [bookings, setBookings] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedFilter, setSelectedFilter] = useState("active"); // default active
+
+  // Stats State
   const [stats, setStats] = useState({
     active: 0,
     upcoming: 0,
-    pending: 0,
     completed: 0,
     cancelled: 0,
   });
 
+  // Fetch Bookings
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const res = await api.get("/bookings/my-bookings");
-        const allBookings = Array.isArray(res.data?.bookings) ? res.data.bookings : [];
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No token found");
+
+        const res = await axios.get("http://localhost:5000/api/bookings/my-bookings", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        // ✅ FIX 1: Robust Data Handling
+        // If res.data.data is undefined, fallback to empty array []
+        const allBookings = Array.isArray(res.data.data) ? res.data.data : [];
+        
         setBookings(allBookings);
 
+        // ✅ FIX 2: Safely Calculate Stats
         const today = new Date();
-        const active = allBookings.filter(
-          (b) => b.status === "confirmed" && new Date(b.checkInDate) <= today && new Date(b.checkOutDate) >= today
-        ).length;
-        const upcoming = allBookings.filter(
-          (b) => b.status === "confirmed" && new Date(b.checkInDate) > today
-        ).length;
-        const pending = allBookings.filter(
-          (b) => b.paymentStatus !== "paid" && b.status !== "cancelled"
-        ).length;
-        const completed = allBookings.filter(
-          (b) => b.status === "completed" || (b.status === "confirmed" && new Date(b.checkOutDate) < today)
-        ).length;
-        const cancelled = allBookings.filter((b) => b.status === "cancelled").length;
+        const active = allBookings.filter(b => b.status === "confirmed" && new Date(b.checkIn) <= today && new Date(b.checkOut) >= today).length;
+        const upcoming = allBookings.filter(b => b.status === "confirmed" && new Date(b.checkIn) > today).length;
+        const completed = allBookings.filter(b => b.status === "completed" || (b.status === "confirmed" && new Date(b.checkOut) < today)).length;
+        const cancelled = allBookings.filter(b => b.status === "cancelled").length;
 
-        setStats({ active, upcoming, pending, completed, cancelled });
+        setStats({ active, upcoming, completed, cancelled });
+
       } catch (err) {
         console.error("Error fetching bookings:", err);
         setError("Failed to load reservations.");
-        toast.error("Could not load your bookings.");
+        setBookings([]); // Prevent crash on error
       } finally {
         setLoading(false);
       }
@@ -62,15 +65,18 @@ export default function MyReservations() {
     fetchBookings();
   }, []);
 
+  // ✅ FIX 3: Robust Filter Helper
   const getFilteredBookings = (type) => {
-    if (!Array.isArray(bookings) || bookings.length === 0) return [];
+    if (!Array.isArray(bookings)) return []; // Safety check
+
     const today = new Date();
     return bookings.filter((b) => {
+      if (!b) return false;
       const start = new Date(b.checkIn);
       const end = new Date(b.checkOut);
+
       if (type === "active") return b.status === "confirmed" && start <= today && end >= today;
       if (type === "upcoming") return b.status === "confirmed" && start > today;
-      if (type === "pending") return b.paymentStatus !== "paid" && b.status !== "cancelled";
       if (type === "completed") return b.status === "completed" || (b.status === "confirmed" && end < today);
       if (type === "cancelled") return b.status === "cancelled";
       return false;
@@ -79,197 +85,101 @@ export default function MyReservations() {
 
   const activeBookings = getFilteredBookings("active");
   const upcomingBookings = getFilteredBookings("upcoming");
-  const pendingBookings = getFilteredBookings("pending");
   const completedBookings = getFilteredBookings("completed");
   const cancelledBookings = getFilteredBookings("cancelled");
-
-  const handleStatClick = (filter) => {
-    setSelectedFilter(filter);
-  };
-
-  // Determine which section to show based on selected filter
-  const renderSection = () => {
-    switch (selectedFilter) {
-      case "active":
-        return activeBookings.length > 0 ? (
-          <Section title="Active Reservations">
-            {activeBookings.map((b) => (
-              <BookingCard key={b._id} booking={b} status="Active" badgeColor="blue" />
-            ))}
-          </Section>
-        ) : (
-          <EmptyState message="No active reservations." />
-        );
-      case "upcoming":
-        return upcomingBookings.length > 0 ? (
-          <Section title="Upcoming Bookings">
-            {upcomingBookings.map((b) => (
-              <BookingCard key={b._id} booking={b} status="Upcoming" badgeColor="yellow" />
-            ))}
-          </Section>
-        ) : (
-          <EmptyState message="No upcoming bookings." />
-        );
-      case "pending":
-        return pendingBookings.length > 0 ? (
-          <Section title="Pending Bookings">
-            {pendingBookings.map((b) => (
-              <BookingCard key={b._id} booking={b} status="Pending" badgeColor="orange" />
-            ))}
-          </Section>
-        ) : (
-          <EmptyState message="No pending bookings." />
-        );
-      case "completed":
-        return completedBookings.length > 0 ? (
-          <Section title="Completed Visits">
-            {completedBookings.map((b) => (
-              <BookingCard key={b._id} booking={b} status="Completed" badgeColor="green" />
-            ))}
-          </Section>
-        ) : (
-          <EmptyState message="No completed visits." />
-        );
-      case "cancelled":
-        return cancelledBookings.length > 0 ? (
-          <Section title="Cancelled Bookings">
-            {cancelledBookings.map((b) => (
-              <BookingCard key={b._id} booking={b} status="Cancelled" badgeColor="red" />
-            ))}
-          </Section>
-        ) : (
-          <EmptyState message="No cancelled bookings." />
-        );
-      default:
-        return null;
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen bg-gray-100">
-        <Sidebar />
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 pb-10 overflow-y-auto">
-          <ReservationHeader />
-          <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-5 gap-4 sm:gap-6 mt-6">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="bg-white rounded-xl p-4 sm:p-6 shadow-sm animate-pulse">
-                <div className="w-12 h-12 bg-gray-200 rounded-xl mb-3"></div>
-                <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              </div>
-            ))}
-          </div>
-        </main>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex min-h-screen bg-gray-100">
-        <Sidebar />
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 pb-10 overflow-y-auto">
-          <ReservationHeader />
-          <div className="text-center py-20 text-red-500">{error}</div>
-        </main>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
+
       <main className="flex-1 px-4 sm:px-6 lg:px-8 pb-10 overflow-y-auto">
         <ReservationHeader />
 
-        {/* Stats Cards - Now 5 cards, clickable */}
-        <section className="mt-6 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
-          <StatCard
-            title="Active Reservations"
-            value={stats.active}
-            icon={<ClockIcon />}
-            color="blue"
-            isActive={selectedFilter === "active"}
-            onClick={() => handleStatClick("active")}
-          />
-          <StatCard
-            title="Upcoming Bookings"
-            value={stats.upcoming}
-            icon={<CalendarDaysIcon />}
-            color="yellow"
-            isActive={selectedFilter === "upcoming"}
-            onClick={() => handleStatClick("upcoming")}
-          />
-          <StatCard
-            title="Pending Bookings"
-            value={stats.pending}
-            icon={<ExclamationCircleIcon />}
-            color="orange"
-            isActive={selectedFilter === "pending"}
-            onClick={() => handleStatClick("pending")}
-          />
-          <StatCard
-            title="Completed Visits"
-            value={stats.completed}
-            icon={<CheckCircleIcon />}
-            color="green"
-            isActive={selectedFilter === "completed"}
-            onClick={() => handleStatClick("completed")}
-          />
-          <StatCard
-            title="Cancelled Bookings"
-            value={stats.cancelled}
-            icon={<XCircleIcon />}
-            color="red"
-            isActive={selectedFilter === "cancelled"}
-            onClick={() => handleStatClick("cancelled")}
-          />
+        {/* ================= Stats ================= */}
+        <section className="mt-6 grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
+          <StatCard title="Active Reservations" value={stats.active} color="blue" icon={<ClipboardDocumentCheckIcon />} />
+          <StatCard title="Upcoming Bookings" value={stats.upcoming} color="yellow" icon={<ClockIcon />} />
+          <StatCard title="Completed Visits" value={stats.completed} color="green" icon={<CheckCircleIcon />} />
+          <StatCard title="Cancelled Bookings" value={stats.cancelled} color="red" icon={<XCircleIcon />} />
         </section>
 
-        {/* Dynamic Section based on selected filter */}
-        <div className="mt-8">{renderSection()}</div>
+        {loading ? (
+          <div className="text-center py-20 text-gray-500">Loading reservations...</div>
+        ) : error ? (
+          <div className="text-center py-20 text-red-500">{error}</div>
+        ) : (
+          <>
+            {/* ================= Active ================= */}
+            {activeBookings.length > 0 && (
+              <Section title="Active Reservations">
+                {activeBookings.map((b) => (
+                  <BookingCard key={b._id} booking={b} status="Active" badgeColor="blue" />
+                ))}
+              </Section>
+            )}
+
+            {/* ================= Upcoming ================= */}
+            {upcomingBookings.length > 0 && (
+              <Section title="Upcoming Bookings">
+                {upcomingBookings.map((b) => (
+                  <BookingCard key={b._id} booking={b} status="Upcoming" badgeColor="yellow" />
+                ))}
+              </Section>
+            )}
+
+            {/* ================= Completed ================= */}
+            {completedBookings.length > 0 && (
+              <Section title="Completed Visits">
+                {completedBookings.map((b) => (
+                  <BookingCard key={b._id} booking={b} status="Completed" badgeColor="green" />
+                ))}
+              </Section>
+            )}
+
+            {/* ================= Cancelled ================= */}
+            {cancelledBookings.length > 0 && (
+              <Section title="Cancelled Bookings">
+                {cancelledBookings.map((b) => (
+                  <BookingCard key={b._id} booking={b} status="Cancelled" badgeColor="red" />
+                ))}
+              </Section>
+            )}
+
+            {bookings.length === 0 && (
+              <div className="text-center py-20 text-gray-500">
+                You have no reservations yet.
+              </div>
+            )}
+          </>
+        )}
       </main>
     </div>
   );
 }
 
-// Section Component
+/* ================= Section ================= */
 function Section({ title, children }) {
   return (
-    <section className="animate-fade-up">
-      <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">{title}</h2>
+    <section className="mt-10 animate-fade-up">
+      <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+        {title}
+      </h2>
       <div className="space-y-6">{children}</div>
     </section>
   );
 }
 
-// Empty State Component
-function EmptyState({ message }) {
-  return (
-    <div className="bg-white rounded-xl p-8 text-center text-gray-500 border border-gray-100">
-      {message}
-    </div>
-  );
-}
-
-// Stat Card Component (clickable)
-function StatCard({ title, value, icon, color, isActive, onClick }) {
+/* ================= Stat Card ================= */
+function StatCard({ title, value, icon, color }) {
   const colors = {
     blue: "bg-blue-100 text-blue-600",
     yellow: "bg-yellow-100 text-yellow-600",
-    orange: "bg-orange-100 text-orange-600",
     green: "bg-green-100 text-green-600",
     red: "bg-red-100 text-red-600",
   };
 
-  const activeBorder = isActive ? "ring-2 ring-green-500 ring-offset-2" : "";
-
   return (
-    <div
-      onClick={onClick}
-      className={`bg-white rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md animate-scale-in hover:scale-[1.02] transition-all duration-200 cursor-pointer ${activeBorder}`}
-    >
+    <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md animate-scale-in hover:scale-[1.02] transition-transform duration-200">
       <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colors[color]}`}>
         <div className="w-6 h-6">{icon}</div>
       </div>
@@ -279,8 +189,10 @@ function StatCard({ title, value, icon, color, isActive, onClick }) {
   );
 }
 
-// Booking Card Component (unchanged but included for completeness)
+/* ================= Dynamic Booking Card ================= */
 function BookingCard({ booking, status, badgeColor }) {
+  // Safe Accessor for Camp Name and Location
+  // Check both campId (old structure) and tentId (new structure) to find the name
   const campName = booking.tentId?.name || booking.campId?.name || "Unknown Camp";
   const location = booking.campId?.location?.address || "Ethiopia";
   const checkIn = new Date(booking.checkIn).toLocaleDateString();
@@ -290,7 +202,6 @@ function BookingCard({ booking, status, badgeColor }) {
   const badgeStyles = {
     blue: "bg-blue-100 text-blue-700",
     yellow: "bg-yellow-100 text-yellow-700",
-    orange: "bg-orange-100 text-orange-700",
     green: "bg-green-100 text-green-700",
     red: "bg-red-100 text-red-700",
   };
@@ -299,11 +210,7 @@ function BookingCard({ booking, status, badgeColor }) {
     <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm animate-fade-up hover:shadow-md transition-shadow duration-200 border border-gray-100">
       <div className="flex flex-col sm:flex-row justify-between gap-4">
         <div className="flex gap-3">
-          <div
-            className={`w-14 h-14 rounded-xl flex items-center justify-center ${
-              badgeStyles[badgeColor] || "bg-gray-100"
-            }`}
-          >
+          <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${badgeStyles[badgeColor] || "bg-gray-100"}`}>
             <BuildingOffice2Icon className="w-7 h-7" />
           </div>
 
@@ -344,14 +251,16 @@ function BookingCard({ booking, status, badgeColor }) {
 
         <div className="text-right">
           <p className="text-xs text-gray-500">Total</p>
-          <p className="text-lg font-bold text-green-700">{booking.totalPrice?.toLocaleString()} ETB</p>
+          <p className="text-lg font-bold text-green-700">
+            {booking.totalPrice?.toLocaleString()} ETB
+          </p>
         </div>
       </div>
     </div>
   );
 }
 
-// Info Box Component
+/* ================= Info Box ================= */
 function InfoBox({ label, value }) {
   return (
     <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">

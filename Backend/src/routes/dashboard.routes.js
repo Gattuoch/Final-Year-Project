@@ -16,6 +16,7 @@ import {
   getVisitorChart,
   getBookingActivity,
   getRefundSummary,
+  getPlatformAnalytics,
 } from "../controllers/dashboard.controller.js";
 import { getVisitors } from "../controllers/dashboard.controller.js";
 
@@ -40,6 +41,7 @@ router.get("/visitors", getVisitors);
 router.get("/visitors/chart", getVisitorChart);
 router.get("/bookings", getBookingActivity);
 router.get("/refunds", getRefundSummary);
+router.get("/analytics", getPlatformAnalytics);
 
 
 export default router;

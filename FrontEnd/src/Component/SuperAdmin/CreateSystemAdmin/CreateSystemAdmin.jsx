@@ -181,10 +181,9 @@ export default function CreateSystemAdmin() {
               <button
                 disabled={loading}
                 className={`w-full rounded-lg py-2.5 font-semibold text-white
-                  ${
-                    loading
-                      ? "bg-blue-400 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]"
+                  ${loading
+                    ? "bg-blue-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98]"
                   }`}
               >
                 {loading ? "Creating..." : "Create System Admin"}
