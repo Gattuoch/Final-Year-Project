@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { UserProvider } from "./context/UserContext";
 
 // Home Components
 import Navbar from "./Component/Home/Navar";
@@ -84,7 +85,7 @@ import DayVisitTickets from "./Component/Camper/Bookings/DayVisitTickets.jsx";
 
 function App() { 
   return (
-    <>
+    <UserProvider>
       <Toaster />
 
       <Routes>
@@ -266,7 +267,7 @@ function App() {
         <Route path="/camper-dashboard/support" element={<ContactSupport/>} />
 
       </Routes>
-    </>
+    </UserProvider>
   );
 }
 
