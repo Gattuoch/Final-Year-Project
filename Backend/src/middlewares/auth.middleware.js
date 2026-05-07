@@ -112,11 +112,11 @@ export const authenticateJWT = async (req, res, next) => {
 };
 
 /**
- * ✅ ROLE: Admin or Super Admin
+ * ✅ ROLE: Admin or System Administrator
  */
 export const isAdmin = (req, res, next) => {
-  // Fixed: super_admin (matches model)
-  if (req.user.role === "admin" || req.user.role === "super_admin") {
+  // Fixed: system_admin (matches model)
+  if (req.user.role === "admin" || req.user.role === "system_admin") {
     return next();
   }
   return res.status(403).json({ error: "Access denied. Admin privileges required." });
@@ -170,7 +170,7 @@ export const adminOnly = (req, res, next) => {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const allowedRoles = ["admin", "super_admin"];
+    const allowedRoles = ["admin", "system_admin"];
 
     if (!allowedRoles.includes(req.user.role)) {
       return res.status(403).json({

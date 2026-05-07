@@ -9,9 +9,9 @@ export const createInternalUser = async (req, res) => {
     const { name, email, role } = req.body;
     const emailNormalized = email ? String(email).toLowerCase().trim() : null;
 
-    const superAdminEmail = process.env.SUPER_ADMIN_EMAIL ? String(process.env.SUPER_ADMIN_EMAIL).toLowerCase().trim() : null;
-    if (superAdminEmail && emailNormalized === superAdminEmail) {
-      return res.status(409).json({ message: "Cannot create or modify the Super Admin account via this endpoint" });
+    const systemAdminEmail = process.env.SUPER_ADMIN_EMAIL ? String(process.env.SUPER_ADMIN_EMAIL).toLowerCase().trim() : null;
+    if (systemAdminEmail && emailNormalized === systemAdminEmail) {
+      return res.status(409).json({ message: "Cannot create or modify the System Administrator account via this endpoint" });
     }
 
     const roleMap = {

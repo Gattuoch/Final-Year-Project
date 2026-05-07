@@ -163,28 +163,30 @@ const PaymentsManagement = () => {
     <div className="flex flex-col min-h-full bg-slate-50 p-6 font-sans">
 
       {/* Top Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Payment Management</h1>
           <p className="text-sm text-slate-500 mt-1">Monitor revenue, view transactions, and manage payments.</p>
         </div>
-        <div className="flex items-center space-x-4">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4 w-full md:w-auto">
+          <div className="relative w-full sm:w-auto flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
             <input
               type="text"
               placeholder="Search camps..."
-              className="pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent w-64 bg-white transition-all shadow-sm"
+              className="pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent w-full sm:w-64 bg-white transition-all shadow-sm"
             />
           </div>
-          <button className="relative p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors border border-transparent hover:border-slate-200">
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-          </button>
-          <button className="flex items-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-            <Download className="w-4 h-4" />
-            <span>Export Report</span>
-          </button>
+          <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-end">
+            <button className="relative p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors border border-transparent hover:border-slate-200 bg-white shadow-sm">
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+            </button>
+            <button className="flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm w-full sm:w-auto">
+              <Download className="w-4 h-4" />
+              <span>Export Report</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -214,14 +216,14 @@ const PaymentsManagement = () => {
 
       {/* Revenue Overview Chart Area */}
       <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col mb-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <h3 className="text-lg font-bold text-slate-800">Revenue Overview</h3>
-          <div className="flex items-center space-x-3">
-            <div className="relative">
+          <div className="flex items-center space-x-3 w-full sm:w-auto">
+            <div className="relative w-full sm:w-auto">
               <select 
                 value={selectedDateRange}
                 onChange={(e) => setSelectedDateRange(e.target.value)}
-                className="appearance-none border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 px-4 py-2 pr-10 rounded-lg text-sm font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent cursor-pointer"
+                className="appearance-none border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 px-4 py-2 pr-10 rounded-lg text-sm font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent cursor-pointer w-full"
               >
                 {dateRanges.map(range => (
                   <option key={range} value={range}>{range}</option>
@@ -264,12 +266,12 @@ const PaymentsManagement = () => {
 
         {/* Toolbar: Tabs & Filters */}
         <div className="px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0 hide-scrollbar">
             {tabs.map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === tab
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap flex-1 sm:flex-none text-center ${activeTab === tab
                     ? 'bg-teal-600 text-white shadow-sm'
                     : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200'
                   }`}
@@ -278,12 +280,12 @@ const PaymentsManagement = () => {
               </button>
             ))}
           </div>
-          <div className="flex items-center space-x-3">
-             <div className="relative">
+          <div className="flex items-center space-x-3 w-full sm:w-auto">
+             <div className="relative w-full sm:w-auto">
                <select 
                  value={selectedMethod}
                  onChange={(e) => setSelectedMethod(e.target.value)}
-                 className="appearance-none border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 px-4 py-2 pr-10 rounded-lg text-sm font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent cursor-pointer min-w-[140px]"
+                 className="appearance-none border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 px-4 py-2 pr-10 rounded-lg text-sm font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent cursor-pointer w-full sm:min-w-[140px]"
                >
                  {paymentMethods.map(method => (
                    <option key={method} value={method}>{method}</option>

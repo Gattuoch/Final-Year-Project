@@ -1,7 +1,7 @@
 import Booking from "../models/Booking.model.js";
 import Tent from "../models/Tent.model.js";
 import Camp from "../models/Camp.model.js";
-import * as emailService from "../services/email.service.js";
+// import * as emailService from "../services/email.service.js";
 
 // ✅ CREATE BOOKING (Step 1 of Flow)
 export const createBooking = async (req, res) => {
@@ -113,12 +113,13 @@ export const getAllBookings = async (req, res) => {
 // ✅ GET MY BOOKINGS (Camper)
 export const getMyBookings = async (req, res) => {
   try {
+    // Note: Ensuring we use req.user.id from your verifyToken middleware
     const bookings = await Booking.find({ camperId: req.user.id })
       .populate("tentId", "name pricePerNight images")
       .populate("campId", "name location")
       .sort({ createdAt: -1 });
 
-    res.json({ success: true, bookings });
+    res.json({ success: true, bookings }); // Aligned to "bookings"
   } catch (err) {
     res.status(500).json({ success: false, error: "Failed to fetch your bookings." });
   }
@@ -131,7 +132,7 @@ export const cancelBooking = async (req, res) => {
     if (!booking) return res.status(404).json({ success: false, error: "Booking not found." });
 
     // Authorization: Owner or Admin
-    if (booking.camperId.toString() !== req.user.id && req.user.role !== "super_admin") {
+    if (booking.camperId.toString() !== req.user.id && req.user.role !== "system_admin") {
       return res.status(403).json({ success: false, error: "Not authorized." });
     }
 

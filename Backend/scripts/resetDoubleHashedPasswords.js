@@ -28,8 +28,8 @@ const run = async () => {
   await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 5000 });
   console.log('Connected to DB');
 
-  // Filter: skip internal accounts and super_admin
-  const query = { role: { $ne: 'super_admin' } };
+  // Filter: skip internal accounts and system_admin
+  const query = { role: { $ne: 'system_admin' } };
   const users = await User.find(query).limit(limit || 0);
   console.log(`Found ${users.length} users to examine (limit=${limit || 'none'})`);
 

@@ -14,6 +14,7 @@ import {
 } from "../controllers/authController.js";
 import { verifyToken, isAdmin } from "../middlewares/auth.middleware.js";
 import upload from "../middlewares/upload.js"; 
+import uploadProfile from "../middlewares/uploadProfile.js";
 
 const router = express.Router();
 
@@ -45,6 +46,8 @@ router.post("/debug/decode-token", async (req, res) => {
   }
 });
 
+import User from "../models/User.model.js";
+
 // ---------------- PROFILE ----------------
 // Return current authenticated user's profile
 router.get("/profile", verifyToken, async (req, res) => {
@@ -66,16 +69,57 @@ router.get("/profile", verifyToken, async (req, res) => {
   }
 });
 
-// Simple profile update endpoint
-router.patch("/profile", verifyToken, async (req, res) => {
+// Advanced Profile update endpoint for Camper Dashboards and standard updates
+router.patch("/profile", verifyToken, uploadProfile.fields([{ name: "profilePicture", maxCount: 1 }, { name: "coverPicture", maxCount: 1 }]), async (req, res) => {
   try {
     const user = req.user;
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const { fullName, email, avatar } = req.body;
+    const { firstName, lastName, phoneNumber, gender, dateOfBirth, fullName, email, avatar, metadata, currentPassword, newPassword } = req.body;
+    
+    // Existing fields
     if (typeof fullName === "string") user.fullName = fullName;
     if (typeof email === "string") user.email = email;
     if (typeof avatar === "string") user.avatar = avatar;
+
+    // Password Update Logic
+    if (currentPassword && newPassword) {
+      const fullUser = await User.findById(user._id).select("+passwordHash");
+      const isMatch = await fullUser.comparePassword(currentPassword);
+      if (!isMatch) {
+         return res.status(401).json({ message: "Current password is incorrect.", success: false });
+      }
+      user.passwordHash = newPassword; // Will be hashed via pre-save hook
+    }
+
+    // Metadata Merging (for Notification Preferences)
+    if (metadata && typeof metadata === "object") {
+      user.metadata = { ...user.metadata, ...metadata };
+    }
+
+    // Camper Dashboard Fields
+    if (typeof firstName === "string") user.firstName = firstName;
+    if (typeof lastName === "string") user.lastName = lastName;
+    // Both phone and phoneNumber exist depending on route, normalizing here:
+    if (typeof phoneNumber === "string") user.phone = phoneNumber; 
+    if (typeof gender === "string") user.gender = gender;
+    if (typeof dateOfBirth === "string") user.dateOfBirth = dateOfBirth;
+
+    if (user.firstName && user.lastName) {
+      user.fullName = `${user.firstName} ${user.lastName}`;
+    }
+
+    // Process files if present
+    if (req.files) {
+      if (req.files.profilePicture) {
+        // Construct standard static URL matching server.js serving pattern
+        user.profilePicture = `http://localhost:5000/uploads/avatars/${req.files.profilePicture[0].filename}`;
+        user.avatar = user.profilePicture; 
+      }
+      if (req.files.coverPicture) {
+        user.coverPicture = `http://localhost:5000/uploads/covers/${req.files.coverPicture[0].filename}`;
+      }
+    }
 
     await user.save();
 
@@ -83,10 +127,10 @@ router.patch("/profile", verifyToken, async (req, res) => {
     delete userObj.passwordHash;
     res.set("Cache-Control", "no-store");
 
-    return res.json({ message: "Profile updated", user: userObj });
+    return res.json({ message: "Profile updated successfully", user: userObj, success: true });
   } catch (err) {
     console.error("/profile PATCH error:", err);
-    return res.status(500).json({ message: "Failed to update profile" });
+    return res.status(500).json({ message: "Failed to update profile", success: false, error: err.message });
   }
 });
 

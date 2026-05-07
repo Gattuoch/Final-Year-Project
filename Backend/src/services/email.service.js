@@ -1,6 +1,14 @@
 import nodemailer from "nodemailer";
 
 const getTransporter = () => {
+	const emailPass = process.env.EMAIL_APP_PASSWORD || process.env.EMAIL_PASS;
+	if (process.env.EMAIL_USER && emailPass) {
+		return nodemailer.createTransport({
+			service: "gmail",
+			auth: { user: process.env.EMAIL_USER, pass: emailPass },
+		});
+	}
+
 	if (process.env.BREVO_USER && process.env.BREVO_PASS) {
 		return nodemailer.createTransport({
 			host: "smtp-relay.brevo.com",
@@ -22,15 +30,15 @@ const getTransporter = () => {
 	return null;
 };
 
-export const sendMail = async ({ to, subject, html, text }) => {
+export const sendMail = async ({ to, subject, html, text, attachments }) => {
 	const transporter = getTransporter();
 	if (!transporter) {
 		console.warn("No mail transporter configured; skipping email to", to);
-		return null;
+		throw new Error("Email transport is not configured. Please set SMTP or email provider credentials.");
 	}
 
 	const from = process.env.EMAIL_FROM || process.env.BREVO_USER || process.env.SMTP_USER;
-	const info = await transporter.sendMail({ from, to, subject, html, text });
+	const info = await transporter.sendMail({ from, to, subject, html, text, attachments });
 	return info;
 };
 

@@ -15,9 +15,11 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Bar, ComposedChart,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
+import NewBookingForm from './NewBookingForm';
 
 export default function ReservationManagement() {
   const [activeTab, setActiveTab] = useState('All Reservations');
+  const [isNewBookingModalOpen, setIsNewBookingModalOpen] = useState(false);
 
   const stats = [
     { label: 'Total Reservations', value: '342', subtext: '+8.2% from last month', icon: Calendar, color: 'text-blue-500', bgColor: 'bg-blue-50' },
@@ -97,24 +99,29 @@ export default function ReservationManagement() {
     <div className="flex flex-col h-full bg-slate-50 p-6 font-sans overflow-x-hidden">
       
       {/* Top Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <h1 className="text-2xl font-bold text-slate-800">Reservation Management</h1>
-        <div className="flex items-center space-x-4">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
+          <div className="relative w-full sm:w-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
             <input 
               type="text" 
               placeholder="Search reservations..." 
-              className="pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 w-64 bg-white shadow-sm"
+              className="pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 w-full sm:w-64 bg-white shadow-sm"
             />
           </div>
-          <button className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg border border-transparent hover:border-slate-200 transition-colors bg-white shadow-sm">
-            <Bell className="w-5 h-5" />
-          </button>
-          <button className="flex items-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-            <Plus className="w-4 h-4" />
-            <span>New Reservation</span>
-          </button>
+          <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-end">
+            <button className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg border border-transparent hover:border-slate-200 transition-colors bg-white shadow-sm">
+              <Bell className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={() => setIsNewBookingModalOpen(true)}
+              className="flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm w-full sm:w-auto"
+            >
+              <Plus className="w-4 h-4" />
+              <span>New Reservation</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -208,13 +215,13 @@ export default function ReservationManagement() {
       {/* Table Section */}
       <div className="bg-white rounded-xl border border-slate-100 shadow-sm flex flex-col flex-1">
          {/* Table Header & Filters */}
-         <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-            <div className="flex items-center space-x-2 bg-slate-100/50 p-1 rounded-lg">
+         <div className="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-2 bg-slate-100/50 p-1 rounded-lg w-full md:w-auto overflow-x-auto">
               {tabs.map(tab => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap flex-1 sm:flex-none text-center ${
                     activeTab === tab 
                       ? 'bg-teal-600 text-white shadow-sm' 
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
@@ -224,8 +231,8 @@ export default function ReservationManagement() {
                 </button>
               ))}
             </div>
-            <div>
-              <select className="border border-slate-200 bg-white text-slate-700 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer shadow-sm">
+            <div className="w-full md:w-auto">
+              <select className="w-full md:w-auto border border-slate-200 bg-white text-slate-700 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer shadow-sm">
                 <option>All Camps</option>
                 <option>Bale Mountains</option>
                 <option>Simien Lodge</option>
@@ -235,7 +242,7 @@ export default function ReservationManagement() {
          </div>
 
          {/* Table Content */}
-         <div className="overflow-x-auto">
+         <div className="overflow-x-auto w-full">
             <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
                 <tr className="bg-white text-slate-400 font-bold text-xs uppercase tracking-wider border-b border-slate-100">
@@ -282,6 +289,12 @@ export default function ReservationManagement() {
             </table>
          </div>
       </div>
+
+      {/* New Booking Modal Overlay */}
+      <NewBookingForm 
+        isOpen={isNewBookingModalOpen} 
+        onClose={() => setIsNewBookingModalOpen(false)} 
+      />
 
     </div>
   );

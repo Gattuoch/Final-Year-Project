@@ -37,21 +37,34 @@ const protect = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      console.warn(`[Auth] Missing/Invalid header for ${req.originalUrl}`);
       return res.status(401).json({ message: "Missing authorization token" });
     }
 
     const token = authHeader.split(" ")[1];
-  const payload = verifyAccessToken(token);
-  const userId = payload.id || payload.sub;
+    if (!token || token === "null" || token === "undefined") {
+      console.warn(`[Auth] Literal 'null'/'undefined' token for ${req.originalUrl}`);
+      return res.status(401).json({ message: "Invalid token provided" });
+    }
 
-  const user = await User.findById(userId);
+    const payload = verifyAccessToken(token);
+    const userId = payload.id || payload.sub;
+
+    if (!userId) {
+       console.warn("[Auth] No userId in token payload");
+       return res.status(401).json({ message: "Invalid token payload" });
+    }
+
+    const user = await User.findById(userId);
     if (!user || user.isBanned) {
+      console.warn(`[Auth] User ${userId} not found or banned`);
       return res.status(403).json({ message: "Invalid or banned user" });
     }
 
     req.user = user;
     next();
   } catch (error) {
+    console.error(`[Auth Error] ${req.originalUrl}:`, error.message);
     return res.status(401).json({
       message: "Invalid or expired token",
       error: error.message,

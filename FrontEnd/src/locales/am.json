@@ -1,0 +1,1248 @@
+{
+  "languages": {
+    "en": "እንግሊዝኛ (English)",
+    "am": "አማርኛ",
+    "om": "ኦሮምኛ (Afaan Oromoo)"
+  },
+  "sidebar": {
+    "dashboard": "ዳሽቦርድ",
+    "security": "ደህንነት",
+    "database": "ዳታቤዝ",
+    "backup": "ምትኬ እና መልሶ ማግኛ",
+    "logs": "ምዝግብ ማስታወሻዎች",
+    "reports": "ሪፖርቶች እና ማሳወቂያዎች",
+    "features": "ባህሪያት አስተዳደር",
+    "configuration": "ውቅረት",
+    "financial": "ፋይናንስ",
+    "campManagement": "የካምፕ አስተዳደር",
+    "userManagement": "የተጠቃሚ አስተዳደር"
+  },
+  "dashboard": {
+    "title": "የስርዓት ዳሽቦርድ",
+    "subtitle": "የእውነተኛ ጊዜ መድረክ መለኪያዎች እና የስርዓት ጤና",
+    "totalRevenue": "ጠቅላላ ገቢ",
+    "activeUsers": "ንቁ ተጠቃሚዎች",
+    "occupancyRate": "የመያዣ መጠን",
+    "conversionRate": "የመቀየር መጠን",
+    "pendingCamps": "በመጠባበቅ ላይ ያሉ የካምፕ ማጽደቂያዎች",
+    "pendingKYC": "በመጠባበቅ ላይ ያሉ የ KYC ሰነዶች",
+    "systemUptime": "የስርዓት የሥራ ጊዜ",
+    "revenueTrend": "የገቢ አዝማሚያ (ETB)",
+    "containerHealth": "የኮንቴይነር ጤና",
+    "webServer": "የድር አገልጋይ",
+    "database": "ዳታቤዝ",
+    "redisCache": "የ Redis መሸጎጫ",
+    "healthy": "ጤናማ",
+    "recentErrorSummary": "የቅርብ ጊዜ ስህተት ማጠቃለያ",
+    "errorRate": "የስህተት መጠን",
+    "warningCount": "የማስጠንቀቂያ ብዛት",
+    "criticalErrors": "አስፈላጊ ስህተቶች",
+    "status": "ሁኔታ",
+    "noHistory": "ምንም የማስጠንቀቂያ ታሪክ አልተገኘም።"
+  },
+  "profile": {
+    "title": "የመገለጫ ቅንብሮች",
+    "subtitle": "የመለያዎን ቅንብሮች እና ምርጫዎች ያስተዳድሩ",
+    "status": "ንቁ አስተዳዳሪ",
+    "loading": "የመገለጫ መረጃን በመጫን ላይ...",
+    "tabs": {
+      "personal": "የግል መረጃ",
+      "security": "ደህንነት",
+      "preferences": "ምርጫዎች",
+      "activity": "የእንቅስቃሴ ታሪክ"
+    },
+    "personal": {
+      "admin": "የስርዓት አስተዳዳሪ",
+      "dept": "አይቲ እና ኦፕሬሽንስ",
+      "firstName": "የመጀመሪያ ስም",
+      "lastName": "የአባት ስም",
+      "email": "የኢሜል አድራሻ",
+      "phone": "የስልክ ቁጥር",
+      "position": "የስራ መደብ",
+      "department": "ክፍል",
+      "location": "አድራሻ",
+      "bio": "ስለ እኔ",
+      "bioPlaceholder": "ስለራስዎ ይንገሩን...",
+      "saveBtn": "ለውጦችን አስቀምጥ"
+    },
+    "security": {
+      "title": "የይለፍ ቃል ቀይር",
+      "subtitle": "መለያዎን ደህንነቱ የተጠበቀ ለማድረግ የይለፍ ቃልዎን ያዘምኑ",
+      "current": "የአሁኑ የይለፍ ቃል",
+      "new": "አዲስ የይለፍ ቃል",
+      "confirm": "አዲሱን የይለፍ ቃል ያረጋግጡ",
+      "requirements": "የይለፍ ቃል መስፈርቶች፡ ቢያንስ 8 ቁምፊዎች ከትልቅ እና ትንሽ ፊደላት፣ ቁጥሮች እና ልዩ ቁምፊዎች ድብልቅ ጋር።",
+      "updateBtn": "የይለፍ ቃል አዘምን",
+      "tfa": "ባለ ሁለት ደረጃ ማረጋገጫ (2FA)",
+      "tfaDesc": "ለመለያዎ ተጨማሪ የደህንነት ንብርብር ይጨምሩ",
+      "tfaEnabled": "ባለ ሁለት ደረጃ ማረጋገጫ ነቅቷል",
+      "tfaDisabled": "ባለ ሁለት ደረጃ ማረጋገጫ ጠፍቷል"
+    },
+    "preferences": {
+      "title": "የማሳወቂያ ምርጫዎች",
+      "subtitle": "ማሳወቂያዎችን እንዴት እንደሚቀበሉ ያስተዳድሩ",
+      "email": "የኢሜል ማሳወቂያዎች",
+      "emailDesc": "ስለ ስርዓት እንቅስቃሴዎች የኢሜል ዝመናዎችን ያግኙ",
+      "system": "የስርዓት ማስጠንቀቂያዎች",
+      "systemDesc": "ስለ ስርዓት ሁኔታ ለውጦች ማሳወቂያ ያግኙ",
+      "security": "የደህንነት ማስጠንቀቂያዎች",
+      "securityDesc": "ስለ ደህንነት ክስተቶች ማስጠንቀቂያዎችን ያግኙ",
+      "weekly": "ሳምንታዊ ሪፖርቶች",
+      "weeklyDesc": "ሳምንታዊ የማጠቃለያ ሪፖርቶችን ያግኙ",
+      "sessionTitle": "የቆይታ ቅንብሮች",
+      "sessionTimeout": "የቆይታ ጊዜ ማብቂያ (ደቂቃዎች)",
+      "sessionDesc": "ከተወሰነ እንቅስቃሴ አልባነት በኋላ በራስ-ሰር ይውጡ",
+      "saveBtn": "ምርጫዎችን አስቀምጥ"
+    },
+    "activity": {
+      "title": "የቅርብ ጊዜ እንቅስቃሴ",
+      "subtitle": "የቅርብ ጊዜ የመለያዎ እንቅስቃሴዎች እና እርምጃዎች",
+      "noActivity": "ምንም የቅርብ ጊዜ እንቅስቃሴ አልተገኘም።",
+      "refresh": "እንቅስቃሴን አድስ"
+    },
+    "messages": {
+      "profileSuccess": "መገለጫ በተሳካ ሁኔታ ተዘምኗል!",
+      "profileError": "መገለጫን ማዘመን አልተሳካም",
+      "passMismatch": "አዲሶቹ የይለፍ ቃላት አይዛመዱም!",
+      "passLength": "የይለፍ ቃል ቢያንስ 8 ቁምፊዎች መሆን አለበት!",
+      "passSuccess": "የይለፍ ቃል በተሳካ ሁኔታ ተቀይሯል!",
+      "passError": "የይለፍ ቃል መቀየር አልተሳካም",
+      "prefSuccess": "ምርጫዎች በተሳካ ሁኔታ ተዘምነዋል!",
+      "prefError": "ምርጫዎችን ማዘመን አልተሳካም",
+      "avatarSuccess": "ፎቶ በተሳካ ሁኔታ ተዘምኗል!",
+      "avatarError": "ፎቶ ማስቀመጥ አልተሳካም"
+    }
+  },
+  "backup": {
+    "title": "ምትኬ እና ማግኛ (Backup & Recovery)",
+    "subtitle": "የመረጃ ዘላቂነትን እና ከአደጋ ማገገምን ያረጋግጡ",
+    "loading": "የምትኬ መረጃዎችን በመጫን ላይ...",
+    "overview": {
+      "lastFull": "የመጨረሻው ሙሉ ምትኬ",
+      "lastIncremental": "የመጨረሻው ጭማሪ ምትኬ",
+      "totalSize": "አጠቃላይ የምትኬ መጠን",
+      "recoveryTests": "የማግኛ ሙከራዎች"
+    },
+    "tabs": {
+      "full": "ሙሉ ምትኬዎች",
+      "incremental": "ጭማሪ ምትኬዎች",
+      "recovery": "ማግኛ እና ሙከራ",
+      "disaster": "ከአደጋ ማገገም"
+    },
+    "full": {
+      "title": "ሙሉ የዳታቤዝ ምትኬዎች",
+      "subtitle": "በየቀኑ ከሌሊቱ 8:00 ሰዓት በራስ-ሰር የሚከናወን",
+      "manualBtn": "በእጅ ምትኬ አከናውን",
+      "table": {
+        "id": "የምትኬ መታወቂያ (ID)",
+        "database": "ዳታቤዝ",
+        "size": "መጠን",
+        "timestamp": "ጊዜ",
+        "status": "ሁኔታ",
+        "actions": "እርምጃዎች",
+        "restore": "ወደ ነበረበት መልስ",
+        "noBackups": "ምንም ሙሉ ምትኬዎች አልተገኙም።"
+      },
+      "config": {
+        "title": "የምትኬ መርሐግብር ውቅር",
+        "postgres": "የPostgreSQL ሙሉ ምትኬ",
+        "mongo": "የMongoDB ሙሉ ምትኬ",
+        "retention": "የመቆያ ፖሊሲ",
+        "daily": "በየቀኑ ከሌሊቱ 8:00 ሰዓት (UTC)",
+        "dailyMongo": "በየቀኑ ከሌሊቱ 8:15 ሰዓት (UTC)",
+        "retentionDesc": "ከ30 ቀናት በላይ የቆዩ ምትኬዎች ወደ ማህደር ይቀመጣሉ",
+        "enabled": "ነቅቷል",
+        "days": "30 ቀናት"
+      }
+    },
+    "incremental": {
+      "title": "ጭማሪ ምትኬዎች (Incremental)",
+      "subtitle": "በየ15 ደቂቃው በራስ-ሰር የሚከናወን",
+      "active": "ንቁ",
+      "next": "ቀጣዩ ምትኬ በ፡ {{time}} ደቂቃ",
+      "complete": "{{percent}}% ተጠናቅቋል",
+      "table": {
+        "id": "የምትኬ መታወቂያ",
+        "timestamp": "ጊዜ",
+        "changes": "ለውጦች",
+        "status": "ሁኔታ",
+        "noBackups": "ምንም ጭማሪ ምትኬዎች አልተገኙም።"
+      }
+    },
+    "recovery": {
+      "pitrTitle": "ወደ ተወሰነ ጊዜ የመመለስ ማግኛ (PITR)",
+      "pitrSubtitle": "ዳታቤዙን ባለፉት 30 ቀናት ውስጥ ወደነበረበት ማንኛውም ጊዜ ይመልሱ",
+      "warning": "⚠️ ማስጠንቀቂያ",
+      "warningDesc": "ወደ ተወሰነ ጊዜ የመመለስ ማግኛ መከናወን ያለበት የመረጃ ብልሽት ሲገኝ ብቻ ነው። ሁልጊዜ በመጀመሪያ በሙከራ አካባቢ ላይ ይሞክሩ።",
+      "target": "የማግኛ ኢላማ",
+      "executeBtn": "ወደ ተወሰነ ጊዜ የመመለስ ማግኛን አከናውን",
+      "integrityTitle": "የምትኬ ትክክለኛነት ሙከራዎች",
+      "integritySubtitle": "የምትኬውን ትክክለኛነት ለማረጋገጥ መደበኛ የማግኛ ሙከራዎች",
+      "scheduleBtn": "ሙከራ ያቅዱ",
+      "table": {
+        "id": "የሙከራ መታወቂያ",
+        "type": "ዓይነት",
+        "env": "አካባቢ",
+        "date": "ቀን",
+        "duration": "የፈጀው ጊዜ",
+        "status": "ሁኔታ",
+        "noTests": "ምንም የማግኛ ሙከራዎች አልተገኙም።"
+      }
+    },
+    "disaster": {
+      "title": "ከአደጋ ማገገም (Disaster Recovery)",
+      "subtitle": "ከአደጋ ማገገሚያ ሂደቶችን ይጠብቁ እና ይሞክሩ",
+      "emergencyTitle": "የድንገተኛ ጊዜ ማግኛ ሂደቶች",
+      "emergencyDesc": "አጠቃላይ የዞን ውድቀት በሚከሰትበት ጊዜ የአደጋ ማገገሚያ መመሪያውን ይከተሉ",
+      "drillBtn": "የአደጋ ማገገሚያ ልምምድ ይጀምሩ",
+      "lastDrill": "የመጨረሻው ልምምድ",
+      "rto": "የማግኛ ጊዜ ግብ (RTO)",
+      "rpo": "የማግኛ ነጥብ ግብ (RPO)",
+      "target": "ግብ",
+      "lastAchieved": "ለመጨረሻ ጊዜ የተሳካው",
+      "current": "የአሁኑ",
+      "successful": "የተሳካ",
+      "runbooks": {
+        "title": "የአደጋ ማገገሚያ መመሪያዎች",
+        "zone": "የዞን ውድቀት ማግኛ",
+        "zoneDesc": "አጠቃላይ የአገልግሎት ቀጠና ውድቀት",
+        "corruption": "የዳታቤዝ ብልሽት ማግኛ",
+        "corruptionDesc": "የመረጃ ትክክለኛነት ችግሮች",
+        "breach": "የደህንነት ጥሰት ምላሽ",
+        "breachDesc": "ያልተፈቀደ መዳረሻ ማግኛ",
+        "view": "መመሪያውን ይመልከቱ"
+      }
+    },
+    "messages": {
+      "fetchError": "የምትኬ መረጃን ማምጣት አልተሳካም",
+      "fullSuccess": "ሙሉ ምትኬ ተጀምሯል - ይህ ዝቅተኛ የትራፊክ ፍሰት ባለበት ጊዜ ይከናወናል",
+      "fullError": "ሙሉ ምትኬን መጀመር አልተሳካም",
+      "restoreSuccess": "ከ {{id}} የመመለስ ሂደት ለሙከራ አካባቢ ተመድቧል",
+      "restoreError": "የመመለስ ሂደቱን ማቀድ አልተሳካም",
+      "pitrSuccess": "ወደ ተወሰነ ጊዜ የመመለስ ማግኛ ተጀምሯል",
+      "pitrError": "ወደ ተወሰነ ጊዜ የመመለስ ማግኛን መጀመር አልተሳካም",
+      "testSuccess": "የማግኛ ሙከራ ተቀጥሯል",
+      "testError": "የማግኛ ሙከራን ማቀድ አልተሳካም",
+      "drSuccess": "የአደጋ ማገገሚያ ልምምድ ተጀምሯል",
+      "drError": "የአደጋ ማገገሚያ ልምምድን መጀመር አልተሳካም"
+    }
+  },
+  "database": {
+    "title": "የዳታቤዝ አስተዳደር",
+    "subtitle": "የላቀ የዳታቤዝ አስተዳደር እና ማመቻቸት",
+    "loading": "የዳታቤዝ መረጃዎችን በመጫን ላይ...",
+    "overview": {
+      "systemDb": "የስርዓት ዳታቤዝ",
+      "systemDbDesc": "አጠቃላይ የሰነድ ክምችት መጠን",
+      "collections": "ክምችቶች (Collections)",
+      "collectionsDesc": "አጠቃላይ ንቁ ክምችቶች",
+      "performance": "የጥያቄ አፈጻጸም",
+      "performanceDesc": "አማካይ የጥያቄ ጊዜ"
+    },
+    "tabs": {
+      "queries": "ጥያቄዎች",
+      "indexes": "ኢንዴክሶች",
+      "migrations": "ፍልሰቶች (Migrations)",
+      "maintenance": "ጥገና"
+    },
+    "queries": {
+      "title": "የዘገየ ጥያቄ ትንተና",
+      "subtitle": "ከ100 ሚሊሰከንድ በላይ የሚወስዱ ጥያቄዎች",
+      "generateBtn": "ዕቅዶችን ያመንጩ",
+      "table": {
+        "query": "ጥያቄ",
+        "duration": "ቆይታ",
+        "executions": "አፈጻጸሞች",
+        "table": "ሰንጠረዥ",
+        "actions": "እርምጃዎች",
+        "optimize": "አመቻች",
+        "noQueries": "ምንም የዘገዩ ጥያቄዎች አልተገኙም።"
+      },
+      "statsTitle": "የሰንጠረዥ ስታቲስቲክስ",
+      "statsChartSize": "መጠን (MB)"
+    },
+    "indexes": {
+      "title": "የዳታቤዝ ኢንዴክሶች",
+      "subtitle": "የጥያቄ አፈጻጸም ማመቻቸት",
+      "newBtn": "አዲስ ኢንዴክስ",
+      "dialog": {
+        "title": "አዲስ ኢንዴክስ ፍጠር",
+        "desc": "የጥያቄ አፈጻጸምን ለማሻሻል ለክምችት አዲስ ኢንዴክስ ያክሉ።",
+        "collection": "ክምችት",
+        "selectPlaceholder": "ክምችት ይምረጡ",
+        "fields": "መስኮች (ለምሳሌ \"email:1\")",
+        "fieldsPlaceholder": "email:1",
+        "unique": "ልዩ ኢንዴክስ (Unique)",
+        "cancel": "ሰርዝ",
+        "create": "ኢንዴክስ ፍጠር",
+        "creating": "በመፍጠር ላይ..."
+      },
+      "table": {
+        "name": "የኢንዴክስ ስም",
+        "table": "ሰንጠረዥ",
+        "columns": "አምዶች",
+        "usage": "አጠቃቀም",
+        "actions": "እርምጃዎች",
+        "rebuild": "እንደገና ገንባ"
+      }
+    },
+    "migrations": {
+      "title": "የመርሐግብር ፍልሰቶች",
+      "subtitle": "የመርሐግብር ለውጦችን ይከታተሉ እና ይተግብሩ",
+      "runBtn": "አዲስ ፍልሰት አከናውን",
+      "table": {
+        "id": "መለያ",
+        "desc": "መግለጫ",
+        "status": "ሁኔታ",
+        "date": "ቀን",
+        "actions": "እርምጃዎች",
+        "details": "ዝርዝሮች"
+      }
+    },
+    "maintenance": {
+      "archivalTitle": "የመረጃ ማህደር",
+      "archivalSubtitle": "የድሮ የመረጃ ምዝግብ ማስታወሻዎችን ወደ ማህደር ያስቀምጡ",
+      "logsTitle": "ከ12 ወራት በላይ የቆዩ ምዝግቦች",
+      "estimated": "የተገመቱ መዝገቦች፡",
+      "startBtn": "ማህደር ጀምር",
+      "lastRun": "የመጨረሻው የማህደር ሂደት",
+      "noRuns": "ምንም ቀዳሚ ሂደቶች አልተገኙም",
+      "records": "መዝገቦች",
+      "integrityTitle": "የዳታቤዝ ትክክለኛነት",
+      "integritySubtitle": "ወጥነትን ያረጋግጡ",
+      "runCheckBtn": "የትክክለኛነት ማረጋገጫ አከናውን",
+      "checkDesc": "የተበላሹ ግቤቶችን ይፈትሹ",
+      "lastCheck": "የመጨረሻው ፍተሻ፡",
+      "never": "ፈጽሞ አልተፈተሸም",
+      "historyTitle": "የጥገና ታሪክ",
+      "lastMaint": "የመጨረሻው ጥገና",
+      "nextSched": "ቀጣዩ መርሐግብር",
+      "pending": "በጥበቃ ላይ",
+      "completed": "ተጠናቋል",
+      "scheduled": "ተይዟል"
+    },
+    "messages": {
+      "fetchError": "የዳታቤዝ መረጃን ማምጣት አልተሳካም",
+      "optSuccess": "የጥያቄ ማመቻቸት ወደ ወረፋ ተጨምሯል",
+      "optError": "ጥያቄውን ማመቻቸት አልተሳካም",
+      "indexSuccess": "ኢንዴክስ በተሳካ ሁኔታ ተፈጥሯል",
+      "indexError": "ኢንዴክስ መፍጠር አልተሳካም",
+      "migrationSuccess": "ፍልሰት በተሳካ ሁኔታ ተከናውኗል",
+      "migrationError": "ፍልሰቱን ማከናወን አልተሳካም",
+      "archivalSuccess": "የመረጃ ማህደር ሂደት ተጀምሯል",
+      "archivalError": "የመረጃ ማህደር መጀመር አልተሳካም",
+      "integritySuccess": "የዳታቤዝ ትክክለኛነት ፍተሻ ተጀምሯል",
+      "integrityError": "ትክክለኛነትን ማረጋገጥ አልተሳካም",
+      "plansError": "የአፈጻጸም ዕቅዶችን ማመንጨት አልተሳካም",
+      "rebuildError": "ኢንዴክስን እንደገና መገንባት አልተሳካም",
+      "detailsSuccess": "የፍልሰት {{id}} ዝርዝሮች ወደ ኮንሶል ተመዝግበዋል",
+      "detailsError": "የፍልሰት ዝርዝሮችን ማምጣት አልተሳካም"
+    }
+  },
+  "security": {
+    "title": "የደህንነት",
+    "highlight": "አስተዳደር",
+    "subtitle": "የመድረክ ደህንነት ፖሊሲዎችን ያስከብሩ እና ይከታተሉ",
+    "refresh": "አድስ",
+    "loading": "በመጫን ላይ...",
+    "tabs": {
+      "policies": "የደህንነት ፖሊሲዎች",
+      "ipBlacklist": "የታገዱ አይፒዎች (IPs)",
+      "incidents": "የደህንነት ክስተቶች",
+      "scans": "የተጋላጭነት ፍተሻዎች"
+    },
+    "policies": {
+      "title": "የይለፍ ቃል እና የማረጋገጫ ፖሊሲዎች",
+      "subtitle": "የይለፍ ቃል ውስብስብነት እና የኤምኤፍኤ (MFA) መስፈርቶችን ያዋቅሩ",
+      "mfa": "ባለብዙ-ደረጃ ማረጋገጫ (MFA)",
+      "mfaDesc": "ሁሉም አስተዳዳሪዎች MFA እንዲጠቀሙ ይጠይቁ",
+      "passwordLength": "ዝቅተኛው የይለፍ ቃል ርዝመት",
+      "characters": "ቁምፊዎች",
+      "specialChars": "ልዩ ቁምፊዎችን ይጠይቁ",
+      "specialCharsDesc": "የይለፍ ቃል @, #, $, ወዘተ ማካተት አለበት።",
+      "numbers": "ቁጥሮችን ይጠይቁ",
+      "numbersDesc": "የይለፍ ቃል ቢያንስ አንድ ቁጥር ማካተት አለበት።",
+      "uppercase": "አቢይ ሆሄያትን ይጠይቁ",
+      "uppercaseDesc": "የይለፍ ቃል አቢይ ሆሄያትን ማካተት አለበት።",
+      "saveBtn": "የይለፍ ቃል ፖሊሲን አስቀምጥ"
+    },
+    "ipBlacklist": {
+      "title": "የአይፒ አድራሻ ጥቁር መዝገብ",
+      "subtitle": "አጠራጣሪ የአይፒ አድራሻዎችን ያግዱ",
+      "placeholder": "የሚታገድ የአይፒ አድራሻ ያስገቡ (ለምሳሌ 192.168.1.1)",
+      "blockBtn": "አይፒ አግድ",
+      "table": {
+        "ip": "የአይፒ አድራሻ",
+        "reason": "ምክንያት",
+        "blockedAt": "የታገደበት ጊዜ",
+        "status": "ሁኔታ",
+        "actions": "እርምጃዎች",
+        "blocked": "ታግዷል",
+        "unblock": "እገዳ አንሳ"
+      }
+    },
+    "incidents": {
+      "title": "የደህንነት ክስተቶች",
+      "subtitle": "የደህንነት ክስተቶችን ይመርምሩ እና ምላሽ ይስጡ",
+      "table": {
+        "id": "የክስተት መለያ",
+        "type": "ዓይነት",
+        "severity": "ክብደት",
+        "userIp": "ተጠቃሚ/አይፒ",
+        "timestamp": "የጊዜ ማህተም",
+        "status": "ሁኔታ",
+        "actions": "እርምጃዎች",
+        "viewDetails": "ዝርዝሮችን ተመልከት"
+      }
+    },
+    "scans": {
+      "title": "የተጋላጭነት ፍተሻዎች",
+      "subtitle": "የደህንነት ፍተሻዎችን ያቅዱ እና ይገምግሙ",
+      "newBtn": "አዲስ ፍተሻ ያቅዱ",
+      "table": {
+        "id": "የፍተሻ መለያ",
+        "tool": "መሳሪያ",
+        "date": "ቀን",
+        "findings": "ግኝቶች",
+        "maxSeverity": "ከፍተኛ ክብደት",
+        "status": "ሁኔታ",
+        "actions": "እርምጃዎች",
+        "viewReport": "ሪፖርት ተመልከት"
+      },
+      "penTestTitle": "የጥቃቅን ሙከራ (Penetration Testing)",
+      "lastPenTest": "የመጨረሻው የውጭ የጥቃቅን ሙከራ",
+      "conductedBy": "የተከናወነው በ፡ {{name}}",
+      "findingsStatus": "የግኝቶች ሁኔታ",
+      "findingsDesc": "{{count}} ግኝቶች - ሁሉም ተስተካክለዋል",
+      "complete": "ተጠናቋል",
+      "scheduleNext": "ቀጣዩን የጥቃቅን ሙከራ ያቅዱ"
+    },
+    "messages": {
+      "fetchError": "የደህንነት ቅንብሮችን ማምጣት አልተሳካም",
+      "policySuccess": "የይለፍ ቃል ፖሊሲ በተሳካ ሁኔታ ተዘምኗል",
+      "policyError": "የይለፍ ቃል ፖሊሲን ማዘመን አልተሳካም",
+      "ipSuccess": "የአይፒ አድራሻ {{ip}} ታግዷል",
+      "ipError": "አይፒን ማገድ አልተሳካም",
+      "unblockSuccess": "የአይፒ አድራሻ {{ip}} እገዳው ተነስቷል",
+      "unblockError": "የአይፒ እገዳ ማንሳት አልተሳካም",
+      "scanScheduled": "የተጋላጭነት ፍተሻ ዛሬ ምሽት 8፡00 ሰዓት ላይ ተይዟል"
+    }
+  },
+  "logs": {
+    "title": "ምዝግብ ማስታወሻዎች እና ክትትል (Logs & Monitoring)",
+    "subtitle": "የስርዓት እና የመተግበሪያ ምዝግብ ማስታወሻዎችን ይፈልጉ እና ይተንትኑ",
+    "loading": "የምዝግብ ማስታወሻዎችን ክትትል በመጫን ላይ...",
+    "stats": {
+      "totalLogs": "ጠቅላላ ምዝግብ ማስታወሻዎች",
+      "errors": "ስህተቶች",
+      "warnings": "ማስጠንቀቂያዎች",
+      "info": "መረጃ",
+      "last24h": "ያለፉት 24 ሰዓታት"
+    },
+    "search": {
+      "title": "ምዝግብ ማስታወሻዎችን ፈልግ",
+      "placeholder": "ምዝግብ ማስታወሻዎችን በመልዕክት፣ በተጠቃሚ መለያ ወይም በቁልፍ ቃል ፈልግ...",
+      "service": "አገልግሎት",
+      "allServices": "ሁሉም አገልግሎቶች",
+      "level": "ደረጃ",
+      "allLevels": "ሁሉም ደረጃዎች",
+      "searchBtn": "ፈልግ",
+      "userId": "የተጠቃሚ መለያ (ከተፈለገ)",
+      "timeRange": "የጊዜ ገደብ",
+      "lastHour": "ያለፈው 1 ሰዓት",
+      "last6Hours": "ያለፉት 6 ሰዓታት",
+      "last24Hours": "ያለፉት 24 ሰዓታት",
+      "last7Days": "ያለፉት 7 ቀናት",
+      "last30Days": "ያለፉት 30 ቀናት"
+    },
+    "recent": {
+      "title": "የቅርብ ጊዜ ምዝግብ ማስታወሻዎች",
+      "live": "ቀጥታ",
+      "table": {
+        "timestamp": "የጊዜ ማህተም",
+        "level": "ደረጃ",
+        "service": "አገልግሎት",
+        "user": "ተጠቃሚ",
+        "message": "መልዕክት",
+        "details": "ዝርዝሮች",
+        "noLogs": "ምንም ምዝግብ ማስታወሻ አልተገኘም"
+      }
+    },
+    "alerts": {
+      "title": "የምዝግብ ማስታወሻ ማስጠንቀቂያዎችን ያዋቅሩ",
+      "addBtn": "አዲስ የማስጠንቀቂያ ንድፍ ጨምር",
+      "statusActive": "ንቁ",
+      "statusInactive": "አልነቃም"
+    },
+    "stack": {
+      "title": "የተማከለ የምዝግብ ማስታወሻ መደራረብ (Logging Stack)",
+      "statusConnected": "ተገናኝቷል",
+      "statusDisconnected": "ተቋርጧል"
+    },
+    "messages": {
+      "fetchError": "የምዝግብ ማስታወሻዎችን መረጃ ማምጣት አልተሳካም",
+      "searchSuccess": "ምዝግብ ማስታወሻዎች በመፈለግ ላይ...",
+      "searchError": "ምዝግብ ማስታወሻዎችን መፈለግ አልተሳካም",
+      "alertSuccess": "ለንድፉ ማስጠንቀቂያ ተዋቅሯል",
+      "alertError": "ማስጠንቀቂያ ማዋቀር አልተሳካም"
+    }
+  },
+  "features": {
+    "title": "የባህሪ አስተዳደር (Feature Management)",
+    "subtitle": "ባህሪያትን ያሰማሩ፣ ሙከራዎችን ያካሂዱ እና ዝመናዎችን ያስተዳድሩ",
+    "loading": "የባህሪ አስተዳደር መረጃን በመጫን ላይ...",
+    "stats": {
+      "activeFeatures": "ንቁ ባህሪያት",
+      "outOf": "ከ {{total}} ጠቅላላ ውስጥ",
+      "abTests": "የሚካሄዱ A/B ሙከራዎች",
+      "activeExp": "ንቁ ሙከራዎች",
+      "latestVersion": "የቅርብ ጊዜ ስሪት",
+      "deployed": "ተሰማርቷል {{date}}"
+    },
+    "tabs": {
+      "features": "የባህሪ ባንዲራዎች (Feature Flags)",
+      "abtests": "A/B ሙከራዎች",
+      "updates": "ዝመናዎች እና ጥገናዎች",
+      "deployment": "ዝርጋታ (Deployment)"
+    },
+    "flags": {
+      "title": "የባህሪ ባንዲራዎች",
+      "subtitle": "ያለ ኮድ ዝርጋታ ባህሪያትን ያብሩ/ያጥፉ",
+      "enabled": "በርቷል",
+      "activeUsers": "ንቁ ተጠቃሚዎች፡",
+      "noFlags": "ምንም የባህሪ ባንዲራ አልተገኘም።",
+      "createBtn": "አዲስ የባህሪ ባንዲራ ፍጠር"
+    },
+    "abTests": {
+      "title": "A/B ሙከራ (A/B Testing)",
+      "subtitle": "የተጠቃሚ ተሞክሮ ማሻሻያዎችን በሙከራዎች ያረጋግጡ",
+      "newBtn": "አዲስ ሙከራ ፍጠር",
+      "table": {
+        "name": "የሙከራ ስም",
+        "variants": "ተለዋጮች",
+        "traffic": "የትራፊክ ክፍፍል",
+        "metric": "ዋና መለኪያ",
+        "date": "የመጀመሪያ ቀን",
+        "status": "ሁኔታ",
+        "actions": "እርምጃዎች",
+        "results": "ውጤቶችን ተመልከት",
+        "stop": "አቁም",
+        "noTests": "ምንም A/B ሙከራዎች አልተገኙም።"
+      },
+      "results": {
+        "title": "የሙከራ ውጤቶች፡ የድረ-ገጽ ድጋሚ ዲዛይን",
+        "variantA": "ተለዋጭ ሀ (ቁጥጥር)",
+        "variantB": "ተለዋጭ ለ (አዲስ)",
+        "traffic": "{{percent}}% ትራፊክ",
+        "convRate": "የልወጣ መጠን (Conversion Rate)",
+        "convStats": "{{conversions}} ልወጣዎች / {{visitors}} ጎብኝዎች",
+        "improvement": "+{{percent}}% ማሻሻያ"
+      }
+    },
+    "updates": {
+      "title": "የስርዓት ዝመናዎች",
+      "subtitle": "የስርዓተ ክወና ጥገናዎች እና ጥገኝነት ዝመናዎች",
+      "checkBtn": "ዝመናዎችን ፈትሽ",
+      "table": {
+        "version": "ስሪት",
+        "desc": "መግለጫ",
+        "date": "ቀን",
+        "status": "ሁኔታ",
+        "noUpdates": "ምንም ዝመናዎች አልተገኙም።"
+      },
+      "pending": "የሚጠባበቁ ዝመናዎች",
+      "available": "ይገኛል"
+    },
+    "deployment": {
+      "title": "ያለ መቆራረጥ ዝርጋታ (Zero-Downtime Deployment)",
+      "subtitle": "ያለ አገልግሎት መቋረጥ አዳዲስ ስሪቶችን ያሰማሩ",
+      "current": "የአሁኑ ስሪት",
+      "live": "ቀጥታ",
+      "staging": "የሙከራ ስሪት (Staging)",
+      "ready": "ዝግጁ",
+      "newFeatures": "አዳዲስ ባህሪያት፡",
+      "deployBtn": "ወደ ምርት (Production) አሰማራ",
+      "strategy": "የዝርጋታ ስልት",
+      "strategyRolling": "ተከታታይ ዝርጋታ (የሚመከር)",
+      "strategyBlueGreen": "ሰማያዊ-አረንጓዴ ዝርጋታ",
+      "strategyCanary": "ካናሪ ዝርጋታ",
+      "history": "የዝርጋታ ታሪክ",
+      "duration": "የቆይታ ጊዜ፡",
+      "success": "ተሳክቷል"
+    },
+    "messages": {
+      "fetchError": "የባህሪ መረጃን ማምጣት አልተሳካም",
+      "toggleSuccess": "ባህሪ \"{{id}}\" {{status}}",
+      "toggleError": "ባህሪውን መቀየር አልተሳካም",
+      "deploySuccess": "ዝርጋታ ተጀምሯል - ባህሪው በ 5 ደቂቃዎች ውስጥ ቀጥታ ይሆናል",
+      "deployError": "ባህሪውን ማሰማራት አልተሳካም",
+      "abStartSuccess": "A/B ሙከራ ተፈጥሮ ተጀምሯል",
+      "abStartError": "A/B ሙከራን መጀመር አልተሳካም",
+      "abStopSuccess": "A/B ሙከራ \"{{id}}\" ቆሟል",
+      "abStopError": "A/B ሙከራን ማቆም አልተሳካም",
+      "updateSuccess": "የስርዓት ዝመናዎች በጥገና ወቅት እንዲሰማሩ ተይዘዋል",
+      "updateError": "ዝመናዎችን መተግበር አልተሳካም",
+      "createFlagSuccess": "የባህሪ ባንዲራ ተፈጥሯል",
+      "edit": "አርትዕ",
+      "delete": "ሰርዝ",
+      "cancel": "ሰርዝ/ተመለስ",
+      "deleting": "በመሰረዝ ላይ...",
+      "saveChanges": "ለውጦችን አስቀምጥ",
+      "saving": "በማስቀመጥ ላይ...",
+      "creating": "በመፍጠር ላይ...",
+      "startTest": "ሙከራ ጀምር",
+      "createFlag": "ባንዲራ ፍጠር",
+      "deleteConfirm": "በእርግጥ \"{{name}}\" መሰረዝ ይፈልጋሉ? ይህ ድርጊት ቋሚ ነው እና ሊመለስ አይችልም።"
+    }
+  },
+  "systemConfig": {
+    "title": "የስርዓት ውቅር",
+    "subtitle": "ዓለም አቀፍ የመተግበሪያ ቅንብሮች እና ውህደቶች",
+    "loading": "የስርዓት ውቅር በመጫን ላይ...",
+    "success": {
+      "save": "ውቅሩ በተሳካ ሁኔታ ተቀምጧል",
+      "test": "ወደ {{service}} የግንኙነት ሙከራ በመደረግ ላይ..."
+    },
+    "error": {
+      "fetch": "የስርዓት ውቅር መረጃን ማምጣት አልተሳካም",
+      "save": "ውቅሩን ማስቀመጥ አልተሳካም",
+      "test": "ወደ {{service}} የግንኙነት ሙከራ አልተሳካም"
+    },
+    "tabs": {
+      "general": "አጠቃላይ ቅንብሮች",
+      "apiKeys": "የኤፒአይ ቁልፎች",
+      "services": "የውጭ አገልግሎቶች",
+      "health": "የስርዓት ጤና"
+    },
+    "regional": {
+      "title": "የክልል ቅንብሮች",
+      "subtitle": "የሰዓት ሰቅ፣ ምንዛሪ እና የቀን ቅርጸቶችን ያዋቅሩ",
+      "timezone": "የሰዓት ሰቅ",
+      "currency": "ነባሪ ምንዛሪ",
+      "dateFormat": "የቀን ቅርጸት",
+      "language": "ነባሪ ቋንቋ",
+      "saveBtn": "ውቅረትን ያስቀምጡ"
+    },
+    "business": {
+      "title": "የንግድ ቅንብሮች",
+      "commission": "የመድረክ ኮሚሽን መጠን (%)",
+      "commissionDesc": "በእያንዳንዱ ቦታ ማስያዣ ላይ የሚከፈል ኮሚሽን",
+      "payout": "አነስተኛ የክፍያ ገደብ (ETB)",
+      "payoutDesc": "ለካምፕ አስተዳዳሪዎች ከመክፈልዎ በፊት አነስተኛ ቀሪ ሂሳብ",
+      "cancellation": "የመሰረዝ ጊዜ (ሰዓታት)",
+      "cancellationDesc": "ለነጻ መሰረዝ ከመግባትዎ በፊት ያሉ ሰዓታት",
+      "saveBtn": "የንግድ ቅንብሮችን ያስቀምጡ"
+    },
+    "apiKeysTab": {
+      "title": "የኤፒአይ ቁልፎች እና ማስረጃዎች",
+      "subtitle": "የሶስተኛ ወገን አገልግሎት ማስረጃዎችን ያቀናብሩ",
+      "securityWarning": "የደህንነት ማስጠንቀቂያ",
+      "securityDesc": "የኤፒአይ ቁልፎችዎን በጭራሽ አያጋሩ። ለመለያዎችዎ ሙሉ መዳረሻ ይሰጣሉ።",
+      "chapa": "ቻፓ (Chapa) ኤፒአይ ቁልፍ",
+      "chapaDesc": "ለክፍያ ማካሄጃ ጥቅም ላይ ይውላል",
+      "cloudinary": "ክላውዲነሪ (Cloudinary) ኤፒአይ ቁልፍ",
+      "cloudinaryDesc": "ለምስል ማስተናገጃ እና ሲዲኤን (CDN) ጥቅም ላይ ይውላል",
+      "sms": "የአጭር የጽሁፍ (SMS) አቅራቢ ኤፒአይ ቁልፍ",
+      "smsDesc": "የአጭር የጽሁፍ (SMS) ማሳወቂያዎችን ለመላክ ጥቅም ላይ ይውላል",
+      "email": "የኢሜይል አገልግሎት ኤፒአይ ቁልፍ",
+      "emailDesc": "የኢሜይል ማሳወቂያዎችን ለመላክ ጥቅም ላይ ይውላል",
+      "testBtn": "ሙከራ",
+      "saveBtn": "የኤፒአይ ቁልፎችን ያስቀምጡ"
+    },
+    "servicesTab": {
+      "title": "የውጭ አገልግሎት ጤና",
+      "subtitle": "የሶስተኛ ወገን ውህደቶችን ይቆጣጠሩ",
+      "latency": "መዘግየት (Latency)",
+      "uptime": "የስራ ጊዜ (Uptime)",
+      "viewDetails": "ዝርዝሮችን ይመልከቱ",
+      "noData": "ምንም የውጭ አገልግሎቶች ውሂብ የለም።",
+      "fallbackTitle": "ተለዋጭ ስልቶች (Fallback Mechanisms)",
+      "paymentFallback": "የክፍያ መተላለፊያ ውድቀት መቀየሪያ",
+      "paymentFallbackDesc": "ዋናው ካልተሳካ በቀጥታ ወደ ተለዋጭ የክፍያ ማካሄጃ ይቀይሩ",
+      "imageFallback": "የምስል ማስተናገጃ ተለዋጭ",
+      "imageFallbackDesc": "ሲዲኤን (CDN) የማይገኝ ከሆነ የአካባቢ ማከማቻ ይጠቀሙ",
+      "notificationFallback": "የማሳወቂያ ድጋሚ ሙከራ መመሪያ",
+      "notificationFallbackDesc": "ያልተሳኩ ማሳወቂያዎችን እስከ 3 ጊዜ በሂሳባዊ መዘግየት ይሞክሩ",
+      "enabled": "ነቅቷል"
+    },
+    "healthTab": {
+      "title": "የስርዓት ጤና ዳሽቦርድ",
+      "subtitle": "የእውነተኛ ጊዜ መድረክ ጤና መለኪያዎች",
+      "systemUptime": "የስርዓት የስራ ጊዜ",
+      "last30Days": "ያለፉት 30 ቀናት",
+      "avgLatency": "አማካኝ ኤፒአይ (API) መዘግየት",
+      "p50": "P50 ፐርሰንታይል",
+      "cacheRatio": "የመሸጎጫ (Cache) ስኬት ጥምርታ",
+      "redis": "ሬዲስ (Redis) መሸጎጫ",
+      "errorRate": "የስህተት መጠን",
+      "last24Hours": "ያለፉት 24 ሰዓታት",
+      "componentStatus": "የክፍል (Component) ሁኔታ",
+      "noStatus": "ምንም የክፍል ሁኔታ የለም።"
+    }
+  },
+  "finance": {
+    "title": "የፋይናንስ አስተዳደር",
+    "subtitle": "ግብይቶችን፣ ኮሚሽኖችን እና ክፍያዎችን ይቆጣጠሩ",
+    "loadingError": "የፋይናንስ ውሂብን መጫን አልተሳካም",
+    "retry": "ድጋሚ ይሞክሩ",
+    "loading": "የፋይናንስ ዳሽቦርድን በመጫን ላይ...",
+    "overview": {
+      "totalRevenue": "ጠቅላላ ገቢ",
+      "commissions": "ኮሚሽኖች",
+      "pendingPayouts": "በመጠባበቅ ላይ ያሉ ክፍያዎች",
+      "refundsIssued": "የተመለሱ ገንዘቦች"
+    },
+    "tabs": {
+      "transactions": "ሁሉም ግብይቶች",
+      "payouts": "ክፍያዎች",
+      "analytics": "የንግድ ትንታኔዎች",
+      "reconciliation": "እርቅ (Reconciliation)"
+    },
+    "transactionsTab": {
+      "historyTitle": "የግብይት ታሪክ",
+      "historySubtitle": "ሁሉም ቦታ ማስያዣዎች፣ ተቀማጭ ገንዘቦች እና ተመላሽ ገንዘቦች",
+      "allTypes": "ሁሉም ዓይነቶች",
+      "bookings": "ቦታ ማስያዣዎች",
+      "refunds": "ተመላሽ ገንዘቦች",
+      "deposits": "ተቀማጭ ገንዘቦች",
+      "exportCsv": "ወደ CSV ላክ",
+      "table": {
+        "id": "የግብይት መታወቂያ",
+        "type": "ዓይነት",
+        "user": "ተጠቃሚ",
+        "camp": "ካምፕ",
+        "amount": "መጠን",
+        "commission": "ኮሚሽን",
+        "status": "ሁኔታ",
+        "date": "ቀን",
+        "actions": "እርምጃዎች",
+        "viewDetails": "ዝርዝሮችን ይመልከቱ",
+        "noData": "ምንም ግብይቶች አልተገኙም።"
+      },
+      "manualRefund": {
+        "title": "በእጅ የሚደረግ ተመላሽ ገንዘብ",
+        "idPlaceholder": "የግብይት መታወቂያ",
+        "amountPlaceholder": "የተመላሽ ገንዘብ መጠን (ETB)",
+        "btn": "ተመላሽ ገንዘብን ያካሂዱ",
+        "desc": "ልዩ ለሆኑ ጉዳዮች ወይም ለክርክር መፍትሄዎች ይጠቀሙ"
+      }
+    },
+    "payoutsTab": {
+      "title": "የካምፕ አስተዳዳሪ ክፍያዎች",
+      "subtitle": "ለካምፕ አስተዳዳሪዎች ክፍያዎችን ያካሂዱ",
+      "processAllBtn": "ሁሉንም በመጠባበቅ ላይ ያሉትን ያካሂዱ",
+      "table": {
+        "id": "የክፍያ መታወቂያ",
+        "manager": "አስተዳዳሪ",
+        "camp": "ካምፕ",
+        "amount": "መጠን",
+        "status": "ሁኔታ",
+        "date": "ቀን",
+        "actions": "እርምጃዎች",
+        "processBtn": "ያካሂዱ",
+        "viewReceipt": "ደረሰኝ ይመልከቱ",
+        "noData": "ምንም ክፍያዎች አልተገኙም።"
+      },
+      "config": {
+        "title": "የክፍያ ውቅረት",
+        "saveBtn": "ለውጦችን ያስቀምጡ",
+        "savingBtn": "በማስቀመጥ ላይ...",
+        "commission": "የኮሚሽን መጠን (%)",
+        "commissionDesc": "በእያንዳንዱ ቦታ ማስያዣ ላይ የሚወሰድ የመድረክ ክፍያ መቶኛ",
+        "threshold": "አነስተኛ የክፍያ ገደብ (ETB)",
+        "thresholdDesc": "ክፍያን ከማካሄድ በፊት አነስተኛ ቀሪ ሂሳብ (ETB)",
+        "schedule": "የክፍያ መርሃ ግብር",
+        "daily": "በየቀኑ",
+        "weekly": "በየሳምንቱ",
+        "biweekly": "በየሁለት ሳምንቱ",
+        "monthly": "በየወሩ"
+      }
+    },
+    "analyticsTab": {
+      "title": "የንግድ መረጃ (Business Intelligence)",
+      "subtitle": "የገቢ ግንዛቤዎች እና አዝማሚያዎች",
+      "revenueByRegion": "ገቢ በክልል",
+      "seasonalDemand": "ወቅታዊ ፍላጎት",
+      "paymentMethods": "የክፍያ ዘዴዎች ስርጭት",
+      "keyMetrics": "ቁልፍ መለኪያዎች",
+      "avgBookingValue": "አማካይ የቦታ ማስያዣ ዋጋ",
+      "totalBookings": "ጠቅላላ ቦታ ማስያዣዎች",
+      "refundRate": "የተመላሽ ገንዘብ መጠን"
+    },
+    "reconciliationTab": {
+      "title": "የክፍያ መተላለፊያ እርቅ",
+      "subtitle": "የመድረክ መዝገቦችን ከክፍያ መተላለፊያ ስምምነቶች ጋር ያዛምዱ",
+      "settlementTitle": "የቻፓ ስምምነት - ኤፕሪል 2026",
+      "settlementDate": "የስምምነት ቀን: ኤፕሪል 15, 2026",
+      "pendingReview": "ግምገማን በመጠባበቅ ላይ",
+      "platformTotal": "የመድረክ ጠቅላላ",
+      "gatewaySettlement": "የመተላለፊያ ስምምነት",
+      "difference": "ልዩነት",
+      "markReconciled": "እንደታረቀ ምልክት አድርግ",
+      "prevSettlement": "ያለፈው ስምምነት - ማርች 2026",
+      "prevReconciledOn": "በማርች 16, 2026 ታርቋል",
+      "reconciled": "ታርቋል",
+      "historyTitle": "የእርቅ ታሪክ",
+      "march": "የማርች 2026 ስምምነት",
+      "marchDesc": "ETB 156,230 - በትክክል ተዛምዷል",
+      "feb": "የየካቲት 2026 ስምምነት",
+      "febDesc": "ETB 142,890 - በትክክል ተዛምዷል",
+      "jan": "የጥር 2026 ስምምነት",
+      "janDesc": "ETB 138,450 - በትክክል ተዛምዷል"
+    }
+  },
+  "camp": {
+    "title": "የካምፕ አስተዳደር",
+    "subtitle": "በመድረኩ ላይ ያሉትን ሁሉንም ካምፖች ያፅድቁ፣ ይቆጣጠሩ እና ያስተዳድሩ",
+    "refresh": "አድስ",
+    "loading": "በመጫን ላይ...",
+    "error": {
+      "load": "የካምፕ መረጃን መጫን አልተሳካም",
+      "approve": "ካምፑን ማፅደቅ አልተሳካም",
+      "reject": "ካምፑን ውድቅ ማድረግ አልተሳካም",
+      "block": "ካምፑን ማገድ አልተሳካም",
+      "ban": "ካምፑን በቋሚነት ማገድ አልተሳካም",
+      "warning": "ማስጠንቀቂያ መላክ አልተሳካም",
+      "kycApprove": "KYC ማፅደቅ አልተሳካም",
+      "kycReject": "KYC ውድቅ ማድረግ አልተሳካም",
+      "reasonRequired": "እባክዎን ውድቅ የተደረገበትን ምክንያት ያቅርቡ"
+    },
+    "success": {
+      "approve": "ካምፑ ጸድቋል እና ታትሟል",
+      "reject": "ካምፑ በተሳካ ሁኔታ ውድቅ ተደርጓል",
+      "block": "ካምፑ ለጊዜው ታግዷል",
+      "ban": "ካምፑ በቋሚነት ታግዷል",
+      "warning": "ማስጠንቀቂያ ወደ ካምፑ ተልኳል",
+      "kycApprove": "የKYC ሰነድ ጸድቋል",
+      "kycReject": "የKYC ሰነድ ውድቅ ተደርጓል"
+    },
+    "stats": {
+      "active": "ንቁ ካምፖች",
+      "activeDesc": "የጸደቁ እና በቀጥታ ስርጭት ላይ ያሉ",
+      "pending": "ማፅደቅን በመጠባበቅ ላይ",
+      "pendingDesc": "ግምገካን በመጠባበቅ ላይ",
+      "kyc": "KYC በመጠባበቅ ላይ",
+      "kycDesc": "ሊረጋገጡ የሚገባቸው ሰነዶች",
+      "blocked": "የታገዱ/የተከለከሉ",
+      "blockedDesc": "ፖሊሲዎችን የሚጥሱ"
+    },
+    "tabs": {
+      "pending": "በመጠባበቅ ላይ ያሉ ማረጋገጫዎች",
+      "active": "ንቁ ካምፖች",
+      "kyc": "የKYC ወረፋ"
+    },
+    "pendingTab": {
+      "title": "የካምፕ ምዝገባ ማረጋገጫዎች",
+      "subtitle": "አዲስ የካምፕ ማመልከቻዎችን ይገምግሙ እና ያፅድቁ",
+      "table": {
+        "id": "የካምፕ መታወቂያ",
+        "name": "ስም",
+        "manager": "አስተዳዳሪ",
+        "location": "አካባቢ",
+        "submitted": "የቀረበበት ቀን",
+        "status": "ሁኔታ",
+        "actions": "እርምጃዎች",
+        "review": "ግምገማ",
+        "noPending": "ምንም በመጠባበቅ ላይ ያሉ ካምፖች የሉም።"
+      },
+      "dialog": {
+        "title": "የካምፕ ምዝገባን ይገምግሙ",
+        "campName": "የካምፕ ስም",
+        "manager": "አስተዳዳሪ",
+        "location": "አካባቢ",
+        "rejectionReason": "ውድቅ የተደረገበት ምክንያት (ውድቅ የሚደረግ ከሆነ)",
+        "rejectionPlaceholder": "ውድቅ የተደረገበትን ምክንያት ይግለጹ...",
+        "approveBtn": "ካምፑን አፅድቅ",
+        "rejectBtn": "ካምፑን ውድቅ አድርግ"
+      }
+    },
+    "activeTab": {
+      "title": "ንቁ ካምፖች",
+      "subtitle": "የቀጥታ ካምፖችን ይቆጣጠሩ እና ያስተዳድሩ",
+      "searchPlaceholder": "ካምፖችን ይፈልጉ...",
+      "table": {
+        "id": "የካምፕ መታወቂያ",
+        "name": "ስም",
+        "manager": "አስተዳዳሪ",
+        "location": "አካባቢ",
+        "rating": "ደረጃ",
+        "bookings": "ቦታ ማስያዣዎች",
+        "status": "ሁኔታ",
+        "actions": "እርምጃዎች",
+        "manage": "አስተዳድር",
+        "noCamps": "ምንም ካምፖች አልተገኙም።"
+      },
+      "dialog": {
+        "title": "ካምፑን ያስተዳድሩ፡ {{name}}",
+        "rating": "ደረጃ",
+        "bookings": "ጠቅላላ ቦታ ማስያዣዎች",
+        "warningLabel": "ማስጠንቀቂያ ላክ",
+        "warningPlaceholder": "የማስጠንቀቂያ መልእክት (ለምሳሌ፡ የተሳሳቱ መገልገያዎች ተዘርዝረዋል)...",
+        "warningBtn": "ማስጠንቀቂያ ላክ",
+        "blockBtn": "ለጊዜው እገድ",
+        "banBtn": "በቋሚነት እገድ",
+        "unblockBtn": "ወደ ነበረበት መልስ / እገዳውን አንሳ"
+      }
+    },
+    "kycTab": {
+      "title": "የKYC ሰነድ ማረጋገጫ",
+      "subtitle": "የካምፕ አስተዳዳሪ ሰነዶችን ይገምግሙ እና ያፅድቁ",
+      "table": {
+        "id": "የተጠቃሚ መታወቂያ",
+        "manager": "አስተዳዳሪ",
+        "camp": "የካምፕ ስም",
+        "type": "የሰነድ ዓይነት",
+        "submitted": "የቀረበበት ቀን",
+        "status": "ሁኔታ",
+        "actions": "እርምጃዎች",
+        "approve": "አፅድቅ",
+        "reject": "ውድቅ አድርግ",
+        "noTasks": "ምንም በመጠባበቅ ላይ ያሉ የKYC ተግባራት የሉም።"
+      },
+      "docs": {
+        "title": "አስፈላጊ ሰነዶች",
+        "license": "የንግድ ፈቃድ",
+        "tax": "የግብር መለያ ሰርተፍኬት",
+        "managerId": "የአስተዳዳሪ መታወቂያ ማረጋገጫ",
+        "property": "የንብረት ባለቤትነት/የኪራይ ስምምነት",
+        "required": "አስፈላጊ",
+        "optional": "አማራጭ"
+      }
+    },
+    "history": {
+      "title": "የቅርብ ጊዜ የአስተዳደር እርምጃዎች",
+      "noActions": "ምንም የቅርብ ጊዜ የካምፕ እርምጃዎች አልተመዘገቡም።",
+      "reason": "ምክንያት፡ {{reason}}",
+      "actionBy": "እርምጃው የተወሰደው በ፡ {{name}}"
+    }
+  },
+  "user": {
+    "title": "የተጠቃሚ አስተዳደር",
+    "subtitle": "በመድረኩ ላይ ያሉትን ሁሉንም የተጠቃሚ መለያዎች ያስተዳድሩ",
+    "refresh": "አድስ",
+    "loading": "በመጫን ላይ...",
+    "deleteDialog": {
+      "title": "ቋሚ ስረዛን ያረጋግጡ",
+      "subtitle": "ይህ ድርጊት ሊቀለበስ አይችልም እና ሁሉንም የተጠቃሚ መረጃዎች ከአገልጋዮቻችን ያስወግዳል።",
+      "warningHeader": "አስፈላጊ እርምጃ፡ ሊቀለበስ የማይችል ሂደት",
+      "confirmMsg": "የ\"{{name}}\" መለያን በቋሚነት መሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?",
+      "purgeMsg": "ይህ ተጠቃሚ ወዲያውኑ ከመረጃ ቋቱ ይወገዳል።",
+      "consequences": {
+        "title": "ውጤቶች",
+        "item1": "ሁሉም የመገለጫ መረጃዎች፣ ምርጫዎች እና ተያያዥ መረጃዎች በቋሚነት ይጠፋሉ።",
+        "item2": "ተጠቃሚው ሁሉንም የመድረክ ባህሪያት እና አገልግሎቶች ወዲያውኑ ያጣል።",
+        "item3": "ይህ ስረዛ ኦዲት ይደረጋል እና ከአስተዳዳሪ መገለጫዎ ጋር ይያያዛል።"
+      },
+      "cancel": "ሰርዝ",
+      "purging": "መረጃዎችን በማጥፋት ላይ...",
+      "deleteBtn": "ስረዛውን ያረጋግጡ"
+    },
+    "error": {
+      "load": "ተጠቃሚዎችን መጫን አልተሳካም",
+      "suspend": "ተጠቃሚውን ማገድ አልተሳካም",
+      "ban": "ተጠቃሚውን በቋሚነት ማገድ አልተሳካም",
+      "unblock": "ተጠቃሚውን ማንሳት አልተሳካም",
+      "warning": "ማስጠንቀቂያ መላክ አልተሳካም",
+      "create": "ተጠቃሚ መፍጠር አልተሳካም",
+      "revoke": "ሚናውን ማንሳት አልተሳካም",
+      "delete": "ተጠቃሚውን መሰረዝ አልተሳካም",
+      "update": "የተጠቃሚውን መረጃ ማዘመን አልተሳካም",
+      "approve": "አስተዳዳሪውን ማፅደቅ አልተሳካም",
+      "reasonRequired": "እባክዎን የታገደበትን ምክንያት ያቅርቡ",
+      "nameEmailRequired": "የመጀመሪያ ስም እና ኢሜል አስፈላጊ ናቸው"
+    },
+    "success": {
+      "suspend": "ተጠቃሚው ታግዷል",
+      "ban": "ተጠቃሚው በቋሚነት ታግዷል",
+      "unblock": "ተጠቃሚው እገዳው ተነስቶ ወደ ንቁ ሁኔታ ተመልሷል",
+      "warning": "ማስጠንቀቂያ ወደ ተጠቃሚው ተልኳል",
+      "passwordGenerated": "ደህንነቱ የተጠበቀ የይለፍ ቃል ተፈጥሯል",
+      "create": "አዲስ የተጠቃሚ መለያ ተፈጥሯል",
+      "revoke": "የአስተዳዳሪነት ሚና ከተጠቃሚው ተነስቷል",
+      "deleteTitle": "መለያው ተሰርዟል",
+      "deleteDesc": "የተጠቃሚው መለያ ከስርዓቱ በቋሚነት ተወግዷል።",
+      "update": "የተጠቃሚው መረጃ ተዘምኗል",
+      "approve": "የአስተዳዳሪው መለያ ጸድቋል"
+    },
+    "stats": {
+      "campers": "ጠቅላላ ካምፐሮች",
+      "campersDesc": "ጠቅላላ የካምፐር ተጠቃሚዎች",
+      "managers": "የካምፕ አስተዳዳሪዎች",
+      "managersDesc": "ጠቅላላ የአስተዳዳሪ መለያዎች",
+      "suspended": "የታገዱ",
+      "suspendedDesc": "ለጊዜው የታገዱ",
+      "banned": "የተከለከሉ",
+      "bannedDesc": "በቋሚነት የታገዱ"
+    },
+    "tabs": {
+      "campers": "የካምፐር መለያዎች",
+      "managers": "የካምፕ አስተዳዳሪዎች",
+      "create": "ተጠቃሚ ፍጠር"
+    },
+    "camperTab": {
+      "title": "የካምፐር መለያዎች",
+      "subtitle": "የደንበኛ መለያዎችን ያስተዳድሩ",
+      "searchPlaceholder": "ተጠቃሚዎችን ይፈልጉ...",
+      "statusFilter": {
+        "all": "ሁሉም ሁኔታዎች",
+        "active": "ንቁ",
+        "suspended": "የታገዱ",
+        "banned": "የተከለከሉ"
+      },
+      "table": {
+        "id": "የተጠቃሚ መታወቂያ",
+        "name": "ስም",
+        "email": "ኢሜል",
+        "phone": "ስልክ",
+        "joined": "የተቀላቀለበት ቀን",
+        "status": "ሁኔታ",
+        "actions": "እርምጃዎች",
+        "manage": "አስተዳድር",
+        "loading": "ካምፐሮችን በመጫን ላይ...",
+        "noUsers": "ምንም ካምፐሮች አልተገኙም።"
+      },
+      "dialog": {
+        "title": "ተጠቃሚውን ያስተዳድሩ፡ {{name}}",
+        "edit": {
+          "firstName": "የመጀመሪያ ስም",
+          "lastName": "የአያት ስም",
+          "email": "ኢሜል",
+          "phone": "ስልክ",
+          "save": "ለውጦችን አስቀምጥ",
+          "cancel": "ሰርዝ"
+        },
+        "info": {
+          "email": "ኢሜል",
+          "phone": "ስልክ",
+          "bookings": "ጠቅላላ ቦታ ማስያዣዎች",
+          "joined": "አባል የሆኑት ከ",
+          "editDetails": "መረጃውን አርም"
+        },
+        "warning": {
+          "label": "ማስጠንቀቂያ ላክ",
+          "placeholder": "ለአነስተኛ ጥፋቶች የማስጠንቀቂያ መልእክት...",
+          "btn": "ማስጠንቀቂያ ላክ"
+        },
+        "actions": {
+          "suspend": "ተጠቃሚውን እገድ",
+          "unblock": "እገዳውን አንሳ",
+          "banPlaceholder": "ለቋሚ እገዳ ምክንያት...",
+          "banBtn": "በቋሚነት እገድ",
+          "deleteBtn": "መለያውን በቋሚነት ሰርዝ"
+        }
+      }
+    },
+    "managerTab": {
+      "title": "የካምፕ አስተዳዳሪ መለያዎች",
+      "subtitle": "የካምፕ ባለቤቶችን እና ኦፕሬተሮችን መለያዎች ያስተዳድሩ",
+      "searchPlaceholder": "አስተዳዳሪዎችን ይፈልጉ...",
+      "table": {
+        "id": "የአስተዳዳሪ መታወቂያ",
+        "name": "ስም",
+        "email": "ኢሜል",
+        "camp": "ካምፕ",
+        "joined": "የተቀላቀለበት ቀን",
+        "kyc": "የKYC ሁኔታ",
+        "status": "ሁኔታ",
+        "actions": "እርምጃዎች",
+        "view": "ዝርዝሮችን ይመልከቱ",
+        "loading": "አስተዳዳሪዎችን በመጫን ላይ...",
+        "noUsers": "ምንም አስተዳዳሪዎች አልተገኙም።"
+      },
+      "dialog": {
+        "title": "የካምፕ አስተዳዳሪ፡ {{name}}",
+        "warning": {
+          "label": "መልእክት / ማስጠንቀቂያ ላክ",
+          "placeholder": "ቀጥተኛ መልእክት ወይም ማስጠንቀቂያ ይላኩ...",
+          "btn": "መልእክት ላክ"
+        },
+        "docs": {
+          "title": "ሰነዶች",
+          "kyc": "የKYC ሁኔታ",
+          "approve": "አፅድቅ"
+        },
+        "actions": {
+          "revoke": "የአስተዳዳሪነት ሚናውን አንሳ",
+          "suspend": "መለያውን እገድ",
+          "unblock": "እገዳውን አንሳ",
+          "delete": "የአስተዳዳሪውን መለያ ሰርዝ"
+        }
+      }
+    },
+    "createTab": {
+      "title": "አዲስ የተጠቃሚ መለያ ይፍጠሩ",
+      "subtitle": "አዲስ የአስተዳደር ወይም የአገልግሎት አቅራቢ መለያ ያዘጋጁ",
+      "form": {
+        "firstName": "የመጀመሪያ ስም",
+        "firstNamePlaceholder": "የመጀመሪያ ስም ያስገቡ",
+        "lastName": "የአያት ስም",
+        "lastNamePlaceholder": "የአያት ስም ያስገቡ",
+        "email": "የኢሜል አድራሻ",
+        "phone": "የስልክ ቁጥር",
+        "role": "የመለያ ሚና",
+        "roles": {
+          "camper": "ካምፐር (ነባሪ)",
+          "manager": "የካምፕ አስተዳዳሪ",
+          "admin": "የስርዓት አስተዳዳሪ"
+        },
+        "password": "የመጀመሪያ የይለፍ ቃል",
+        "passwordPlaceholder": "የይለፍ ቃል ያስገቡ ወይም ይፍጠሩ",
+        "generate": "ደህንነቱ የተጠበቀ የይለፍ ቃል ፍጠር",
+        "createBtn": "የተጠቃሚ መለያ ፍጠር"
+      },
+      "credentials": {
+        "title": "መለያው በተሳካ ሁኔታ ተፈጥሯል",
+        "subtitle": "እባክዎን እነዚህን መረጃዎች ለተጠቃሚው በደህንነት ያጋሩ።",
+        "email": "ኢሜል",
+        "password": "የይለፍ ቃል",
+        "role": "ሚና",
+        "warning": "ይህ የይለፍ ቃል እንደገና አይታይም። አሁኑኑ መቅዳትዎን ያረጋግጡ።",
+        "done": "ተጠናቀቀ"
+      }
+    },
+    "moderation": {
+      "title": "የቅርብ ጊዜ የቁጥጥር እርምጃዎች",
+      "noActions": "ምንም የቅርብ ጊዜ እርምጃዎች አልተመዘገቡም።",
+      "actionBy": "{{date}} በ {{name}}"
+    }
+  },
+  "dashboard": {
+    "title": "የስርዓት አጠቃላይ እይታ",
+    "subtitle": "የእውነተኛ ጊዜ የመድረክ አፈፃፀም እና የሁኔታ ቁጥጥር",
+    "errorLoad": "የዳሽቦርድ መለኪያዎችን መጫን አልተሳካም",
+    "loading": "የዳሽቦርድ መለኪያዎችን በመጫን ላይ...",
+    "totalRevenue": "ጠቅላላ የመድረክ ገቢ",
+    "activeUsers": "ጠቅላላ ንቁ ተጠቃሚዎች",
+    "occupancyRate": "አጠቃላይ የተይዞታ መጠን",
+    "conversionRate": "የቦታ ማስያዣ ልወጣ መጠን",
+    "revenueGrowth": "+12.5% ካለፈው ወር ጋር ሲነፃፀር",
+    "usersGrowth": "+8.2% በዚህ ሳምንት",
+    "occupancyGrowth": "+5.3% ካለፈው ሳምንት ጋር ሲነፃፀር",
+    "conversionGrowth": "-2.1% ካለፈው ሳምንት ጋር ሲነፃፀር",
+    "pendingCamps": "በመጠባበቅ ላይ ያሉ የካምፕ ይሁንታዎች",
+    "pendingKYC": "KYC የሚጠብቁ አስተዳዳሪዎች",
+    "systemUptime": "አጠቃላይ የስርዓት ዝግጁነት",
+    "charts": {
+      "revenue": "የገቢ አዝማሚያ (ETB)",
+      "occupancy": "የተይዞታ መጠን (%)",
+      "resources": "የአገልጋይ ሀብት አጠቃቀም",
+      "latency": "የኤፒአይ መዘግየት መቶኛ (ms)",
+      "month": "ወር",
+      "week": "ሳምንት",
+      "time": "ጊዜ"
+    },
+    "health": {
+      "title": "የኮንቴይነር ጤና",
+      "webServer": "የድር አገልጋይ",
+      "database": "የመረጃ ቋት",
+      "redis": "Redis መሸጎጫ",
+      "healthy": "ጤናማ",
+      "hitRatio": "የግኝት ሬሾ፡ {{ratio}}%"
+    },
+    "errors": {
+      "title": "የቅርብ ጊዜ የስህተት ማጠቃለያ",
+      "rate": "የስህተት መጠን",
+      "warnings": "የማስጠንቀቂያ ብዛት",
+      "critical": "ከባድ ስህተቶች",
+      "last24": "ባለፉት 24 ሰዓታት",
+      "lastHour": "ባለፈው አንድ ሰዓት",
+      "last7Days": "ባለፉት 7 ቀናት"
+    }
+  },
+  "reports": {
+    "title": "ሪፖርቶች እና ማስጠንቀቂያዎች",
+    "subtitle": "ቴክኒካዊ ሪፖርቶችን ያመነጩ እና ማሳወቂያዎችን ይላኩ",
+    "loading": "የሪፖርቶች ውቅር በመጫን ላይ...",
+    "success": {
+      "templateLoaded": "አብነቱ በተሳካ ሁኔታ ተጭኗል",
+      "templateCreated": "አብነቱ በተሳካ ሁኔታ ተፈጥሯል",
+      "reportStarted": "የሪፖርት ማመንጨት ተጀምሯል - በኢሜል ይላክልዎታል",
+      "alertSent": "ማስጠንቀቂያው በተሳካ ሁኔታ ተልኳል"
+    },
+    "error": {
+      "fillFields": "እባክዎን ርዕስ እና መልእክት ሁለቱንም ይሙሉ",
+      "templateCreate": "አብነት መፍጠር አልተሳካም",
+      "fetch": "የሪፖርቶች እና ማስጠንቀቂያዎች መረጃን ማምጣት አልተሳካም",
+      "generate": "ሪፖርት ማመንጨት አልተሳካም",
+      "requiredFields": "እባክዎን ሁሉንም አስፈላጊ ቦታዎች ይሙሉ",
+      "sendAlert": "ማስጠንቀቂያ መላክ አልተሳካም"
+    },
+    "tabs": {
+      "reports": "ቴክኒካዊ ሪፖርቶች",
+      "alerts": "ማስጠንቀቂያዎችን ላክ",
+      "templates": "የማስጠንቀቂያ አብነቶች",
+      "history": "የማስጠንቀቂያ ታሪክ"
+    },
+    "stats": {
+      "uptime": "የስርዓት ዝግጁነት",
+      "responseTime": "የኤፒአይ ምላሽ ጊዜ",
+      "errorRate": "የስህተት መጠን",
+      "last30Days": "ባለፉት 30 ቀናት",
+      "average": "አማካኝ (p50)",
+      "last24Hours": "ባለፉት 24 ሰዓታት"
+    },
+    "uptimeChart": "የስርዓት ዝግጁነት አዝማሚያ",
+    "availableReports": "የሚገኙ ሪፖርቶች",
+    "table": {
+      "name": "የሪፖርት ስም",
+      "type": "ዓይነት",
+      "schedule": "መርሐግብር",
+      "lastRun": "ለመጨረሻ ጊዜ የተከናወነበት",
+      "actions": "እርምጃዎች",
+      "generate": "አሁን አመንጭ",
+      "noReports": "ምንም የሚገኙ ሪፖርቶች የሉም።"
+    },
+    "utilization": {
+      "title": "የሀብት አጠቃቀም",
+      "cpu": "የሲፒዩ አጠቃቀም",
+      "memory": "የማህደረ ትውስታ አጠቃቀም",
+      "disk": "የዲስክ ግብዓት/ውጤት",
+      "network": "አውታረ መረብ",
+      "average": "አማካኝ",
+      "peak": "ከፍተኛ",
+      "read": "ንባብ",
+      "write": "ጽሕፈት",
+      "inbound": "ገቢ",
+      "outbound": "ወጪ"
+    },
+    "sendAlert": {
+      "title": "የስርዓት ማስጠንቀቂያ ላክ",
+      "desc": "ተጠቃሚዎችን ስለ ጥገና፣ አዳዲስ ባህሪያት ወይም የፖሊሲ ለውጦች ያሳውቁ",
+      "formTitle": "የማስጠንቀቂያ ርዕስ",
+      "placeholderTitle": "የማስጠንቀቂያ ርዕስ ያስገቡ...",
+      "message": "መልእክት",
+      "placeholderMessage": "መልእክትዎን እዚህ ያስገቡ...",
+      "recipients": "ተቀባዮች",
+      "allUsers": "ሁሉም ተጠቃሚዎች",
+      "campersOnly": "ካምፐሮች ብቻ",
+      "managersOnly": "የካምፕ አስተዳዳሪዎች ብቻ",
+      "activeOnly": "ንቁ ተጠቃሚዎች ብቻ",
+      "delivery": "የማድረሻ ዘዴዎች",
+      "email": "ኢሜል",
+      "sms": "ኤስኤምኤስ",
+      "inApp": "በመተግበሪያው ውስጥ",
+      "btn": "ማስጠንቀቂያ ላክ"
+    },
+    "templates": {
+      "title": "ቀድሞ የጸደቁ የማስጠንቀቂያ አብነቶች",
+      "desc": "የተለመዱ ማሳወቂያዎችን በፍጥነት ይላኩ",
+      "createBtn": "አብነት ፍጠር",
+      "dialogTitle": "አዲስ የማስጠንቀቂያ አብነት ፍጠር",
+      "formTitle": "የአብነት ርዕስ",
+      "placeholderTitle": "ለምሳሌ፦ ማስጠንቀቂያ - ከፍተኛ አጠቃቀም",
+      "messageBody": "የመልእክቱ ይዘት",
+      "placeholderMessage": "ለተለዋዋጮች [BRACKETS] ይጠቀሙ...",
+      "saveBtn": "አብነት አስቀምጥ",
+      "useBtn": "አብነቱን ተጠቀም"
+    },
+    "history": {
+      "title": "የማስጠንቀቂያ ታሪክ",
+      "type": "ዓይነት",
+      "message": "መልእክት",
+      "recipients": "ተቀባዮች",
+      "sentAt": "የተላከበት ጊዜ",
+      "status": "ሁኔታ",
+      "noHistory": "ምንም የማስጠንቀቂያ ታሪክ አልተገኘም።"
+    }
+  }
+}

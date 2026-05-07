@@ -43,7 +43,7 @@ const router = express.Router();
 router.get(
   "/",
   protect,
-  authorizeRoles("super_admin"),
+  authorizeRoles("system_admin"),
   async (req, res) => {
     try {
       const totalCamps = await Camp.countDocuments();

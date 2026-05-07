@@ -11,9 +11,11 @@ import {
   Edit,
   Home
 } from 'lucide-react';
+import AddCampForm from './AddCampForm';
 
 const CampManagement = () => {
   const [activeTab, setActiveTab] = useState('All Camps');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const stats = [
     { label: 'Total Camps', value: '50', icon: Tent, color: 'text-blue-500', bgColor: 'bg-blue-50' },
@@ -91,24 +93,29 @@ const CampManagement = () => {
     <div className="flex flex-col h-full bg-slate-50 p-6 font-sans">
       
       {/* Top Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <h1 className="text-2xl font-bold text-slate-800">Camp Management</h1>
-        <div className="flex items-center space-x-4">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
+          <div className="relative w-full sm:w-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
             <input 
               type="text" 
               placeholder="Search camps..." 
-              className="pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 w-64 bg-white"
+              className="pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 w-full sm:w-64 bg-white"
             />
           </div>
-          <button className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg border border-transparent hover:border-slate-200 transition-colors">
-            <Bell className="w-5 h-5" />
-          </button>
-          <button className="flex items-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-            <Plus className="w-4 h-4" />
-            <span>Add Camp</span>
-          </button>
+          <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-end">
+            <button className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg border border-transparent hover:border-slate-200 transition-colors">
+              <Bell className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={() => setIsAddModalOpen(true)}
+              className="flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors w-full sm:w-auto shadow-sm"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Camp</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -128,13 +135,13 @@ const CampManagement = () => {
       </div>
 
       {/* Tabs and Filters Row */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-2 bg-slate-100/50 p-1 rounded-lg">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="flex flex-wrap items-center gap-2 bg-slate-100/50 p-1 rounded-lg w-full sm:w-auto overflow-x-auto">
           {tabs.map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors flex-1 sm:flex-none text-center whitespace-nowrap ${
                 activeTab === tab 
                   ? 'bg-teal-600 text-white shadow-sm' 
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
@@ -144,8 +151,8 @@ const CampManagement = () => {
             </button>
           ))}
         </div>
-        <div>
-          <select className="border border-slate-200 bg-white text-slate-700 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer">
+        <div className="w-full sm:w-auto">
+          <select className="w-full sm:w-auto border border-slate-200 bg-white text-slate-700 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer shadow-sm">
             <option>All Locations</option>
             <option>Bale Mountains</option>
             <option>Simien Mountains</option>
@@ -219,6 +226,12 @@ const CampManagement = () => {
           </div>
         ))}
       </div>
+      
+      {/* Add Camp Modal Overlay */}
+      <AddCampForm 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
+      />
       
     </div>
   );

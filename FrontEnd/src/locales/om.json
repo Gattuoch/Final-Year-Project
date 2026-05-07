@@ -1,0 +1,1246 @@
+{
+  "languages": {
+    "en": "Ingiliffa (English)",
+    "am": "Amhaariffa (አማርኛ)",
+    "om": "Afaan Oromoo"
+  },
+  "sidebar": {
+    "dashboard": "Daashboordii",
+    "security": "Nageenya",
+    "database": "Kuusaa Deetaa",
+    "backup": "Olfudhiinsa & Deebisi",
+    "logs": "Galmeewwan",
+    "reports": "Gabaasota & Akeekkachiisota",
+    "features": "Bulchiinsa Amaloota",
+    "configuration": "Qindaa'ina",
+    "financial": "Faayinaansii",
+    "campManagement": "Bulchiinsa Kaampii",
+    "userManagement": "Bulchiinsa Faaqadattoota"
+  },
+  "dashboard": {
+    "title": "Daashboordii Sirnaa",
+    "subtitle": "Safartuuwwan waltajjii yeroo dhugaa fi fayyummaa sirnaa",
+    "totalRevenue": "Galii Waligalaa",
+    "activeUsers": "Faaqadattoota Socho'an",
+    "occupancyRate": "Dhibbeentaa Qabiyyee",
+    "conversionRate": "Dhibbeentaa Jijjiiramaa",
+    "pendingCamps": "Mirkaneessii Kaampii Eegamaa jiran",
+    "pendingKYC": "Sanadoota KYC Eegamaa jiran",
+    "systemUptime": "Yeroo Hojii Sirnaa",
+    "revenueTrend": "Kallattii Galii (ETB)",
+    "containerHealth": "Fayyummaa Qodaa",
+    "webServer": "Weeb Sarvarii",
+    "database": "Kuusaa Deetaa",
+    "redisCache": "Redis Cache",
+    "healthy": "Fayyaa",
+    "recentErrorSummary": "Cuunfaa Dogoggoraa Dhihoo",
+    "errorRate": "Saffisa Dogoggoraa",
+    "warningCount": "Baay'ina Akeekkachiisaa",
+    "criticalErrors": "Dogoggorota Cimaa"
+  },
+  "profile": {
+    "title": "Qindaa'ina Piroofayilii",
+    "subtitle": "Qindaa'ina eenyummaa kee fi filannoo kee bulchi",
+    "status": "Admin Hojii Irra Jiru",
+    "loading": "Ragaa piroofayilii fe'amaa jira...",
+    "tabs": {
+      "personal": "Oduu Dhuunfaa",
+      "security": "Nageenya",
+      "preferences": "Filannoo",
+      "activity": "Galmee Hojii"
+    },
+    "personal": {
+      "admin": "Bulchaa Sirnaa",
+      "dept": "IT & Opereshinii",
+      "firstName": "Maqaa",
+      "lastName": "Maqaa Abbaa",
+      "email": "Teessoo Imeelii",
+      "phone": "Lakk. Bilbilaa",
+      "position": "Gahee Hojii",
+      "department": "Kutaa Hojii",
+      "location": "Bakka Jireenyaa",
+      "bio": "Waa'ee koo",
+      "bioPlaceholder": "Waa'ee kee nutti himi...",
+      "saveBtn": "Jijjiirama Ol Kaayi"
+    },
+    "security": {
+      "title": "Jecha Iccitii Jijjiiri",
+      "subtitle": "Nageenya eenyummaa keetiif jecha iccitii kee haaromsi",
+      "current": "Jecha Iccitii Ammee",
+      "new": "Jecha Iccitii Haaraa",
+      "confirm": "Jecha Iccitii Haaraa Mirkaneessi",
+      "requirements": "Ulaagaa jecha iccitii: Yoo xiqqaate mallattoo 8, qubeewwan gurguddaa, xixinnoo, lakkoofsota fi mallattoolee addaa kan of keessaa qabu.",
+      "updateBtn": "Jecha Iccitii Haaromsi",
+      "tfa": "Mirkaneessa Sadarkaa Lamaa (2FA)",
+      "tfaDesc": "Nageenya eenyummaa keetiif dabalata dabali",
+      "tfaEnabled": "Mirkaneessi sadarkaa lamaa banameera",
+      "tfaDisabled": "Mirkaneessi sadarkaa lamaa cufameera"
+    },
+    "preferences": {
+      "title": "Filannoo Beeksisaa",
+      "subtitle": "Akkaataa beeksisa itti fudhattu bulchi",
+      "email": "Beeksisa Imeelii",
+      "emailDesc": "Waa'ee sochii sirnaa haaromsa imeelii fudhu",
+      "system": "Akeekkachiisa Sirnaa",
+      "systemDesc": "Jijjiirama haala sirnaa irratti beeksisa fudhu",
+      "security": "Akeekkachiisa Nageenyaa",
+      "securityDesc": "Waa'ee dhimmoota nageenyaa akeekkachiisa fudhu",
+      "weekly": "Gabaasa Torbanii",
+      "weeklyDesc": "Gabaasa gabaabaa torbanii fudhu",
+      "sessionTitle": "Qindaa'ina Turinsaa",
+      "sessionTimeout": "Yeroo Turinsaa (daqiiqaa)",
+      "sessionDesc": "Erga hojii dhaabdee booda ofiin ba'i",
+      "saveBtn": "Filannoo Ol Kaayi"
+    },
+    "activity": {
+      "title": "Sochii Dhiheenyaa",
+      "subtitle": "Sochii eenyummaa kee fi tarkaanfii dhiheenyaa",
+      "noActivity": "Sochiin dhiheenyaa hin argamne.",
+      "refresh": "Sochii Haaromsi"
+    },
+    "messages": {
+      "profileSuccess": "Piroofayiliin milkaa'inaan haaromfameera!",
+      "profileError": "Piroofayilii haaromsuun hin danda'amne",
+      "passMismatch": "Jechi iccitii haaraa hin wal-fakaatu!",
+      "passLength": "Jechi iccitii yoo xiqqaate mallattoo 8 ta'uu qaba!",
+      "passSuccess": "Jechi iccitii milkaa'inaan jijjiirameera!",
+      "passError": "Jecha iccitii jijjiiruun hin danda'amne",
+      "prefSuccess": "Filannoon milkaa'inaan haaromfameera!",
+      "prefError": "Filannoo haaromsuun hin danda'amne",
+      "avatarSuccess": "Suuraan milkaa'inaan haaromfameera!",
+      "avatarError": "Suuraa ol kaayuun hin danda'amne"
+    }
+  },
+  "backup": {
+    "title": "Baak'appii & Deebisanii Argachuu",
+    "subtitle": "Hambaa ragaa fi balaa irraa deebisanii argachuu mirkaneessi",
+    "loading": "Ragaa baak'appii fe'amaa jira...",
+    "overview": {
+      "lastFull": "Baak'appii Guutuu Dhumaa",
+      "lastIncremental": "Baak'appii Dabalataa Dhumaa",
+      "totalSize": "Hamma Baak'appii Waliigalaa",
+      "recoveryTests": "Yaalii Deebisanii Argachuu"
+    },
+    "tabs": {
+      "full": "Baak'appii Guutuu",
+      "incremental": "Baak'appii Dabalataa",
+      "recovery": "Deebisanii Argachuu & Yaalii",
+      "disaster": "Balaa Irraa Deebisanii Argachuu"
+    },
+    "full": {
+      "title": "Baak'appii Guutuu Daataa-beezii",
+      "subtitle": "Guyyaa guyyaatti sa'aatii 8:00 (EAT) ofiin kan raawwatamu",
+      "manualBtn": "Baak'appii Ofiin Raawwadhu",
+      "table": {
+        "id": "ID Baak'appii",
+        "database": "Daataa-beezii",
+        "size": "Hamma",
+        "timestamp": "Yeroo",
+        "status": "Haala",
+        "actions": "Tarkaanfii",
+        "restore": "Deebisi",
+        "noBackups": "Baak'appiin guutuun argame hin jiru."
+      },
+      "config": {
+        "title": "Qindaa'ina Sagantaa Baak'appii",
+        "postgres": "Baak'appii Guutuu PostgreSQL",
+        "mongo": "Baak'appii Guutuu MongoDB",
+        "retention": "Imaammata Turinsaa",
+        "daily": "Guyyaa guyyaatti sa'aatii 8:00 UTC",
+        "dailyMongo": "Guyyaa guyyaatti sa'aatii 8:15 UTC",
+        "retentionDesc": "Baak'appiin guyyaa 30 olii gara kuusaa galmeetti ni geeffamu",
+        "enabled": "Banameera",
+        "days": "Guyyaa 30"
+      }
+    },
+    "incremental": {
+      "title": "Baak'appii Dabalataa (Incremental)",
+      "subtitle": "Daqiiqaa 15 hundaatti ofiin kan raawwatamu",
+      "active": "Hojii Irra",
+      "next": "Baak'appii itti aanu daqiiqaa {{time}} keessatti",
+      "complete": "%{{percent}} xumurameera",
+      "table": {
+        "id": "ID Baak'appii",
+        "timestamp": "Yeroo",
+        "changes": "Jijjiirama",
+        "status": "Haala",
+        "noBackups": "Baak'appiin dabalataa argame hin jiru."
+      }
+    },
+    "recovery": {
+      "pitrTitle": "Yeroo Murtaa'etti Deebisanii Argachuu (PITR)",
+      "pitrSubtitle": "Guyyoota 30 darban keessatti daataa-beezii gara yeroo barbaadetti deebisi",
+      "warning": "⚠️ Akeekkachiisa",
+      "warningDesc": "Yeroo murtaa'etti deebisanii argachuun kan raawwatamu yoo ragaan bade qofa. Jalqaba naannoo yaalii irratti yaali.",
+      "target": "Galma Deebisanii Argachuu",
+      "executeBtn": "Yeroo Murtaa'etti Deebisanii Argachuu Raawwadhu",
+      "integrityTitle": "Yaalii Sirrummaa Baak'appii",
+      "integritySubtitle": "Sirrummaa baak'appii mirkaneessuuf yaalii deebisanii argachuu idilee",
+      "scheduleBtn": "Yaalii Saganteessi",
+      "table": {
+        "id": "ID Yaalii",
+        "type": "Gosa",
+        "env": "Naannoo",
+        "date": "Guyyaa",
+        "duration": "Yeroo Fudhate",
+        "status": "Haala",
+        "noTests": "Yaaliin deebisanii argachuu argame hin jiru."
+      }
+    },
+    "disaster": {
+      "title": "Balaa Irraa Deebisanii Argachuu",
+      "subtitle": "Adeemsa balaa irraa deebisanii argachuu eegi fi yaali",
+      "emergencyTitle": "Adeemsa Deebisanii Argachuu Ariifachiisaa",
+      "emergencyDesc": "Yoo rakkoon naannoo guutuu mudate, qajeelfama deebisanii argachuu hordofi",
+      "drillBtn": "Yaalii Balaa Irraa Deebisanii Argachuu Jalqabi",
+      "lastDrill": "Yaalii Dhumaa",
+      "rto": "Galma Yeroo Deebisanii Argachuu (RTO)",
+      "rpo": "Galma Qabxii Deebisanii Argachuu (RPO)",
+      "target": "Galma",
+      "lastAchieved": "Kan dhuma irratti milkaa'e",
+      "current": "Ammee",
+      "successful": "Kan Milkaa'e",
+      "runbooks": {
+        "title": "Qajeelfamoota Balaa Irraa Deebisanii Argachuu",
+        "zone": "Deebisanii Argachuu Rakkoo Naannoo",
+        "zoneDesc": "Rakkoo naannoo tajaajilaa guutuu",
+        "corruption": "Deebisanii Argachuu Badii Daataa-beezii",
+        "corruptionDesc": "Rakkoo sirrummaa ragaa",
+        "breach": "Deebii Rakkoo Nageenyaa",
+        "breachDesc": "Eeyyama malee seenuun booda deebisanii argachuu",
+        "view": "Qajeelfama Ilaali"
+      }
+    },
+    "messages": {
+      "fetchError": "Ragaa baak'appii fiduun hin danda'amne",
+      "fullSuccess": "Baak'appiin guutuun jalqabameera - kun yeroo sochiin xiqqaa ta'etti raawwatama",
+      "fullError": "Baak'appii guutuu jalqabuun hin danda'amne",
+      "restoreSuccess": "Deebisanii argachuun {{id}} irraa naannoo yaaliitiif saganteeffameera",
+      "restoreError": "Deebisanii argachuu saganteessuun hin danda'amne",
+      "pitrSuccess": "Yeroo murtaa'etti deebisanii argachuun jalqabameera",
+      "pitrError": "Yeroo murtaa'etti deebisanii argachuu jalqabuun hin danda'amne",
+      "testSuccess": "Yaaliin deebisanii argachuu saganteeffameera",
+      "testError": "Yaalii deebisanii argachuu saganteessuun hin danda'amne",
+      "drSuccess": "Yaaliin balaa irraa deebisanii argachuu jalqabameera",
+      "drError": "Yaalii balaa irraa deebisanii argachuu jalqabuun hin danda'amne"
+    }
+  },
+  "database": {
+    "title": "Bulchiinsa Daataa-beezii",
+    "subtitle": "Bulchiinsa fi qindaa'ina daataa-beezii sadarkaa olaanaa",
+    "loading": "Ragaa daataa-beezii fe'amaa jira...",
+    "overview": {
+      "systemDb": "Daataa-beezii Sirnaa",
+      "systemDbDesc": "Hamma kuusaa sanadaa waliigalaa",
+      "collections": "Koleekshiniiwwan",
+      "collectionsDesc": "Koleekshiniiwwan hojii irra jiran",
+      "performance": "Raawwii Gaaffii",
+      "performanceDesc": "Giddu-galeessa yeroo gaaffii"
+    },
+    "tabs": {
+      "queries": "Gaaffiiwwan",
+      "indexes": "Indeksiiwwan",
+      "migrations": "Imala Daataa (Migrations)",
+      "maintenance": "Suphaa"
+    },
+    "queries": {
+      "title": "Tahlila Gaaffii Suuta Jedhu",
+      "subtitle": "Gaaffiiwwan mil-sekoondii 100 ol fudhatan",
+      "generateBtn": "Karoora Maddisiisi",
+      "table": {
+        "query": "Gaaffii",
+        "duration": "Turinsa",
+        "executions": "Raawwii",
+        "table": "Gabatee",
+        "actions": "Tarkaanfii",
+        "optimize": "Qindessi",
+        "noQueries": "Gaaffiin suuta jedhu hin argamne."
+      },
+      "statsTitle": "Istaatistiiksii Gabatee",
+      "statsChartSize": "Hamma (MB)"
+    },
+    "indexes": {
+      "title": "Indeksiiwwan Daataa-beezii",
+      "subtitle": "Qindaa'ina raawwii gaaffii",
+      "newBtn": "Indeksii Haaraa",
+      "dialog": {
+        "title": "Indeksii Haaraa Uumi",
+        "desc": "Raawwii gaaffii fooyyessuuf koleekshiniif indeksii haaraa dabali.",
+        "collection": "Koleekshinii",
+        "selectPlaceholder": "Koleekshinii filadhu",
+        "fields": "Dirree (fkn. \"email:1\")",
+        "fieldsPlaceholder": "email:1",
+        "unique": "Indeksii Addaa (Unique)",
+        "cancel": "Haquu",
+        "create": "Indeksii Uumi",
+        "creating": "Uumamaa jira..."
+      },
+      "table": {
+        "name": "Maqaa Indeksii",
+        "table": "Gabatee",
+        "columns": "Utubaa",
+        "usage": "Fayyadama",
+        "actions": "Tarkaanfii",
+        "rebuild": "Irra-deebi'ii ijaari"
+      }
+    },
+    "migrations": {
+      "title": "Imala Maqaa-caasaa (Schema)",
+      "subtitle": "Jijjiirama caasaa hordofi fi raawwadhu",
+      "runBtn": "Imala Haaraa Raawwadhu",
+      "table": {
+        "id": "ID",
+        "desc": "Ibsa",
+        "status": "Haala",
+        "date": "Guyyaa",
+        "actions": "Tarkaanfii",
+        "details": "Bal'ina"
+      }
+    },
+    "maintenance": {
+      "archivalTitle": "Kuusaa Galmee (Archival)",
+      "archivalSubtitle": "Galmeewwan durii kuusaa galmeetti dabarsi",
+      "logsTitle": "Galmeewwan Ji'a 12 olii",
+      "estimated": "Galmeewwan tilmaamaman:",
+      "startBtn": "Kuusaa Jalqabi",
+      "lastRun": "Adeemsa Kuusaa Dhumaa",
+      "noRuns": "Adeemsi kanaan duraa hin argamne",
+      "records": "galmeewwan",
+      "integrityTitle": "Sirrummaa Daataa-beezii",
+      "integritySubtitle": "Waliigaltee mirkaneessi",
+      "runCheckBtn": "Yaalii Sirrummaa Raawwadhu",
+      "checkDesc": "Galmeewwan badan qoradhu",
+      "lastCheck": "Yaalii Dhumaa:",
+      "never": "Kanaan dura hin yaalamne",
+      "historyTitle": "Seenaa Suphaa",
+      "lastMaint": "Suphaa Dhumaa",
+      "nextSched": "Sagantaa Itti Aanu",
+      "pending": "Eeggannoo Irra",
+      "completed": "Xumurameera",
+      "scheduled": "Saganteeffameera"
+    },
+    "messages": {
+      "fetchError": "Ragaa daataa-beezii fiduun hin danda'amne",
+      "optSuccess": "Qindaa'inni gaaffii gara tarree tti dabalameera",
+      "optError": "Gaaffii qindessuun hin danda'amne",
+      "indexSuccess": "Indeksiin milkaa'inaan uumameera",
+      "indexError": "Indeksii uumuun hin danda'amne",
+      "migrationSuccess": "Imalli daataa milkaa'inaan raawwatameera",
+      "migrationError": "Imala daataa raawwachuun hin danda'amne",
+      "archivalSuccess": "Adeemsi kuusaa galmee jalqabameera",
+      "archivalError": "Kuusaa galmee jalqabuun hin danda'amne",
+      "integritySuccess": "Yaaliin sirrummaa daataa-beezii jalqabameera",
+      "integrityError": "Sirrummaa mirkaneessuun hin danda'amne",
+      "plansError": "Karoora raawwii maddisiisuun hin danda'amne",
+      "rebuildError": "Indeksii irra-deebi'anii ijaaruun hin danda'amne",
+      "detailsSuccess": "Bal'inni imalaa {{id}} gara koonsooliitti galmeeffameera",
+      "detailsError": "Bal'ina imalaa fiduun hin danda'amne"
+    }
+  },
+  "security": {
+    "title": "Nageenya",
+    "highlight": "Bulchiinsa",
+    "subtitle": "Imaammata nageenya waltajjii raawwachiisi fi hordofi",
+    "refresh": "Haarsi",
+    "loading": "Fe'amaa jira...",
+    "tabs": {
+      "policies": "Imaammata Nageenyaa",
+      "ipBlacklist": "Tarree IP dhorkaman",
+      "incidents": "Taateewwan Nageenyaa",
+      "scans": "Sakatta'iinsa Teessumaa"
+    },
+    "policies": {
+      "title": "Imaammata Jecha-darbii fi Mirkaneessaa",
+      "subtitle": "Xaxama jecha-darbii fi ulaagaalee MFA qindessi",
+      "mfa": "Mirkaneessa Sadarkaa Baay'ee (MFA)",
+      "mfaDesc": "Bulchitoonni hundi MFA akka fayyadaman gaafadhu",
+      "passwordLength": "Dheerinna Jecha-darbii Xiqqaa",
+      "characters": "qubeewwan",
+      "specialChars": "Qubee Addaa Gaafadhu",
+      "specialCharsDesc": "Jecha-darbiin @, #, $, kkf qabaachuu qaba",
+      "numbers": "Lakkoofsa Gaafadhu",
+      "numbersDesc": "Jecha-darbiin yoo xiqqaate lakkoofsa tokko qabaachuu qaba",
+      "uppercase": "Qubee Guddaa Gaafadhu",
+      "uppercaseDesc": "Jecha-darbiin qubeewwan gurguddaa qabaachuu qaba",
+      "saveBtn": "Imaammata Jecha-darbii Ol Kaayi"
+    },
+    "ipBlacklist": {
+      "title": "Tarree IP Dhorkaman",
+      "subtitle": "Teessoo IP shakkisoo ta'an dhorki",
+      "placeholder": "Teessoo IP dhorkamu galchi (fkn. 192.168.1.1)",
+      "blockBtn": "IP Dhorki",
+      "table": {
+        "ip": "Teessoo IP",
+        "reason": "Sababa",
+        "blockedAt": "Kan dhorkame",
+        "status": "Haala",
+        "actions": "Tarkaanfii",
+        "blocked": "Dhorkameera",
+        "unblock": "Dhorkaa Kaasi"
+      }
+    },
+    "incidents": {
+      "title": "Taateewwan Nageenyaa",
+      "subtitle": "Taateewwan nageenyaa qoradhu fi deebii kenni",
+      "table": {
+        "id": "ID Taatee",
+        "type": "Gosa",
+        "severity": "Hammeenya",
+        "userIp": "Fayyadamamaa/IP",
+        "timestamp": "Yeroo",
+        "status": "Haala",
+        "actions": "Tarkaanfii",
+        "viewDetails": "Bal'ina Ilaali"
+      }
+    },
+    "scans": {
+      "title": "Sakatta'iinsa Teessumaa (Vulnerability)",
+      "subtitle": "Sakatta'iinsa nageenyaa saganteessi fi irra deebi'ii ilaali",
+      "newBtn": "Sakatta'iinsa Haaraa Saganteessi",
+      "table": {
+        "id": "ID Sakatta'iinsa",
+        "tool": "Meeshaa",
+        "date": "Guyyaa",
+        "findings": "Argannoowwan",
+        "maxSeverity": "Hammeenya Olaanaa",
+        "status": "Haala",
+        "actions": "Tarkaanfii",
+        "viewReport": "Gabaasa Ilaali"
+      },
+      "penTestTitle": "Yaalii Seensaa (Penetration Testing)",
+      "lastPenTest": "Yaalii Seensaa Alaa Dhumaa",
+      "conductedBy": "Kan raawwatame: {{name}}",
+      "findingsStatus": "Haala Argannoowwan",
+      "findingsDesc": "Argannoowwan {{count}} - Hundi sirreeffamaniiru",
+      "complete": "Xumurameera",
+      "scheduleNext": "Yaalii Seensaa Itti Aanu Saganteessi"
+    },
+    "messages": {
+      "fetchError": "Qindaa'ina nageenyaa fiduun hin danda'amne",
+      "policySuccess": "Imaammanni jecha-darbii milkaa'inaan haaromfameera",
+      "policyError": "Imaammata jecha-darbii haaromsuun hin danda'amne",
+      "ipSuccess": "Teessoon IP {{ip}} dhorkameera",
+      "ipError": "IP dhorkuun hin danda'amne",
+      "unblockSuccess": "Teessoon IP {{ip}} dhorkaan irraa ka'eera",
+      "unblockError": "Dhorkaa IP kaasuun hin danda'amne",
+      "scanScheduled": "Sakatta'iinsi teessumaa halkan sa'aatii 8:00 irratti saganteeffameera"
+    }
+  },
+  "logs": {
+    "title": "Galmeewwan fi Hordoffii (Logs & Monitoring)",
+    "subtitle": "Galmeewwan sirnaa fi hojiirraa barbaadi fi tahlili",
+    "loading": "Hordoffii galmeewwan fe'amaa jira...",
+    "stats": {
+      "totalLogs": "Waliigala Galmeewwan",
+      "errors": "Dogoggora",
+      "warnings": "Akeekkachiisa",
+      "info": "Odeeffannoo",
+      "last24h": "Sa'aatii 24 darbani"
+    },
+    "search": {
+      "title": "Galmeewwan Barbaadi",
+      "placeholder": "Galmeewwan ergaa, ID fayyadamaa, ykn jecha furtuun barbaadi...",
+      "service": "Tajaajila",
+      "allServices": "Tajaajiloota Hunda",
+      "level": "Sadarkaa",
+      "allLevels": "Sadarkaa Hunda",
+      "searchBtn": "Barbaadi",
+      "userId": "ID Fayyadamaa (filannoo)",
+      "timeRange": "Yeroo",
+      "lastHour": "Sa'aatii 1 darbe",
+      "last6Hours": "Sa'aatii 6 darbani",
+      "last24Hours": "Sa'aatii 24 darbani",
+      "last7Days": "Guyyaa 7 darbani",
+      "last30Days": "Guyyaa 30 darbani"
+    },
+    "recent": {
+      "title": "Galmeewwan Dhihoo",
+      "live": "Live",
+      "table": {
+        "timestamp": "Yeroo",
+        "level": "Sadarkaa",
+        "service": "Tajaajila",
+        "user": "Fayyadamaa",
+        "message": "Ergaa",
+        "details": "Bal'ina",
+        "noLogs": "Galmeen hin argamne."
+      }
+    },
+    "alerts": {
+      "title": "Akeekkachiisa Galmee Qindessi",
+      "addBtn": "Akkaataa Akeekkachiisa Haaraa Dabali",
+      "statusActive": "Hojii Irra",
+      "statusInactive": "Hojii Irra Hin Jiru"
+    },
+    "stack": {
+      "title": "Logging Stack Giddu-galeessa",
+      "statusConnected": "Walitti Hidhameera",
+      "statusDisconnected": "Addaan Citeera"
+    },
+    "messages": {
+      "fetchError": "Ragaa galmeewwan fiduun hin danda'amne",
+      "searchSuccess": "Galmeewwan barbaadamaa jiru...",
+      "searchError": "Galmeewwan barbaaduun hin danda'amne",
+      "alertSuccess": "Akeekkachiisni akkaataa kanaan qindaa'eera",
+      "alertError": "Akeekkachiisa qindessuun hin danda'amne"
+    }
+  },
+  "features": {
+    "title": "Bulchiinsa Amalootaa (Feature Management)",
+    "subtitle": "Amaloota tamsaasun, yaaliiwwan gaggeessi, fi haaromsa bulchi",
+    "loading": "Ragaa bulchiinsa amalaa fe'amaa jira...",
+    "stats": {
+      "activeFeatures": "Amaloota Hojii Irra Jiran",
+      "outOf": "Waliigala {{total}} keessaa",
+      "abTests": "Yaaliiwwan A/B Gaggeeffamaa Jiran",
+      "activeExp": "Yaaliiwwan hojii irra jiran",
+      "latestVersion": "Sadaarkaa Haarawaa",
+      "deployed": "Tamsa'eera {{date}}"
+    },
+    "tabs": {
+      "features": "Alaabaa Amalootaa (Feature Flags)",
+      "abtests": "Yaaliiwwan A/B",
+      "updates": "Haaromsa fi Sirreeffama",
+      "deployment": "Tamsaasa (Deployment)"
+    },
+    "flags": {
+      "title": "Alaabaa Amalootaa",
+      "subtitle": "Otoo koodii hin tamsaasini amaloota banu/cufu",
+      "enabled": "Banameera",
+      "activeUsers": "Fayyadamtoota hojii irra jiran:",
+      "noFlags": "Alaabaan amalootaa hin argamne.",
+      "createBtn": "Alaabaa Amalaa Haaraa Uumi"
+    },
+    "abTests": {
+      "title": "Yaalii A/B (A/B Testing)",
+      "subtitle": "Fooyya'iinsa UX yaaliiwwaniin mirkaneessi",
+      "newBtn": "Yaalii Haaraa Uumi",
+      "table": {
+        "name": "Maqaa Yaalii",
+        "variants": "Garaagarummaa",
+        "traffic": "Qoodinsa Traafikaa",
+        "metric": "Safartuu Bu'uuraa",
+        "date": "Guyyaa Jalqabaa",
+        "status": "Haala",
+        "actions": "Tarkaanfii",
+        "results": "Bu'aa Ilaali",
+        "stop": "Dhaabi",
+        "noTests": "Yaaliin A/B hin argamne."
+      },
+      "results": {
+        "title": "Bu'aa Yaalii: Irra-deebii Diizaayinii Homepage",
+        "variantA": "Variant A (Control)",
+        "variantB": "Variant B (New)",
+        "traffic": "Traafikaa {{percent}}%",
+        "convRate": "Conversion Rate",
+        "convStats": "Conversions {{conversions}} / {{visitors}} visitors",
+        "improvement": "Fooyya'iinsa +{{percent}}%"
+      }
+    },
+    "updates": {
+      "title": "Haaromsa Sirnaa",
+      "subtitle": "Sirreeffama OS fi haaromsa diippendensii",
+      "checkBtn": "Haaromsa Sakatta'i",
+      "table": {
+        "version": "Sadaarkaa",
+        "desc": "Ibsa",
+        "date": "Guyyaa",
+        "status": "Haala",
+        "noUpdates": "Haaromsi hin argamne."
+      },
+      "pending": "Haaromsa Eeggannoo Irra Jiran",
+      "available": "Ni jira"
+    },
+    "deployment": {
+      "title": "Tamsaasa Addaan Hin Citne (Zero-Downtime)",
+      "subtitle": "Otoo tajaajilli hin citin sadaarkaa haaraa tamsaasun",
+      "current": "Sadaarkaa Ammaa",
+      "live": "Live",
+      "staging": "Sadaarkaa Yaalii (Staging)",
+      "ready": "Qophiidha",
+      "newFeatures": "Amaloota haaraa:",
+      "deployBtn": "Gara Production tamsaasun",
+      "strategy": "Tooftaa Tamsaasaa",
+      "strategyRolling": "Rolling deployment (kan gorfamu)",
+      "strategyBlueGreen": "Blue-green deployment",
+      "strategyCanary": "Canary deployment",
+      "history": "Seenaa Tamsaasaa",
+      "duration": "Turinsa:",
+      "success": "Milkaa'eera"
+    },
+    "messages": {
+      "fetchError": "Ragaa amalootaa fiduun hin danda'amne",
+      "toggleSuccess": "Amalli \"{{id}}\" {{status}}",
+      "toggleError": "Amala jijjiiruun hin danda'amne",
+      "deploySuccess": "Tamsaasni jalqabameera - amalli daqiiqaa 5 keessatti live ta'a",
+      "deployError": "Amala tamsaasun hin danda'amne",
+      "abStartSuccess": "Yaaliin A/B uumamee jalqabameera",
+      "abStartError": "Yaalii A/B jalqabuun hin danda'amne",
+      "abStopSuccess": "Yaaliin A/B \"{{id}}\" dhaabbateera",
+      "abStopError": "Yaalii A/B dhaabuun hin danda'amne",
+      "updateSuccess": "Haaromsi sirnaa yeroo suphaatti akka tamsaasamu saganteeffameera",
+      "updateError": "Haaromsa hojiirra oolchuun hin danda'amne",
+      "createFlagSuccess": "Alaabaan amalaa uumameera",
+      "edit": "Gulaali",
+      "delete": "Haquu",
+      "cancel": "Dhaabi",
+      "deleting": "Haqamaa jira...",
+      "saveChanges": "Jijjiirama Ol Kaayi",
+      "saving": "Ol Kaayamaa jira...",
+      "creating": "Uumamaa jira...",
+      "startTest": "Yaalii Jalqabi",
+      "createFlag": "Alaabaa Uumi",
+      "deleteConfirm": "Dhuguma \"{{name}}\" haquu barbaaddaa? Tarkaanfiin kun dhaabbataadha, duubatti deebi'uu hin danda'u."
+    }
+  },
+  "systemConfig": {
+    "title": "Qindaa'ina Sirnaa",
+    "subtitle": "Qindaa'ina waltajjii waliigalaa fi walitti hidhamiinsa bulchi",
+    "loading": "Qindaa'ina sirnaa fe'amaa jira...",
+    "success": {
+      "save": "Qindaa'inni milkaa'inaan ol kaayameera",
+      "test": "Gara {{service}}tti yaalii walitti hidhamiinsaa taasifamaa jira..."
+    },
+    "error": {
+      "fetch": "Ragaa qindaa'ina sirnaa fiduun hin danda'amne",
+      "save": "Qindaa'ina ol kaayuun hin danda'amne",
+      "test": "Gara {{service}}tti yaaliin walitti hidhamiinsaa hin milkoofne"
+    },
+    "tabs": {
+      "general": "Qindaa'inoota Waliigalaa",
+      "apiKeys": "Furtuuwwan API",
+      "services": "Tajaajiloota Alaa",
+      "health": "Fayyummaa Sirnaa"
+    },
+    "regional": {
+      "title": "Qindaa'inoota Naannoo",
+      "subtitle": "Zoonii yeroo, maallaqa fi dizaayinii guyyaa qindeessi",
+      "timezone": "Zoonii Yeroo",
+      "currency": "Maallaqa Idilee",
+      "dateFormat": "Bifa Guyyaa",
+      "language": "Afaan Idilee",
+      "saveBtn": "Qindaa'ina Olkaawi"
+    },
+    "business": {
+      "title": "Qindaa'inoota Daldalaa",
+      "commission": "Dhibbeentaa Koomishinii Waltajjii (%)",
+      "commissionDesc": "Koomishiniin buukingii tokkoon tokkoon irratti kaffalamu",
+      "payout": "Daangaa Kaffaltii Gad-aanaa (ETB)",
+      "payoutDesc": "Kaffaltii hooggantoota kaampiif gochuu dura baalansii gad-aanaa",
+      "cancellation": "Yeroo Haquu (sa'aatiin)",
+      "cancellationDesc": "Haquu tolaatiif sa'aatiiwwan galuu dura",
+      "saveBtn": "Qindaa'ina Daldalaa Olkaawi"
+    },
+    "apiKeysTab": {
+      "title": "Furtuuwwan API fi Ragaalee",
+      "subtitle": "Ragaalee tajaajila qaama sadaffaa bulchi",
+      "securityWarning": "Akeekkachiisa Nageenyaa",
+      "securityDesc": "Furtuuwwan API kee gonkumaa hin qoodin. Akkaawuntii keetiif guutummaatti hayyama kennu.",
+      "chapa": "Furtuu API Chapa",
+      "chapaDesc": "Kaffaltii raawwachuuf itti fayyadama",
+      "cloudinary": "Furtuu API Cloudinary",
+      "cloudinaryDesc": "Suuraa keessummeessuu fi CDNiif itti fayyadama",
+      "sms": "Furtuu API Dhiyeessaa SMS",
+      "smsDesc": "Beeksisa SMS erguuf itti fayyadama",
+      "email": "Furtuu API Tajaajila Iimeeyilii",
+      "emailDesc": "Beeksisa iimeeyilii erguuf itti fayyadama",
+      "testBtn": "Yaali",
+      "saveBtn": "Furtuuwwan API Olkaawi"
+    },
+    "servicesTab": {
+      "title": "Fayyummaa Tajaajila Alaa",
+      "subtitle": "Walitti hidhamiinsa qaama sadaffaa to'adhu",
+      "latency": "Turtee (Latency)",
+      "uptime": "Yeroo Hojii (Uptime)",
+      "viewDetails": "Bal'ina Ilaali",
+      "noData": "Ragaan tajaajiloota alaa hin jiru.",
+      "fallbackTitle": "Mala Bakka Bu'iinsaa (Fallback Mechanisms)",
+      "paymentFallback": "Jijjiirama Kaffaltii Kufe (Failover)",
+      "paymentFallbackDesc": "Yoo inni duraa kufe ofumaan gara tajaajila kaffaltii bakka bu'aatti jijjiiri",
+      "imageFallback": "Bakka Bu'iinsa Suuraa Keessummeessuu",
+      "imageFallbackDesc": "Yoo CDN hin jiru ta'e kuusaa naannoo fayyadami",
+      "notificationFallback": "Imaammata Yaalii Beeksisaa",
+      "notificationFallbackDesc": "Beeksisaawwan kufan hanga yeroo 3 dhumaatti irra deebi'ii yaali",
+      "enabled": "Banaa dha"
+    },
+    "healthTab": {
+      "title": "Daashboordii Fayyummaa Sirnaa",
+      "subtitle": "Safaroota fayyummaa waltajjii yeroo ammaa",
+      "systemUptime": "Yeroo Hojii Sirnaa",
+      "last30Days": "Guyyoota 30 darban",
+      "avgLatency": "Giddugaleessa Turtee API",
+      "p50": "P50 percentile",
+      "cacheRatio": "Reeshiyoo Cache Hit",
+      "redis": "Redis cache",
+      "errorRate": "Saffisa Dogoggoraa",
+      "last24Hours": "Sa'aatii 24 darban",
+      "componentStatus": "Haala Kutaa (Component)",
+      "noStatus": "Haalli kutaa hin jiru."
+    }
+  },
+  "finance": {
+    "title": "Bulchiinsa Faayinaansii",
+    "subtitle": "Darbaawwan, koomishinii fi kaffaltii to'adhu",
+    "loadingError": "Ragaa faayinaansii fe'uu hin dandeenye",
+    "retry": "Irra deebi'ii yaali",
+    "loading": "Daashboordii faayinaansii fe'aa jira...",
+    "overview": {
+      "totalRevenue": "Gali Waliigalaa",
+      "commissions": "Koomishinii",
+      "pendingPayouts": "Kaffaltii Eegaa Jiru",
+      "refundsIssued": "Maallaqa Deebifame"
+    },
+    "tabs": {
+      "transactions": "Darbaawwan Hundaa",
+      "payouts": "Kaffaltii",
+      "analytics": "Xiinxala Daldalaa",
+      "reconciliation": "Araara (Reconciliation)"
+    },
+    "transactionsTab": {
+      "historyTitle": "Seenaa Darbaawwanii",
+      "historySubtitle": "Buukingii, kuusaa fi maallaqa deebifame hundaa",
+      "allTypes": "Gosa Hundaa",
+      "bookings": "Buukingii",
+      "refunds": "Deebii Maallaqaa",
+      "deposits": "Kuusaa",
+      "exportCsv": "Gara CSV Ergi",
+      "table": {
+        "id": "Eenyummeessaa Darbaa",
+        "type": "Gosa",
+        "user": "Fayyadamaa",
+        "camp": "Kaampii",
+        "amount": "Madaala",
+        "commission": "Koomishinii",
+        "status": "Haala",
+        "date": "Guyyaa",
+        "actions": "Tarkaanfii",
+        "viewDetails": "Bal'ina Ilaali",
+        "noData": "Darbaan tokkoyyuu hin argamne."
+      },
+      "manualRefund": {
+        "title": "Deebii Maallaqaa Harkaa",
+        "idPlaceholder": "Eenyummeessaa Darbaa",
+        "amountPlaceholder": "Hamma Deebii (ETB)",
+        "btn": "Deebii Raawwadhu",
+        "desc": "Haala addaa ykn walitti bu'iinsa furuuf fayyadami"
+      }
+    },
+    "payoutsTab": {
+      "title": "Kaffaltii Hooggantoota Kaampii",
+      "subtitle": "Kaffaltii hooggantoota kaampiif raawwadhu",
+      "processAllBtn": "Kaffaltii Eegaa Jiran Hundaa Raawwadhu",
+      "table": {
+        "id": "Eenyummeessaa Kaffaltii",
+        "manager": "Hooggantuu",
+        "camp": "Kaampii",
+        "amount": "Madaala",
+        "status": "Haala",
+        "date": "Guyyaa",
+        "actions": "Tarkaanfii",
+        "processBtn": "Raawwadhu",
+        "viewReceipt": "Nagahee Ilaali",
+        "noData": "Kaffaltiin tokkoyyuu hin argamne."
+      },
+      "config": {
+        "title": "Qindaa'ina Kaffaltii",
+        "saveBtn": "Jijjiirama Olkaawi",
+        "savingBtn": "Olkaawaa jira...",
+        "commission": "Dhibbeentaa Koomishinii (%)",
+        "commissionDesc": "Dhibbeentaa buukingii tokkoon tokkoon irraa kaffalamu",
+        "threshold": "Daangaa Kaffaltii Gad-aanaa (ETB)",
+        "thresholdDesc": "Baalansii gad-aanaa kaffaltii raawwachuuf barbaachisu (ETB)",
+        "schedule": "Sagantaa Kaffaltii",
+        "daily": "Guyyaa guyyaan",
+        "weekly": "Torbaan torbaaniin",
+        "biweekly": "Torbaan lammaaniin",
+        "monthly": "Ji'a ji'aan"
+      }
+    },
+    "analyticsTab": {
+      "title": "Hubannoo Daldalaa",
+      "subtitle": "Hubannoo galii fi adeemsa",
+      "revenueByRegion": "Galii Naannoon",
+      "seasonalDemand": "Fedhii Yeroo",
+      "paymentMethods": "Raabsa Tooftaalee Kaffaltii",
+      "keyMetrics": "Safaroota Ijoo",
+      "avgBookingValue": "Giddugaleessa Gatii Buukingii",
+      "totalBookings": "Buukingii Waliigalaa",
+      "refundRate": "Saffisa Deebii Maallaqaa"
+    },
+    "reconciliationTab": {
+      "title": "Araara Tajaajila Kaffaltii",
+      "subtitle": "Ragaa waltajjii waliin madaali",
+      "settlementTitle": "Araara Chapa - Ebla 2026",
+      "settlementDate": "Guyyaa araaraa: Ebla 15, 2026",
+      "pendingReview": "Gamaaggama Eegaa Jira",
+      "platformTotal": "Ida'ama Waltajjii",
+      "gatewaySettlement": "Araara Tajaajila Kaffaltii",
+      "difference": "Garaagarummaa",
+      "markReconciled": "Akka Araarameetti Mallatteessi",
+      "prevSettlement": "Araara Duraa - Bitootessa 2026",
+      "prevReconciledOn": "Bitootessa 16, 2026 araarameera",
+      "reconciled": "Araarameera",
+      "historyTitle": "Seenaa Araaraa",
+      "march": "Araara Bitootessa 2026",
+      "marchDesc": "ETB 156,230 - Sirriitti madaalameera",
+      "feb": "Araara Guraandhala 2026",
+      "febDesc": "ETB 142,890 - Sirriitti madaalameera",
+      "jan": "Araara Amajjii 2026",
+      "janDesc": "ETB 138,450 - Sirriitti madaalameera"
+    }
+  },
+  "camp": {
+    "title": "Bulchiinsa Kaampii",
+    "subtitle": "Kaampiiwwan waltajjii irra jiran hundaa mirkaneessi, to'adhu fi bulchi",
+    "refresh": "Haarsi",
+    "loading": "Fe'amaa jira...",
+    "error": {
+      "load": "Ragaa kaampii fe'uun hin danda'amne",
+      "approve": "Kaampii mirkaneessuun hin danda'amne",
+      "reject": "Kaampii kuffisuun hin danda'amne",
+      "block": "Kaampii ittisuun hin danda'amne",
+      "ban": "Kaampii dhaabbataaf ittisuun hin danda'amne",
+      "warning": "Akeekkachiisa erguun hin danda'amne",
+      "kycApprove": "KYC mirkaneessuun hin danda'amne",
+      "kycReject": "KYC kuffisuun hin danda'amne",
+      "reasonRequired": "Maaloo sababa itti kuffifameef ibsi"
+    },
+    "success": {
+      "approve": "Kaampiin mirkanaa'ee maxxanfameera",
+      "reject": "Kaampiin milkaa'inaan kuffifameera",
+      "block": "Kaampiin yeroodhaaf ittifameera",
+      "ban": "Kaampiin dhaabbataaf ittifameera",
+      "warning": "Akeekkachiisni gara kaampiitti ergameera",
+      "kycApprove": "Sanadni KYC mirkanaa'eera",
+      "kycReject": "Sanadni KYC kuffifameera"
+    },
+    "stats": {
+      "active": "Kaampiiwwan Hojii Irra Jiran",
+      "activeDesc": "Mirkanaa'anii hojii irra jiran",
+      "pending": "Mirkaneessa Eegaa Jiran",
+      "pendingDesc": "Gamaaggama eegaa jiru",
+      "kyc": "KYC Eegaa Jiran",
+      "kycDesc": "Sanadoota mirkanaa'uu qaban",
+      "blocked": "Ittifaman/Dhorkaman",
+      "blockedDesc": "Imaammata cabsan"
+    },
+    "tabs": {
+      "pending": "Mirkaneessa Eegaa Jiran",
+      "active": "Kaampiiwwan Hojii Irra Jiran",
+      "kyc": "Taree KYC"
+    },
+    "pendingTab": {
+      "title": "Mirkaneessa Galmee Kaampii",
+      "subtitle": "Galmee kaampii haaraa gamaaggami fi mirkaneessi",
+      "table": {
+        "id": "Eenyummeessaa Kaampii",
+        "name": "Maqaa",
+        "manager": "Hooggantuu",
+        "location": "Bakka",
+        "submitted": "Kan Galmaa'e",
+        "status": "Haala",
+        "actions": "Tarkaanfii",
+        "review": "Gamaaggami",
+        "noPending": "Kaampiin mirkaneessa eegaa jiru hin jiru."
+      },
+      "dialog": {
+        "title": "Galmee Kaampii Gamaaggami",
+        "campName": "Maqaa Kaampii",
+        "manager": "Hooggantuu",
+        "location": "Bakka",
+        "rejectionReason": "Sababa Itti Kuffifame (yoo kuffifame)",
+        "rejectionPlaceholder": "Sababa itti kuffifameef ibsa kenni...",
+        "approveBtn": "Kaampii Mirkaneessi",
+        "rejectBtn": "Kaampii Kuffisi"
+      }
+    },
+    "activeTab": {
+      "title": "Kaampiiwwan Hojii Irra Jiran",
+      "subtitle": "Kaampiiwwan hojii irra jiran to'adhu fi bulchi",
+      "searchPlaceholder": "Kaampiiwwan barbaadi...",
+      "table": {
+        "id": "Eenyummeessaa Kaampii",
+        "name": "Maqaa",
+        "manager": "Hooggantuu",
+        "location": "Bakka",
+        "rating": "Sadarkaa",
+        "bookings": "Buukingii",
+        "status": "Haala",
+        "actions": "Tarkaanfii",
+        "manage": "Bulchi",
+        "noCamps": "Kaampiin tokkoyyuu hin argamne."
+      },
+      "dialog": {
+        "title": "Kaampii Bulchi: {{name}}",
+        "rating": "Sadarkaa",
+        "bookings": "Buukingii Waliigalaa",
+        "warningLabel": "Akeekkachiisa Ergi",
+        "warningPlaceholder": "Ergaa akeekkachiisaa (fkn, meeshaalee sobaa tarreeffaman)...",
+        "warningBtn": "Akeekkachiisa Ergi",
+        "blockBtn": "Yeroodhaaf Ittisi",
+        "banBtn": "Dhaabbataaf Ittisi",
+        "unblockBtn": "Deebisi / Ittisa Kaasi"
+      }
+    },
+    "kycTab": {
+      "title": "Mirkaneessa Sanada KYC",
+      "subtitle": "Sanadoota hooggantoota kaampii gamaaggami fi mirkaneessi",
+      "table": {
+        "id": "Eenyummeessaa Fayyadamaa",
+        "manager": "Hooggantuu",
+        "camp": "Maqaa Kaampii",
+        "type": "Gosa Sanadaa",
+        "submitted": "Kan Galmaa'e",
+        "status": "Haala",
+        "actions": "Tarkaanfii",
+        "approve": "Mirkaneessi",
+        "reject": "Kuffisi",
+        "noTasks": "Hojiin KYC eegaa jiru hin jiru."
+      },
+      "docs": {
+        "title": "Sanadoota Barbaachisan",
+        "license": "Hayyama Daldalaa",
+        "tax": "Waraqaa Eenyummeessaa Gibiraa",
+        "managerId": "Mirkaneessa Eenyummeessaa Hooggantuu",
+        "property": "Waliigaltee Abbummaa Qabeenyaa/Kiraa",
+        "required": "Barbaachisaa",
+        "optional": "Filannoo"
+      }
+    },
+    "history": {
+      "title": "Tarkaanfiiwwan Bulchiinsaa Dhiheenyaa",
+      "noActions": "Tarkaanfiin bulchiinsaa dhiheenyaa hin galmeeffamne.",
+      "reason": "Sababa: {{reason}}",
+      "actionBy": "Tarkaanfii kan fudhate: {{name}}"
+    }
+  },
+  "user": {
+    "title": "Bulchiinsa Fayyadamaa",
+    "subtitle": "Eenyummeessaa fayyadamaa hunda waltajjii irra jiran bulchi",
+    "refresh": "Haarsi",
+    "loading": "Fe'amaa jira...",
+    "deleteDialog": {
+      "title": "Balleessuu Dhaabbataa Mirkaneessi",
+      "subtitle": "Tarkaanfiin kun lammata hin deebi'u, ragaa fayyadamaa hunda sarvarii keenya irraa balleessa.",
+      "warningHeader": "Tarkaanfii Barbaachisaa: Adeemsa Hin Deebine",
+      "confirmMsg": "Eenyummeessaa \"{{name}}\" dhaabbataaf balleessuu kee mirkanaa'aadhaa?",
+      "purgeMsg": "Fayyadamaan kun battalumatti kuusaa ragaa keessaa ni balleeffama.",
+      "consequences": {
+        "title": "Miidhaa Inni Geessisu",
+        "item1": "Ragaan profile, filannoowwan, fi ragaan walitti hidhame hundi dhaabbataaf ni balleeffamu.",
+        "item2": "Fayyadamaan kun battalumatti tajaajila waltajjichaa hunda ni dhabra.",
+        "item3": "Balleessuun kun ni galmeeffama, eenyummeessaa bulchaa keetti ni hidhama."
+      },
+      "cancel": "Haqi",
+      "purging": "Ragaa Balleessaa Jira...",
+      "deleteBtn": "Balleessuu Mirkaneessi"
+    },
+    "error": {
+      "load": "Fayyadamaa fe'uun hin danda'amne",
+      "suspend": "Fayyadamaa ittisuun hin danda'amne",
+      "ban": "Fayyadamaa dhaabbataaf ittisuun hin danda'amne",
+      "unblock": "Ittisa fayyadamaa kaasuun hin danda'amne",
+      "warning": "Akeekkachiisa erguun hin danda'amne",
+      "create": "Fayyadamaa uumuun hin danda'amne",
+      "revoke": "Gahee hojii kaasuun hin danda'amne",
+      "delete": "Fayyadamaa balleessuun hin danda'amne",
+      "update": "Ragaa fayyadamaa haaromsuun hin danda'amne",
+      "approve": "Hooggantuu mirkaneessuun hin danda'amne",
+      "reasonRequired": "Maaloo sababa itti ittifameef ibsi",
+      "nameEmailRequired": "Maqaa jalqabaa fi imeelii barbaachisadha"
+    },
+    "success": {
+      "suspend": "Fayyadamaan ittifameera",
+      "ban": "Fayyadamaan dhaabbataaf ittifameera",
+      "unblock": "Ittisni fayyadamaa ka'ee gara hojiitti deebi'eera",
+      "warning": "Akeekkachiisni gara fayyadamaatti ergameera",
+      "passwordGenerated": "Jechi iccitii amansiisaan uumameera",
+      "create": "Eenyummeessaan fayyadamaa haaraa uumameera",
+      "revoke": "Gaheen hojii hooggantummaa fayyadamaa irraa ka'eera",
+      "deleteTitle": "Eenyummeessaan Balleeffameera",
+      "deleteDesc": "Eenyummeessaan fayyadamaa sirna keessaa dhaabbataaf balleeffameera.",
+      "update": "Ragaan fayyadamaa haaromeera",
+      "approve": "Eenyummeessaan hooggantuu mirkanaa'eera"
+    },
+    "stats": {
+      "campers": "Waliigala Kaamperootaa",
+      "campersDesc": "Waliigala fayyadamaa kaamperootaa",
+      "managers": "Hooggantoota Kaampii",
+      "managersDesc": "Waliigala eenyummeessaa hooggantootaa",
+      "suspended": "Ittifaman",
+      "suspendedDesc": "Yeroodhaaf ittifaman",
+      "banned": "Dhorkaman",
+      "bannedDesc": "Dhaabbataaf ittifaman"
+    },
+    "tabs": {
+      "campers": "Eenyummeessaa Kaamperootaa",
+      "managers": "Hooggantoota Kaampii",
+      "create": "Fayyadamaa Uumi"
+    },
+    "camperTab": {
+      "title": "Eenyummeessaa Kaamperootaa",
+      "subtitle": "Eenyummeessaa maamiltootaa bulchi",
+      "searchPlaceholder": "Fayyadamaa barbaadi...",
+      "statusFilter": {
+        "all": "Haala Hunda",
+        "active": "Hojii Irra",
+        "suspended": "Ittifaman",
+        "banned": "Dhorkaman"
+      },
+      "table": {
+        "id": "Eenyummeessaa Fayyadamaa",
+        "name": "Maqaa",
+        "email": "Imeelii",
+        "phone": "Bilbila",
+        "joined": "Kan Galmaa'e",
+        "status": "Haala",
+        "actions": "Tarkaanfii",
+        "manage": "Bulchi",
+        "loading": "Kaamperoota fe'aa jira...",
+        "noUsers": "Kaamperoonni tokkoyyuu hin argamne."
+      },
+      "dialog": {
+        "title": "Fayyadamaa Bulchi: {{name}}",
+        "edit": {
+          "firstName": "Maqaa Jalqabaa",
+          "lastName": "Maqaa Abbaa",
+          "email": "Imeelii",
+          "phone": "Bilbila",
+          "save": "Ol Kaayi",
+          "cancel": "Dhiisi"
+        },
+        "info": {
+          "email": "Imeelii",
+          "phone": "Bilbila",
+          "bookings": "Buukingii Waliigalaa",
+          "joined": "Abbummaa Erga",
+          "editDetails": "Ragaa sirreessi"
+        },
+        "warning": {
+          "label": "Akeekkachiisa Ergi",
+          "placeholder": "Ergaa akeekkachiisaa balleessaa xiqqaadhaaf...",
+          "btn": "Akeekkachiisa Ergi"
+        },
+        "actions": {
+          "suspend": "Fayyadamaa Ittisi",
+          "unblock": "Ittisa Kaasi",
+          "banPlaceholder": "Sababa itti dhaabbataaf ittifameef...",
+          "banBtn": "Dhaabbataaf Ittisi",
+          "deleteBtn": "Eenyummeessaa Dhaabbataaf Balleessi"
+        }
+      }
+    },
+    "managerTab": {
+      "title": "Eenyummeessaa Hooggantoota Kaampii",
+      "subtitle": "Eenyummeessaa abbootii qabeenyaa fi hojjettoota kaampii bulchi",
+      "searchPlaceholder": "Hooggantoota barbaadi...",
+      "table": {
+        "id": "Eenyummeessaa Hooggantuu",
+        "name": "Maqaa",
+        "email": "Imeelii",
+        "camp": "Kaampii",
+        "joined": "Kan Galmaa'e",
+        "kyc": "Haala KYC",
+        "status": "Haala",
+        "actions": "Tarkaanfii",
+        "view": "Ragaa Ilaali",
+        "loading": "Hooggantoota fe'aa jira...",
+        "noUsers": "Hooggantoonni tokkoyyuu hin argamne."
+      },
+      "dialog": {
+        "title": "Hooggantuu Kaampii: {{name}}",
+        "warning": {
+          "label": "Ergaa / Akeekkachiisa Ergi",
+          "placeholder": "Ergaa kallattii ykn akeekkachiisa ergi...",
+          "btn": "Ergaa Ergi"
+        },
+        "docs": {
+          "title": "Sanadoota",
+          "kyc": "Haala KYC",
+          "approve": "Mirkaneessi"
+        },
+        "actions": {
+          "revoke": "Gahee Hooggantummaa Kaasi",
+          "suspend": "Eenyummeessaa Ittisi",
+          "unblock": "Ittisa Kaasi",
+          "delete": "Eenyummeessaa Hooggantuu Balleessi"
+        }
+      }
+    },
+    "createTab": {
+      "title": "Eenyummeessaa Fayyadamaa Haaraa Uumi",
+      "subtitle": "Eenyummeessaa bulchiinsaa ykn tajaajila kennitootaa haaraa qopheessi",
+      "form": {
+        "firstName": "Maqaa Jalqabaa",
+        "firstNamePlaceholder": "Maqaa jalqabaa galchi",
+        "lastName": "Maqaa Abbaa",
+        "lastNamePlaceholder": "Maqaa abbaa galchi",
+        "email": "Teessoo Imeelii",
+        "phone": "Lakkoofsa Bilbilaa",
+        "role": "Gahee Hojii",
+        "roles": {
+          "camper": "Kaamper (Idilee)",
+          "manager": "Hooggantuu Kaampii",
+          "admin": "Bulchaa Sirnaa"
+        },
+        "password": "Jecha Iccitii Jalqabaa",
+        "passwordPlaceholder": "Jecha iccitii galchi ykn uumi",
+        "generate": "Jecha Iccitii Amansiisaa Uumi",
+        "createBtn": "Eenyummeessaa Fayyadamaa Uumi"
+      },
+      "credentials": {
+        "title": "Eenyummeessaan Milkaa'inaan Uumameera",
+        "subtitle": "Maaloo ragaalee kanaan fayyadamaadhaaf karaa amansiisaa ta'een qoodi.",
+        "email": "Imeelii",
+        "password": "Jecha Iccitii",
+        "role": "Gahee Hojii",
+        "warning": "Jechi iccitii kun lammata hin argamu. Ammuma garagalfachuu kee mirkaneessi.",
+        "done": "Xumurame"
+      }
+    },
+    "moderation": {
+      "title": "Tarkaanfiiwwan To'annoo Dhiheenyaa",
+      "noActions": "Tarkaanfiin dhiheenyaa hin galmeeffamne.",
+      "actionBy": "{{date}} hojii {{name}}"
+    }
+  },
+  "dashboard": {
+    "title": "Waligala Sirnaa",
+    "subtitle": "Raawwii waltajjii fi hordoffii haalaa yeroo ammee",
+    "errorLoad": "Safartuuwwan daashboordii fe'uun hin danda'amne",
+    "loading": "Safartuuwwan daashboordii fe'amaa jiru...",
+    "totalRevenue": "Waliigala Galii Waltajjii",
+    "activeUsers": "Waliigala Fayyadamtoota Hojii Irra Jiran",
+    "occupancyRate": "Waliigala Reettii Qabiyyee",
+    "conversionRate": "Reettii Jijjiirama Buukingii",
+    "revenueGrowth": "Ji'a darbe irraa +12.5%",
+    "usersGrowth": "Torban kana +8.2%",
+    "occupancyGrowth": "Torban darbe irraa +5.3%",
+    "conversionGrowth": "Torban darbe irraa -2.1%",
+    "pendingCamps": "Mirkaneessuu Kaampii Kan Eeggatan",
+    "pendingKYC": "Hooggantoota KYC Eeggatan",
+    "systemUptime": "Waliigala Yeroo Hojii Sirnaa",
+    "charts": {
+      "revenue": "Adeemsa Galii (ETB)",
+      "occupancy": "Reettii Qabiyyee (%)",
+      "resources": "Fayyadama Qabeenya Sarvarii",
+      "latency": "Reettii Turinsa API (ms)",
+      "month": "Ji'a",
+      "week": "Torban",
+      "time": "Yeroo"
+    },
+    "health": {
+      "title": "Fayyummaa Konteenerii",
+      "webServer": "Sarvarii Weebii",
+      "database": "Kuusaa Ragaa",
+      "redis": "Keeshii Redis",
+      "healthy": "Fayyaadha",
+      "hitRatio": "Reettii Dhawaataa: {{ratio}}%"
+    },
+    "errors": {
+      "title": "Ibsa Gabaabaa Dogoggora Dhiheenyaa",
+      "rate": "Reettii Dogoggoraa",
+      "warnings": "Baay'ina Akeekkachiisaa",
+      "critical": "Dogoggora Ulfaatoo",
+      "last24": "Sa'aatii 24 darban",
+      "lastHour": "Sa'aatii tokko darbe",
+      "last7Days": "Guyyoota 7 darban"
+    }
+  },
+  "reports": {
+    "title": "Gabaasota & Akeekkachiisa",
+    "subtitle": "Gabaasota teknikaa uumi fi beeksisa ergi",
+    "loading": "Qindaa'ina gabaasotaa fe'amaa jira...",
+    "success": {
+      "templateLoaded": "Tiim pileetiin milkaa'inaan fe'ameera",
+      "templateCreated": "Tiim pileetiin milkaa'inaan uumameera",
+      "reportStarted": "Gabaasa uumuun jalqabameera - karaa imeelii isiniif ergama",
+      "alertSent": "Akeekkachiisni milkaa'inaan ergameera"
+    },
+    "error": {
+      "fillFields": "Maaloo mata-duree fi ergaa lamaan iyyuu guuti",
+      "templateCreate": "Tiim pileetii uumuun hin danda'amne",
+      "fetch": "Ragaa gabaasotaa fi akeekkachiisaa fiduun hin danda'amne",
+      "generate": "Gabaasa uumuun hin danda'amne",
+      "requiredFields": "Maaloo iddoowwan barbaachisan hunda guuti",
+      "sendAlert": "Akeekkachiisa erguun hin danda'amne"
+    },
+    "tabs": {
+      "reports": "Gabaasota Teknikaa",
+      "alerts": "Akeekkachiisa Ergi",
+      "templates": "Tiim pileetii Akeekkachiisaa",
+      "history": "Seenaa Akeekkachiisaa"
+    },
+    "stats": {
+      "uptime": "Yeroo Hojii Sirnaa",
+      "responseTime": "Yeroo Deebii API",
+      "errorRate": "Reettii Dogoggoraa",
+      "last30Days": "Guyyoota 30 darban",
+      "average": "Giddu-galeessa (p50)",
+      "last24Hours": "Sa'aatii 24 darban"
+    },
+    "uptimeChart": "Adeemsa Yeroo Hojii Sirnaa",
+    "availableReports": "Gabaasota Argaman",
+    "table": {
+      "name": "Maqaa Gabaasaa",
+      "type": "Gosa",
+      "schedule": "Sagantaa",
+      "lastRun": "Dhuma Irratti Kan Hojjetame",
+      "actions": "Tarkaanfii",
+      "generate": "Amma Uumi",
+      "noReports": "Gabaasni argamu hin jiru."
+    },
+    "utilization": {
+      "title": "Fayyadama Qabeenyaa",
+      "cpu": "Fayyadama CPU",
+      "memory": "Fayyadama Meemoorii",
+      "disk": "Disk I/O",
+      "network": "Netoorkii",
+      "average": "Giddu-galeessa",
+      "peak": "Gubbaa",
+      "read": "Dubbisuu",
+      "write": "Barreessuu",
+      "inbound": "Kan Galu",
+      "outbound": "Kan Ba'u"
+    },
+    "sendAlert": {
+      "title": "Akeekkachiisa Sirnaa Ergi",
+      "desc": "Waa'ee suphaa, amaloota haaraa ykn jijjiirama imaammataa fayyadamtoota beeksisi",
+      "formTitle": "Mata-duree Akeekkachiisaa",
+      "placeholderTitle": "Mata-duree akeekkachiisaa galchi...",
+      "message": "Ergaa",
+      "placeholderMessage": "Ergaa kee asitti galchi...",
+      "recipients": "Fudhattoota",
+      "allUsers": "Fayyadamtoota Hunda",
+      "campersOnly": "Kaamperoota Qofa",
+      "managersOnly": "Hooggantoota Kaampii Qofa",
+      "activeOnly": "Fayyadamtoota Hojii Irra Jiran Qofa",
+      "delivery": "Maltoota Ergaa",
+      "email": "Imeelii",
+      "sms": "SMS",
+      "inApp": "Appilikeeshinii Keessatti",
+      "btn": "Akeekkachiisa Ergi"
+    },
+    "templates": {
+      "title": "Tiim pileetii Akeekkachiisaa Kan Mirkanaa'an",
+      "desc": "Beeksisa barame dafii ergi",
+      "createBtn": "Tiim pileetii Uumi",
+      "dialogTitle": "Tiim pileetii Akeekkachiisaa Haaraa Uumi",
+      "formTitle": "Mata-duree Tiim pileetii",
+      "placeholderTitle": "fkn, Akeekkachiisa: Fayyadama Ol'aanaa",
+      "messageBody": "Qaama Ergaa",
+      "placeholderMessage": "Jijjiiramootaaf [BRACKETS] fayyadami...",
+      "saveBtn": "Tiim pileetii Ol Kaayi",
+      "useBtn": "Tiim pileetii Fayyadami"
+    },
+    "history": {
+      "title": "Seenaa Akeekkachiisaa",
+      "type": "Gosa",
+      "message": "Ergaa",
+      "recipients": "Fudhattoota",
+      "sentAt": "Yeroo Ergame",
+      "status": "Haala",
+      "noHistory": "Seenaan akeekkachiisaa hin argamne."
+    }
+  }
+}

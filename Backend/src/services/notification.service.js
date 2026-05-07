@@ -13,9 +13,10 @@ export const sendEmailNotification = async ({ userId, to, type, subject, html, t
     console.error("Email send failed for notification:", err);
   }
   try {
-    const note = await createNotification({ userId, type, subject, body: html || text, meta });
+    const note = await createNotification({ userId, type, subject, body: text || html, meta });
     return note;
   } catch (err) {
+
     console.error("Failed to record notification:", err);
     return null;
   }

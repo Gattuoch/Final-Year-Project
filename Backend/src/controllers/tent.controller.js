@@ -10,8 +10,8 @@ export const createTent = async (req, res) => {
     const camp = await Camp.findById(campId);
     if (!camp) return res.status(404).json({ success: false, error: "Camp not found." });
 
-    // Authorization: Owner or Super Admin
-    if (camp.managerId.toString() !== req.user.id && req.user.role !== "super_admin") {
+    // Authorization: Owner or System Administrator
+    if (camp.managerId.toString() !== req.user.id && req.user.role !== "system_admin") {
       return res.status(403).json({ success: false, error: "You can only add tents to your own camp." });
     }
 
@@ -70,7 +70,7 @@ export const updateTent = async (req, res) => {
     const tent = await Tent.findById(tentId);
     if (!tent) return res.status(404).json({ success: false, error: "Tent not found." });
 
-    if (tent.managerId.toString() !== req.user.id && req.user.role !== "super_admin") {
+    if (tent.managerId.toString() !== req.user.id && req.user.role !== "system_admin") {
       return res.status(403).json({ success: false, error: "You can only edit your own tents." });
     }
 
@@ -95,7 +95,7 @@ export const deleteTent = async (req, res) => {
     const tent = await Tent.findById(tentId);
     if (!tent) return res.status(404).json({ success: false, error: "Tent not found." });
 
-    if (tent.managerId.toString() !== req.user.id && req.user.role !== "super_admin") {
+    if (tent.managerId.toString() !== req.user.id && req.user.role !== "system_admin") {
       return res.status(403).json({ success: false, error: "You can only delete your own tents." });
     }
 

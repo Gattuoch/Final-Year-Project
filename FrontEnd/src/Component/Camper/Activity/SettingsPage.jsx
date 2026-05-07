@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import toast from "react-hot-toast";
 import { FiLock, FiUser, FiPhone, FiMail } from "react-icons/fi";
+import { useUser } from "../../../context/UserContext";
+import api from "../../../services/api";
 import Sidebar from "../Sidebar/Sidebar";
 import AccountSetting from "./AccountSetting";
 
 export default function SettingsPage() {
-  const [loading, setLoading] = useState(true);
+  const { user, loadingUser, refreshUser } = useUser();
   const [saving, setSaving] = useState(false);
   
   // Form State
@@ -13,73 +15,43 @@ export default function SettingsPage() {
     fullName: "",
     email: "",
     phone: "",
-    _id: ""
   });
 
-  // ✅ Fetch User Data
+  // ✅ Sync Form with Context
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-        const userId = storedUser?._id || storedUser?.id;
-
-        if (!token || !userId) return;
-
-        const res = await axios.get(`http://localhost:5000/api/users/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (res.data.success) {
-          const user = res.data.data;
-          setFormData({
-            fullName: user.fullName || "",
-            email: user.email || "",
-            phone: user.phone || user.phoneNumber || "",
-            _id: user._id
-          });
-        }
-      } catch (err) {
-        console.error("Fetch error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, []);
+    if (user) {
+      setFormData({
+        fullName: user.fullName || "",
+        email: user.email || "",
+        phone: user.phone || user.phoneNumber || "",
+      });
+    }
+  }, [user]);
 
   // ✅ Update Handler
   const handleSave = async () => {
     setSaving(true);
     try {
-      const token = localStorage.getItem("token");
-      
       const payload = {
         fullName: formData.fullName,
-        phone: formData.phone
+        phoneNumber: formData.phone // Maps back to the updated backend logic
       };
 
-      const res = await axios.patch(
-        `http://localhost:5000/api/users/${formData._id}`,
-        payload,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.patch("/auth/profile", payload);
 
-      if (res.data.success) {
-        // Update Local Storage
-        const currentUser = JSON.parse(localStorage.getItem("user"));
-        localStorage.setItem("user", JSON.stringify({ ...currentUser, ...payload }));
-        alert("Profile updated successfully! ✅");
+      if (res.data.success || res.data.user) {
+        await refreshUser();
+        toast.success("Profile updated successfully!");
       }
     } catch (err) {
       console.error("Update error:", err);
-      alert("Failed to update profile.");
+      toast.error(err.response?.data?.error || err.response?.data?.message || "Failed to update profile.");
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (loadingUser) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
   return (
     <div className="flex min-h-screen bg-gray-50">

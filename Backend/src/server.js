@@ -1,5 +1,6 @@
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
 import cors from "cors";
 import Stripe from "stripe";
 import helmet from "helmet";
@@ -29,17 +30,42 @@ import createuserRoutes from "./routes/createuser.controller.js";
 import supportRoutes from "./routes/support.js"
 import usersProfileRoutes from "./routes/users.js"
 import ticketRoutes from "./routes/ticketRoutes.js";
+import aiRoutes from "./routes/ai.routes.js";
+import sysadminCampRoutes from "./routes/sysadmin.camp.routes.js";
+import sysadminUserRoutes from "./routes/sysadmin.user.routes.js";
+import sysadminDashboardRoutes from "./routes/sysadmin.dashboard.routes.js";
+import sysadminSecurityRoutes from "./routes/sysadmin.security.routes.js";
+import sysadminDatabaseRoutes from "./routes/sysadmin.database.routes.js";
+import sysadminBackupRoutes from "./routes/sysadmin.backup.routes.js";
+import sysadminLogsRoutes from "./routes/sysadmin.logs.routes.js";
+import sysadminFinanceRoutes from "./routes/sysadmin.finance.routes.js";
+import sysadminReportsRoutes from "./routes/sysadmin.reports.routes.js";
+import sysadminConfigRoutes from "./routes/sysadmin.config.routes.js";
+import sysadminFeaturesRoutes from "./routes/sysadmin.features.routes.js";
+import sysadminProfileRoutes from "./routes/sysadmin.profile.routes.js";
+import backupService from "./services/backup.service.js";
+import reportScheduler from "./services/reportScheduler.service.js";
+
+
 
 // --- UTILS ---
-import seedSuperAdmin from "./utils/createSuperAdmin.js";
+import seedSystemAdmin from "./utils/createSystemAdmin.js";
 
-dotenv.config();
+// --- MIDDLEWARES ---
+import { metricsMiddleware } from "./middlewares/metrics.middleware.js";
 
 // Setup __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// DEBUG LOGGER - MUST BE FIRST
+app.use((req, res, next) => {
+  console.log(`[TOP-LEVEL-DEBUG] ${req.method} ${req.url}`);
+  next();
+});
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_TEST);
 
 // ====== MIDDLEWARES ======
@@ -53,6 +79,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: "cross-origin" } })); 
 app.use(morgan("dev"));
+app.use(metricsMiddleware);
 app.disable("etag");
 
 // ====== STATIC FILES ======
@@ -64,6 +91,8 @@ app.use("/images", express.static(path.join(__dirname, "../public/images")));
 app.get('/', (req, res) => res.json({ message: 'EthioCamps API Running' }));
 
 // Auth & Admin
+app.use("/api/sysadmin/users", sysadminUserRoutes); // MOVED UP
+app.use("/api/db-management", sysadminDatabaseRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use("/api/users", userRoutes);
@@ -83,11 +112,23 @@ app.use("/api/usersProfile", usersProfileRoutes);
 // Support & Notifications
 app.use("/api/contact", contactRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Dashboards & Settings
 app.use("/api/superadmin/settings", settingsRoutes);
 app.use("/api/usersuperadmindashboard", usersuperadmindashboard);
 app.use("/api/system-admin", createSystemAdmin);
+app.use("/api/sysadmin/finance", sysadminFinanceRoutes);
+app.use("/api/sysadmin/camps", sysadminCampRoutes);
+app.use("/api/sysadmin/dashboard", sysadminDashboardRoutes);
+app.use("/api/sysadmin/security", sysadminSecurityRoutes);
+app.use("/api/sysadmin/backup", sysadminBackupRoutes);
+app.use("/api/sysadmin/logs", sysadminLogsRoutes);
+app.use("/api/sysadmin/reports", sysadminReportsRoutes);
+app.use("/api/sysadmin/config", sysadminConfigRoutes);
+app.use("/api/sysadmin/features", sysadminFeaturesRoutes);
+app.use("/api/sysadmin", sysadminProfileRoutes);
+
 app.use("/api/adminuser", adminuser);
 app.use("/api/usersadmin", adminuser);
 app.use("/api/createusers", createuserRoutes);
@@ -167,7 +208,10 @@ const PORT = process.env.PORT || 5000;
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB connected successfully");
-    seedSuperAdmin();
+    seedSystemAdmin();
+    backupService.start();
+    reportScheduler.init(); // Initialize report scheduler
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
   })
   .catch(err => console.error("❌ Database connection error:", err.message));

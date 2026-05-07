@@ -1,0 +1,37 @@
+import User from "../models/User.js";
+import bcrypt from "bcryptjs";
+
+const createSystemAdmin = async () => {
+  try {
+    const exists = await User.findOne({ role: "system_admin" });
+
+    if (exists) {
+      console.log("Super admin already exists");
+      return;
+    }
+
+    if (!process.env.SUPER_ADMIN_EMAIL || !process.env.SUPER_ADMIN_PASSWORD) {
+      console.error("❌ Missing SUPER_ADMIN_EMAIL or SUPER_ADMIN_PASSWORD in .env");
+      return;
+    }
+
+    // Store raw password in passwordHash and let model pre-save hash it
+    const passwordHash = process.env.SUPER_ADMIN_PASSWORD;
+
+    await User.create({
+      fullName: "Platform System Administrator",
+      email: process.env.SUPER_ADMIN_EMAIL,
+      passwordHash,
+      role: "system_admin",
+      isInternal: true,
+      isEmailVerified: true,
+      mustResetPassword: true,
+    });
+
+    console.log("✅ Super admin created");
+  } catch (err) {
+    console.error("❌ Super admin creation failed:", err.message);
+  }
+};
+
+export default createSystemAdmin;

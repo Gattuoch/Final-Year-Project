@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-const roles = ['camper', 'camp_manager', 'super_admin', 'manager', 'admin', 'system_admin', 'user'];
+const roles = ['camper', 'camp_manager', 'system_admin', 'manager', 'admin', 'user', 'super_admin', 'security_officer', 'ticket_officer'];
+
 
 const AddressSchema = new mongoose.Schema({
   line1: { type: String, trim: true },
@@ -25,6 +26,12 @@ const BusinessInfoSchema = new mongoose.Schema({
 
 const UserSchema = new mongoose.Schema({
   fullName: { type: String, required: true, trim: true, maxlength: 120 },
+  firstName: { type: String, trim: true },
+  lastName: { type: String, trim: true },
+  gender: { type: String, enum: ['Male', 'Female', 'Other'], default: 'Male' },
+  dateOfBirth: { type: String, trim: true },
+  profilePicture: { type: String, trim: true },
+  coverPicture: { type: String, trim: true },
   avatar: { type: String, trim: true },
   email: { type: String, required: true, trim: true, lowercase: true, maxlength: 254 },
 

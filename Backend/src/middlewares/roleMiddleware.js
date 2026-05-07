@@ -1,7 +1,7 @@
-export const onlySuperAdmin = (req, res, next) => {
-  if (!req.user || req.user.role !== "super_admin") {
+export const onlySystemAdmin = (req, res, next) => {
+  if (!req.user || req.user.role !== "system_admin") {
     return res.status(403).json({
-      message: "Only Super Admin can perform this action",
+      message: "Only System Administrator can perform this action",
     });
   }
   next();

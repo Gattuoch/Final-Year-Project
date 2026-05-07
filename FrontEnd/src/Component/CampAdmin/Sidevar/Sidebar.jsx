@@ -10,11 +10,12 @@ import {
   Bell,
   Settings,
   LogOut,
-  MoreVertical
+  MoreVertical,
+  X
 } from "lucide-react";
 import LogoutConfirm from "./LogoutConfirm";
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, setIsOpen }) {
   const navigate = useNavigate();
   const [showLogout, setShowLogout] = useState(false);
 
@@ -34,14 +35,32 @@ export default function Sidebar() {
 
   return (
     <>
-      <aside className="w-64 h-full bg-white border-r border-slate-100 flex flex-col pt-6 font-sans">
+      {/* Mobile Backdrop */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/50 z-40 md:hidden transition-opacity" 
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Sidebar (Fixed on Mobile, Relative on Desktop) */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 h-full bg-white border-r border-slate-100 flex flex-col pt-6 font-sans transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         
         {/* Logo Section */}
-        <div className="flex items-center space-x-2 px-6 mb-8">
-          <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
-            <Tent className="w-5 h-5 text-white" />
+        <div className="flex items-center justify-between px-6 mb-8">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
+              <Tent className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold text-teal-800">EthioCamp</span>
           </div>
-          <span className="text-xl font-bold text-teal-800">EthioCamp</span>
+          {/* Mobile Close Button */}
+          <button 
+            onClick={() => setIsOpen(false)}
+            className="md:hidden p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Scrollable Navigation Area */}
@@ -55,6 +74,7 @@ export default function Sidebar() {
                 <NavLink
                   key={item.href}
                   to={item.href}
+                  onClick={() => setIsOpen && setIsOpen(false)}
                   className={({ isActive }) =>
                     `flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                       isActive 
@@ -80,6 +100,7 @@ export default function Sidebar() {
                 <NavLink
                   key={item.href}
                   to={item.href}
+                  onClick={() => setIsOpen && setIsOpen(false)}
                   className={({ isActive }) =>
                     `flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                       isActive 

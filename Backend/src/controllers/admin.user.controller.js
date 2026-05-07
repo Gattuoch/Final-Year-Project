@@ -45,8 +45,8 @@ export const toggleBan = async (req, res) => {
   if (user.role === "user") user.role = "camper";
   if (user.role === "admin") user.role = "system_admin";
 
-  if (user.role === "super_admin") {
-    return res.status(400).json({ message: "Cannot ban Super Admin" });
+  if (user.role === "system_admin") {
+    return res.status(400).json({ message: "Cannot ban System Administrator" });
   }
   user.isBanned = !user.isBanned;
   await user.save();
@@ -72,8 +72,8 @@ export const updateUser = async (req, res) => {
 /* DELETE USER */
 export const deleteUser = async (req, res) => {
   const user = await User.findById(req.params.id);
-  if (user.role === "super_admin") {
-    return res.status(400).json({ message: "Cannot delete Super Admin" });
+  if (user.role === "system_admin") {
+    return res.status(400).json({ message: "Cannot delete System Administrator" });
   }
   await user.deleteOne();
   res.json({ message: "User deleted" });
@@ -97,4 +97,31 @@ export const invalidateTempPassword = async (req, res) => {
   // NOTE: For security, we don't return the generated password in the response.
   // An admin may choose to notify the user via email or have the user request a reset.
   res.json({ message: "Temporary password invalidated" });
+};
+
+/* UPDATE STATUS (Active / Inactive / Banned) */
+export const updateStatus = async (req, res) => {
+  const { status } = req.body;
+  const user = await User.findById(req.params.id);
+  
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  if (user.role === "system_admin") {
+    return res.status(400).json({ message: "Cannot modify System Administrator status" });
+  }
+
+  // Determine boolean flags based on incoming status
+  if (status === "Active") {
+    user.isActive = true;
+    user.isBanned = false;
+  } else if (status === "Inactive") {
+    user.isActive = false;
+    user.isBanned = false;
+  } else if (status === "Banned") {
+    user.isActive = false;
+    user.isBanned = true;
+  }
+
+  await user.save();
+  res.json({ message: "Status updated successfully", status, isActive: user.isActive, isBanned: user.isBanned });
 };

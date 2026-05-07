@@ -3,6 +3,7 @@ import {
   Search, Bell, Plus, Mail, CheckCircle2, Clock, XCircle, Calendar,
   LayoutTemplate, Settings
 } from 'lucide-react';
+import CreateNotificationForm from './CreateNotificationForm';
 
 const mockTemplates = [
   { id: 1, label: 'Booking Confirmation', code_name: 'booking_confirmed', status: 'Active' },
@@ -68,6 +69,7 @@ const mockNotifications = [
 const NotificationManagement = () => {
   const [activeTab, setActiveTab] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const tabs = ['All', 'Booking', 'Payment', 'System'];
 
@@ -116,7 +118,10 @@ const NotificationManagement = () => {
                 <p className="text-sm text-slate-500">Manage system notifications and alerts</p>
               </div>
             </div>
-            <button className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors mt-4 sm:mt-0 shadow-sm">
+            <button 
+              onClick={() => setIsCreateModalOpen(true)}
+              className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors mt-4 sm:mt-0 shadow-sm"
+            >
               <Plus className="w-4 h-4" />
               Create Notification
             </button>
@@ -331,6 +336,7 @@ const NotificationManagement = () => {
         </div>
 
       </div>
+      <CreateNotificationForm isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
     </div>
   );
 };

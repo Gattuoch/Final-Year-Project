@@ -24,14 +24,14 @@ import { getVisitors } from "../controllers/dashboard.controller.js";
 const router = express.Router();
 
 // 🔐 SUPER ADMIN ONLY
-// Authenticate JWT for all routes under this router and require super_admin role
-router.use(authenticateJWT, authorizeRoles("super_admin"));
+// Authenticate JWT for all routes under this router and require system_admin role
+router.use(authenticateJWT, authorizeRoles("system_admin"));
 
 router.get("/stats", getUserStats);
 router.get("/growth", getUserGrowth);
 router.get("/distribution", getUserDistribution);
 router.get("/users", getUsersTable);
-// The router already enforces authentication + super_admin role above.
+// The router already enforces authentication + system_admin role above.
 // Individual routes only need to call their handlers.
 router.get("/statsstat", getDashboardStats);
 router.get("/revenue", getRevenueChart);

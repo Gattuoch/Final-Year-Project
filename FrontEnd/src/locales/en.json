@@ -1,0 +1,1249 @@
+{
+  "languages": {
+    "en": "English",
+    "am": "Amharic (አማርኛ)",
+    "om": "Oromo (Afaan Oromoo)"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "security": "Security",
+    "database": "Database",
+    "backup": "Backup & Recovery",
+    "logs": "Logs & Monitoring",
+    "reports": "Reports & Alerts",
+    "features": "Feature Management",
+    "configuration": "Configuration",
+    "financial": "Financial",
+    "campManagement": "Camp Management",
+    "userManagement": "User Management"
+  },
+  "dashboard": {
+    "title": "System Dashboard",
+    "subtitle": "Real-time platform metrics and system health",
+    "totalRevenue": "Total Revenue",
+    "activeUsers": "Active Users",
+    "occupancyRate": "Occupancy Rate",
+    "conversionRate": "Conversion Rate",
+    "pendingCamps": "Pending Camp Approvals",
+    "pendingKYC": "Pending KYC Documents",
+    "systemUptime": "System Uptime",
+    "revenueTrend": "Revenue Trend (ETB)",
+    "containerHealth": "Container Health",
+    "webServer": "Web Server",
+    "database": "Database",
+    "redisCache": "Redis Cache",
+    "healthy": "Healthy",
+    "recentErrorSummary": "Recent Error Summary",
+    "errorRate": "Error Rate",
+    "warningCount": "Warning Count",
+    "criticalErrors": "Critical Errors"
+  },
+  "profile": {
+    "title": "Profile Settings",
+    "subtitle": "Manage your account settings and preferences",
+    "status": "Active Admin",
+    "loading": "Loading profile data...",
+    "tabs": {
+      "personal": "Personal Information",
+      "security": "Security",
+      "preferences": "Preferences",
+      "activity": "Activity Log"
+    },
+    "personal": {
+      "admin": "System Administrator",
+      "dept": "IT & Operations",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "position": "Position",
+      "department": "Department",
+      "location": "Location",
+      "bio": "Bio",
+      "bioPlaceholder": "Tell us about yourself...",
+      "saveBtn": "Save Changes"
+    },
+    "security": {
+      "title": "Change Password",
+      "subtitle": "Update your password to keep your account secure",
+      "current": "Current Password",
+      "new": "New Password",
+      "confirm": "Confirm New Password",
+      "requirements": "Password requirements: At least 8 characters with a mix of uppercase, lowercase, numbers, and special characters.",
+      "updateBtn": "Update Password",
+      "tfa": "Two-Factor Authentication",
+      "tfaDesc": "Add an extra layer of security to your account",
+      "tfaEnabled": "Two-factor authentication enabled",
+      "tfaDisabled": "Two-factor authentication disabled"
+    },
+    "preferences": {
+      "title": "Notification Preferences",
+      "subtitle": "Manage how you receive notifications",
+      "email": "Email Notifications",
+      "emailDesc": "Receive email updates about system activities",
+      "system": "System Alerts",
+      "systemDesc": "Get notified about system status changes",
+      "security": "Security Alerts",
+      "securityDesc": "Receive alerts about security events",
+      "weekly": "Weekly Reports",
+      "weeklyDesc": "Receive weekly summary reports",
+      "sessionTitle": "Session Settings",
+      "sessionTimeout": "Session Timeout (minutes)",
+      "sessionDesc": "Auto logout after inactivity",
+      "saveBtn": "Save Preferences"
+    },
+    "activity": {
+      "title": "Recent Activity",
+      "subtitle": "Your recent account activity and actions",
+      "noActivity": "No recent activity found.",
+      "refresh": "Refresh Activity"
+    },
+    "messages": {
+      "profileSuccess": "Profile updated successfully!",
+      "profileError": "Failed to update profile",
+      "passMismatch": "New passwords do not match!",
+      "passLength": "Password must be at least 8 characters!",
+      "passSuccess": "Password changed successfully!",
+      "passError": "Failed to change password",
+      "prefSuccess": "Preferences updated successfully!",
+      "prefError": "Failed to update preferences",
+      "avatarSuccess": "Avatar updated!",
+      "avatarError": "Failed to save avatar"
+    }
+  },
+  "backup": {
+    "title": "Backup & Recovery",
+    "subtitle": "Ensure data durability and disaster recovery",
+    "loading": "Loading backup metrics...",
+    "overview": {
+      "lastFull": "Last Full Backup",
+      "lastIncremental": "Last Incremental",
+      "totalSize": "Total Backup Size",
+      "recoveryTests": "Recovery Tests"
+    },
+    "tabs": {
+      "full": "Full Backups",
+      "incremental": "Incremental Backups",
+      "recovery": "Recovery & Testing",
+      "disaster": "Disaster Recovery"
+    },
+    "full": {
+      "title": "Full Database Backups",
+      "subtitle": "Automated daily at 2:00 AM",
+      "manualBtn": "Run Manual Backup",
+      "table": {
+        "id": "Backup ID",
+        "database": "Database",
+        "size": "Size",
+        "timestamp": "Timestamp",
+        "status": "Status",
+        "actions": "Actions",
+        "restore": "Restore",
+        "noBackups": "No full backups found."
+      },
+      "config": {
+        "title": "Backup Schedule Configuration",
+        "postgres": "PostgreSQL Full Backup",
+        "mongo": "MongoDB Full Backup",
+        "retention": "Retention Policy",
+        "daily": "Daily at 2:00 AM UTC",
+        "dailyMongo": "Daily at 2:15 AM UTC",
+        "retentionDesc": "Backups older than 30 days are archived to glacier storage",
+        "enabled": "Enabled",
+        "days": "30 Days"
+      }
+    },
+    "incremental": {
+      "title": "Incremental Backups",
+      "subtitle": "Automated every 15 minutes",
+      "active": "Active",
+      "next": "Next backup in: {{time}} minutes",
+      "complete": "{{percent}}% complete",
+      "table": {
+        "id": "Backup ID",
+        "timestamp": "Timestamp",
+        "changes": "Changes",
+        "status": "Status",
+        "noBackups": "No incremental backups found."
+      }
+    },
+    "recovery": {
+      "pitrTitle": "Point-in-Time Recovery",
+      "pitrSubtitle": "Restore database to any point in time within the last 30 days",
+      "warning": "⚠️ Warning",
+      "warningDesc": "Point-in-time recovery should only be performed when data corruption is detected. Always test recovery in a staging environment first.",
+      "target": "Recovery Target",
+      "executeBtn": "Execute Point-in-Time Recovery",
+      "integrityTitle": "Backup Integrity Tests",
+      "integritySubtitle": "Regular restore tests to verify backup validity",
+      "scheduleBtn": "Schedule Test",
+      "table": {
+        "id": "Test ID",
+        "type": "Type",
+        "env": "Environment",
+        "date": "Date",
+        "duration": "Duration",
+        "status": "Status",
+        "noTests": "No recovery tests found."
+      }
+    },
+    "disaster": {
+      "title": "Disaster Recovery",
+      "subtitle": "Maintain and test disaster recovery procedures",
+      "emergencyTitle": "Emergency Recovery Procedures",
+      "emergencyDesc": "In case of complete zone failure, follow the disaster recovery runbook",
+      "drillBtn": "Initiate DR Drill",
+      "lastDrill": "Last DR Drill",
+      "rto": "Recovery Time Objective (RTO)",
+      "rpo": "Recovery Point Objective (RPO)",
+      "target": "Target",
+      "lastAchieved": "Last achieved",
+      "current": "Current",
+      "successful": "Successful",
+      "runbooks": {
+        "title": "DR Runbooks",
+        "zone": "Zone Failure Recovery",
+        "zoneDesc": "Complete availability zone failure",
+        "corruption": "Database Corruption Recovery",
+        "corruptionDesc": "Data integrity issues",
+        "breach": "Security Breach Response",
+        "breachDesc": "Unauthorized access recovery",
+        "view": "View Runbook"
+      }
+    },
+    "messages": {
+      "fetchError": "Failed to fetch backup data",
+      "fullSuccess": "Full backup initiated - this will run during low-traffic period",
+      "fullError": "Failed to initiate full backup",
+      "restoreSuccess": "Restore from {{id}} queued for test environment",
+      "restoreError": "Failed to schedule restore",
+      "pitrSuccess": "Point-in-time recovery initiated",
+      "pitrError": "Failed to initiate point-in-time recovery",
+      "testSuccess": "Restore test scheduled",
+      "testError": "Failed to schedule test restore",
+      "drSuccess": "Disaster recovery drill initiated",
+      "drError": "Failed to initiate DR drill"
+    }
+  },
+  "database": {
+    "title": "Database Management",
+    "subtitle": "Advanced database administration and optimization",
+    "loading": "Loading database metrics...",
+    "overview": {
+      "systemDb": "System Database",
+      "systemDbDesc": "Total document store size",
+      "collections": "Collections",
+      "collectionsDesc": "Total active collections",
+      "performance": "Query Performance",
+      "performanceDesc": "Average query time"
+    },
+    "tabs": {
+      "queries": "Queries",
+      "indexes": "Indexes",
+      "migrations": "Migrations",
+      "maintenance": "Maintenance"
+    },
+    "queries": {
+      "title": "Slow Query Analysis",
+      "subtitle": "Queries taking longer than 100ms",
+      "generateBtn": "Generate Plans",
+      "table": {
+        "query": "Query",
+        "duration": "Duration",
+        "executions": "Executions",
+        "table": "Table",
+        "actions": "Actions",
+        "optimize": "Optimize",
+        "noQueries": "No slow queries found."
+      },
+      "statsTitle": "Table Statistics",
+      "statsChartSize": "Size (MB)"
+    },
+    "indexes": {
+      "title": "Database Indexes",
+      "subtitle": "Query performance optimization",
+      "newBtn": "New Index",
+      "dialog": {
+        "title": "Create New Index",
+        "desc": "Add a new index to a collection to improve query performance.",
+        "collection": "Collection",
+        "selectPlaceholder": "Select a collection",
+        "fields": "Fields (e.g. \"email:1\")",
+        "fieldsPlaceholder": "email:1",
+        "unique": "Unique Index",
+        "cancel": "Cancel",
+        "create": "Create Index",
+        "creating": "Creating..."
+      },
+      "table": {
+        "name": "Index Name",
+        "table": "Table",
+        "columns": "Columns",
+        "usage": "Usage",
+        "actions": "Actions",
+        "rebuild": "Rebuild"
+      }
+    },
+    "migrations": {
+      "title": "Schema Migrations",
+      "subtitle": "Track and execute schema changes",
+      "runBtn": "Run New Migration",
+      "table": {
+        "id": "ID",
+        "desc": "Description",
+        "status": "Status",
+        "date": "Date",
+        "actions": "Actions",
+        "details": "Details"
+      }
+    },
+    "maintenance": {
+      "archivalTitle": "Data Archival",
+      "archivalSubtitle": "Archive old data logs",
+      "logsTitle": "Logs Older Than 12 Months",
+      "estimated": "Estimated records:",
+      "startBtn": "Start Archival",
+      "lastRun": "Last Archival Run",
+      "noRuns": "No previous runs found",
+      "records": "records",
+      "integrityTitle": "Database Integrity",
+      "integritySubtitle": "Validate consistency",
+      "runCheckBtn": "Run Integrity Check",
+      "checkDesc": "Check for corrupted entries",
+      "lastCheck": "Last Check:",
+      "never": "Never checked",
+      "historyTitle": "Maintenance History",
+      "lastMaint": "Last Maintenance",
+      "nextSched": "Next Scheduled",
+      "pending": "Pending",
+      "completed": "Completed",
+      "scheduled": "Scheduled"
+    },
+    "messages": {
+      "fetchError": "Failed to fetch database data",
+      "optSuccess": "Query optimization added to queue",
+      "optError": "Failed to optimize query",
+      "indexSuccess": "Index created successfully",
+      "indexError": "Failed to create index",
+      "migrationSuccess": "Migration executed successfully",
+      "migrationError": "Failed to run migration",
+      "archivalSuccess": "Data archival process initiated",
+      "archivalError": "Failed to initiate data archival",
+      "integritySuccess": "Database integrity check started",
+      "integrityError": "Failed to validate integrity",
+      "plansError": "Failed to generate execution plans",
+      "rebuildError": "Failed to rebuild index",
+      "detailsSuccess": "Migration {{id}} details logged to console",
+      "detailsError": "Failed to fetch migration details"
+    }
+  },
+  "security": {
+    "title": "Security",
+    "highlight": "Management",
+    "subtitle": "Enforce and monitor platform security policies",
+    "refresh": "Refresh",
+    "loading": "Loading...",
+    "tabs": {
+      "policies": "Security Policies",
+      "ipBlacklist": "IP Blacklist",
+      "incidents": "Security Incidents",
+      "scans": "Vulnerability Scans"
+    },
+    "policies": {
+      "title": "Password & Authentication Policies",
+      "subtitle": "Configure password complexity and MFA requirements",
+      "mfa": "Multi-Factor Authentication (MFA)",
+      "mfaDesc": "Require all administrators to use MFA",
+      "passwordLength": "Minimum Password Length",
+      "characters": "characters",
+      "specialChars": "Require Special Characters",
+      "specialCharsDesc": "Password must include @, #, $, etc.",
+      "numbers": "Require Numbers",
+      "numbersDesc": "Password must include at least one number",
+      "uppercase": "Require Uppercase Letters",
+      "uppercaseDesc": "Password must include uppercase characters",
+      "saveBtn": "Save Password Policy"
+    },
+    "ipBlacklist": {
+      "title": "IP Address Blacklist",
+      "subtitle": "Block suspicious IP addresses",
+      "placeholder": "Enter IP address to block (e.g., 192.168.1.1)",
+      "blockBtn": "Block IP",
+      "table": {
+        "ip": "IP Address",
+        "reason": "Reason",
+        "blockedAt": "Blocked At",
+        "status": "Status",
+        "actions": "Actions",
+        "blocked": "Blocked",
+        "unblock": "Unblock"
+      }
+    },
+    "incidents": {
+      "title": "Security Incidents",
+      "subtitle": "Investigate and respond to security events",
+      "table": {
+        "id": "Incident ID",
+        "type": "Type",
+        "severity": "Severity",
+        "userIp": "User/IP",
+        "timestamp": "Timestamp",
+        "status": "Status",
+        "actions": "Actions",
+        "viewDetails": "View Details"
+      }
+    },
+    "scans": {
+      "title": "Vulnerability Scans",
+      "subtitle": "Schedule and review security scans",
+      "newBtn": "Schedule New Scan",
+      "table": {
+        "id": "Scan ID",
+        "tool": "Tool",
+        "date": "Date",
+        "findings": "Findings",
+        "maxSeverity": "Max Severity",
+        "status": "Status",
+        "actions": "Actions",
+        "viewReport": "View Report"
+      },
+      "penTestTitle": "Penetration Testing",
+      "lastPenTest": "Last External Penetration Test",
+      "conductedBy": "Conducted by: {{name}}",
+      "findingsStatus": "Findings Status",
+      "findingsDesc": "{{count}} findings - All remediated",
+      "complete": "Complete",
+      "scheduleNext": "Schedule Next Penetration Test"
+    },
+    "messages": {
+      "fetchError": "Failed to fetch security settings",
+      "policySuccess": "Password policy updated successfully",
+      "policyError": "Failed to update password policy",
+      "ipSuccess": "IP address {{ip}} has been blocked",
+      "ipError": "Failed to block IP",
+      "unblockSuccess": "IP address {{ip}} has been unblocked",
+      "unblockError": "Failed to unblock IP",
+      "scanScheduled": "Vulnerability scan scheduled for tonight at 2:00 AM"
+    }
+  },
+  "logs": {
+    "title": "Logs & Monitoring",
+    "subtitle": "Search and analyze system and application logs",
+    "loading": "Loading logs monitoring...",
+    "stats": {
+      "totalLogs": "Total Logs",
+      "errors": "Errors",
+      "warnings": "Warnings",
+      "info": "Info",
+      "last24h": "Last 24 hours"
+    },
+    "search": {
+      "title": "Search Logs",
+      "placeholder": "Search logs by message, user ID, or keyword...",
+      "service": "Service",
+      "allServices": "All Services",
+      "level": "Level",
+      "allLevels": "All Levels",
+      "searchBtn": "Search",
+      "userId": "User ID (optional)",
+      "timeRange": "Time range",
+      "lastHour": "Last hour",
+      "last6Hours": "Last 6 hours",
+      "last24Hours": "Last 24 hours",
+      "last7Days": "Last 7 days",
+      "last30Days": "Last 30 days"
+    },
+    "recent": {
+      "title": "Recent Log Entries",
+      "live": "Live",
+      "table": {
+        "timestamp": "Timestamp",
+        "level": "Level",
+        "service": "Service",
+        "user": "User",
+        "message": "Message",
+        "details": "Details",
+        "noLogs": "No logs found."
+      }
+    },
+    "alerts": {
+      "title": "Configure Log Alerts",
+      "addBtn": "Add New Alert Pattern",
+      "statusActive": "Active",
+      "statusInactive": "Inactive"
+    },
+    "stack": {
+      "title": "Centralized Logging Stack",
+      "statusConnected": "Connected",
+      "statusDisconnected": "Disconnected"
+    },
+    "messages": {
+      "fetchError": "Failed to fetch logs data",
+      "searchSuccess": "Searching logs...",
+      "searchError": "Failed to search logs",
+      "alertSuccess": "Alert configured for pattern",
+      "alertError": "Failed to configure alert"
+    }
+  },
+  "features": {
+    "title": "Feature Management",
+    "subtitle": "Deploy features, run experiments, and manage updates",
+    "loading": "Loading feature management data...",
+    "stats": {
+      "activeFeatures": "Active Features",
+      "outOf": "Out of {{total}} total",
+      "abTests": "Running A/B Tests",
+      "activeExp": "Active experiments",
+      "latestVersion": "Latest Version",
+      "deployed": "Deployed {{date}}"
+    },
+    "tabs": {
+      "features": "Feature Flags",
+      "abtests": "A/B Tests",
+      "updates": "Updates & Patches",
+      "deployment": "Deployment"
+    },
+    "flags": {
+      "title": "Feature Flags",
+      "subtitle": "Enable/disable features without code deployment",
+      "enabled": "Enabled",
+      "activeUsers": "Active users:",
+      "noFlags": "No feature flags found.",
+      "createBtn": "Create New Feature Flag"
+    },
+    "abTests": {
+      "title": "A/B Testing",
+      "subtitle": "Validate UX improvements with experiments",
+      "newBtn": "Create New Test",
+      "table": {
+        "name": "Test Name",
+        "variants": "Variants",
+        "traffic": "Traffic Split",
+        "metric": "Primary Metric",
+        "date": "Start Date",
+        "status": "Status",
+        "actions": "Actions",
+        "results": "View Results",
+        "stop": "Stop",
+        "noTests": "No A/B tests found."
+      },
+      "results": {
+        "title": "Test Results: Homepage Redesign",
+        "variantA": "Variant A (Control)",
+        "variantB": "Variant B (New)",
+        "traffic": "{{percent}} traffic",
+        "convRate": "Conversion Rate",
+        "convStats": "{{conversions}} conversions / {{visitors}} visitors",
+        "improvement": "+{{percent}}% improvement"
+      }
+    },
+    "updates": {
+      "title": "System Updates & Patches",
+      "subtitle": "Monitor and apply latest security patches and features",
+      "checkBtn": "Check for Updates",
+      "createBtn": "Create New Update",
+      "table": {
+        "version": "Version",
+        "desc": "Description",
+        "date": "Date",
+        "status": "Status",
+        "noUpdates": "No updates found."
+      },
+      "pending": "Pending Updates",
+      "available": "Available",
+      "noPending": "System is up to date."
+    },
+    "deployment": {
+      "title": "Zero-Downtime Deployment",
+      "subtitle": "Deploy new versions without service interruption",
+      "current": "Current Version",
+      "live": "Live",
+      "staging": "Staging Version",
+      "ready": "Ready",
+      "newFeatures": "New features:",
+      "deployBtn": "Deploy to Production",
+      "strategy": "Deployment Strategy",
+      "strategyRolling": "Rolling deployment (recommended)",
+      "strategyBlueGreen": "Blue-green deployment",
+      "strategyCanary": "Canary deployment",
+      "history": "Deployment History",
+      "duration": "Duration:",
+      "success": "Success"
+    },
+    "messages": {
+      "fetchError": "Failed to fetch features data",
+      "toggleSuccess": "Feature \"{{id}}\" {{status}}",
+      "toggleError": "Failed to toggle feature",
+      "deploySuccess": "Deployment initiated - feature will be live in 5 minutes",
+      "deployError": "Failed to deploy feature",
+      "abStartSuccess": "A/B test created and started",
+      "abStartError": "Failed to start A/B test",
+      "abStopSuccess": "A/B test \"{{id}}\" stopped",
+      "abStopError": "Failed to stop A/B test",
+      "updateSuccess": "System updates queued for deployment during maintenance window",
+      "updateError": "Failed to apply updates",
+      "createFlagSuccess": "Feature flag created",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "creating": "Creating...",
+      "startTest": "Start Test",
+      "createFlag": "Create Flag",
+      "createUpdate": "Create Update",
+      "deleteConfirm": "Are you sure you want to delete \"{{name}}\"? This action is permanent and cannot be undone."
+    }
+  },
+  "systemConfig": {
+    "title": "System Configuration",
+    "subtitle": "Manage global application settings and integrations",
+    "loading": "Loading system configuration...",
+    "success": {
+      "save": "Configuration saved successfully",
+      "test": "Testing connection to {{service}}..."
+    },
+    "error": {
+      "fetch": "Failed to fetch system configuration data",
+      "save": "Failed to save configuration",
+      "test": "Failed to test connection to {{service}}"
+    },
+    "tabs": {
+      "general": "General Settings",
+      "apiKeys": "API Keys",
+      "services": "External Services",
+      "health": "System Health"
+    },
+    "regional": {
+      "title": "Regional Settings",
+      "subtitle": "Configure timezone, currency, and date formats",
+      "timezone": "Timezone",
+      "currency": "Default Currency",
+      "dateFormat": "Date Format",
+      "language": "Default Language",
+      "saveBtn": "Save Configuration"
+    },
+    "business": {
+      "title": "Business Settings",
+      "commission": "Platform Commission Rate (%)",
+      "commissionDesc": "Commission charged on each booking",
+      "payout": "Minimum Payout Threshold (ETB)",
+      "payoutDesc": "Minimum balance before payout to camp managers",
+      "cancellation": "Cancellation Window (hours)",
+      "cancellationDesc": "Hours before check-in for free cancellation",
+      "saveBtn": "Save Business Settings"
+    },
+    "apiKeysTab": {
+      "title": "API Keys & Credentials",
+      "subtitle": "Manage third-party service credentials",
+      "securityWarning": "Security Warning",
+      "securityDesc": "Never share your API keys. They provide full access to your accounts.",
+      "chapa": "Chapa API Key",
+      "chapaDesc": "Used for processing payments",
+      "cloudinary": "Cloudinary API Key",
+      "cloudinaryDesc": "Used for image hosting and CDN",
+      "sms": "SMS Provider API Key",
+      "smsDesc": "Used for sending SMS notifications",
+      "email": "Email Service API Key",
+      "emailDesc": "Used for sending email notifications",
+      "testBtn": "Test",
+      "saveBtn": "Save API Keys"
+    },
+    "servicesTab": {
+      "title": "External Service Health",
+      "subtitle": "Monitor third-party integrations",
+      "latency": "Latency",
+      "uptime": "Uptime",
+      "viewDetails": "View Details",
+      "noData": "No external services data available.",
+      "fallbackTitle": "Fallback Mechanisms",
+      "paymentFallback": "Payment Gateway Failover",
+      "paymentFallbackDesc": "Automatically switch to backup payment processor if primary fails",
+      "imageFallback": "Image Hosting Fallback",
+      "imageFallbackDesc": "Use local storage if CDN is unavailable",
+      "notificationFallback": "Notification Retry Policy",
+      "notificationFallbackDesc": "Retry failed notifications up to 3 times with exponential backoff",
+      "enabled": "Enabled"
+    },
+    "healthTab": {
+      "title": "System Health Dashboard",
+      "subtitle": "Real-time platform health metrics",
+      "systemUptime": "System Uptime",
+      "last30Days": "Last 30 days",
+      "avgLatency": "Avg API Latency",
+      "p50": "P50 percentile",
+      "cacheRatio": "Cache Hit Ratio",
+      "redis": "Redis cache",
+      "errorRate": "Error Rate",
+      "last24Hours": "Last 24 hours",
+      "componentStatus": "Component Status",
+      "noStatus": "No component status available."
+    }
+  },
+  "finance": {
+    "title": "Financial Management",
+    "subtitle": "Monitor transactions, commissions, and payouts",
+    "loadingError": "Failed to load financial data",
+    "retry": "Retry",
+    "loading": "Loading financial dashboard...",
+    "overview": {
+      "totalRevenue": "Total Revenue",
+      "commissions": "Commissions",
+      "pendingPayouts": "Pending Payouts",
+      "refundsIssued": "Refunds Issued"
+    },
+    "tabs": {
+      "transactions": "All Transactions",
+      "payouts": "Payouts",
+      "analytics": "Business Analytics",
+      "reconciliation": "Reconciliation"
+    },
+    "transactionsTab": {
+      "historyTitle": "Transaction History",
+      "historySubtitle": "All bookings, deposits, and refunds",
+      "allTypes": "All Types",
+      "bookings": "Bookings",
+      "refunds": "Refunds",
+      "deposits": "Deposits",
+      "exportCsv": "Export CSV",
+      "table": {
+        "id": "Transaction ID",
+        "type": "Type",
+        "user": "User",
+        "camp": "Camp",
+        "amount": "Amount",
+        "commission": "Commission",
+        "status": "Status",
+        "date": "Date",
+        "actions": "Actions",
+        "viewDetails": "View Details",
+        "noData": "No transactions found."
+      },
+      "manualRefund": {
+        "title": "Manual Refund",
+        "idPlaceholder": "Transaction ID",
+        "amountPlaceholder": "Refund Amount (ETB)",
+        "btn": "Process Refund",
+        "desc": "Use for exceptional cases or dispute resolutions"
+      }
+    },
+    "payoutsTab": {
+      "title": "Camp Manager Payouts",
+      "subtitle": "Process payments to camp managers",
+      "processAllBtn": "Process All Pending",
+      "table": {
+        "id": "Payout ID",
+        "manager": "Manager",
+        "camp": "Camp",
+        "amount": "Amount",
+        "status": "Status",
+        "date": "Date",
+        "actions": "Actions",
+        "processBtn": "Process",
+        "viewReceipt": "View Receipt",
+        "noData": "No payouts found."
+      },
+      "config": {
+        "title": "Payout Configuration",
+        "saveBtn": "Save Changes",
+        "savingBtn": "Saving...",
+        "commission": "Commission Rate (%)",
+        "commissionDesc": "Percentage of each booking taken as platform fee",
+        "threshold": "Minimum Payout Threshold (ETB)",
+        "thresholdDesc": "Minimum balance (ETB) before processing payout",
+        "schedule": "Payout Schedule",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "biweekly": "Bi-weekly",
+        "monthly": "Monthly"
+      }
+    },
+    "analyticsTab": {
+      "title": "Business Intelligence",
+      "subtitle": "Revenue insights and trends",
+      "revenueByRegion": "Revenue by Region",
+      "seasonalDemand": "Seasonal Demand",
+      "paymentMethods": "Payment Methods Distribution",
+      "keyMetrics": "Key Metrics",
+      "avgBookingValue": "Average Booking Value",
+      "totalBookings": "Total Bookings",
+      "refundRate": "Refund Rate"
+    },
+    "reconciliationTab": {
+      "title": "Payment Gateway Reconciliation",
+      "subtitle": "Match platform records with payment gateway settlements",
+      "settlementTitle": "Chapa Settlement - April 2026",
+      "settlementDate": "Settlement date: April 15, 2026",
+      "pendingReview": "Pending Review",
+      "platformTotal": "Platform Total",
+      "gatewaySettlement": "Gateway Settlement",
+      "difference": "Difference",
+      "markReconciled": "Mark as Reconciled",
+      "prevSettlement": "Previous Settlement - March 2026",
+      "prevReconciledOn": "Reconciled on March 16, 2026",
+      "reconciled": "Reconciled",
+      "historyTitle": "Reconciliation History",
+      "march": "March 2026 Settlement",
+      "marchDesc": "ETB 156,230 - Matched perfectly",
+      "feb": "February 2026 Settlement",
+      "febDesc": "ETB 142,890 - Matched perfectly",
+      "jan": "January 2026 Settlement",
+      "janDesc": "ETB 138,450 - Matched perfectly"
+    }
+  },
+  "camp": {
+    "title": "Camp Management",
+    "subtitle": "Approve, monitor, and manage all camps on the platform",
+    "refresh": "Refresh",
+    "loading": "Loading...",
+    "error": {
+      "load": "Failed to load camp data",
+      "approve": "Failed to approve camp",
+      "reject": "Failed to reject camp",
+      "block": "Failed to block camp",
+      "ban": "Failed to ban camp",
+      "warning": "Failed to send warning",
+      "kycApprove": "Failed to approve KYC",
+      "kycReject": "Failed to reject KYC",
+      "reasonRequired": "Please provide a rejection reason"
+    },
+    "success": {
+      "approve": "Camp approved and published",
+      "reject": "Camp rejected successfully",
+      "block": "Camp temporarily blocked",
+      "ban": "Camp permanently banned",
+      "warning": "Warning sent to camp",
+      "kycApprove": "KYC document approved",
+      "kycReject": "KYC document rejected"
+    },
+    "stats": {
+      "active": "Active Camps",
+      "activeDesc": "Approved and live",
+      "pending": "Pending Approval",
+      "pendingDesc": "Awaiting review",
+      "kyc": "KYC Pending",
+      "kycDesc": "Documents to verify",
+      "blocked": "Blocked/Banned",
+      "blockedDesc": "Violating policies"
+    },
+    "tabs": {
+      "pending": "Pending Approvals",
+      "active": "Active Camps",
+      "kyc": "KYC Queue"
+    },
+    "pendingTab": {
+      "title": "Camp Registration Approvals",
+      "subtitle": "Review and approve new camp submissions",
+      "table": {
+        "id": "Camp ID",
+        "name": "Name",
+        "manager": "Manager",
+        "location": "Location",
+        "submitted": "Submitted",
+        "status": "Status",
+        "actions": "Actions",
+        "review": "Review",
+        "noPending": "No pending camps."
+      },
+      "dialog": {
+        "title": "Review Camp Registration",
+        "campName": "Camp Name",
+        "manager": "Manager",
+        "location": "Location",
+        "rejectionReason": "Rejection Reason (if rejecting)",
+        "rejectionPlaceholder": "Provide a reason for rejection...",
+        "approveBtn": "Approve Camp",
+        "rejectBtn": "Reject Camp"
+      }
+    },
+    "activeTab": {
+      "title": "Active Camps",
+      "subtitle": "Monitor and manage live camps",
+      "searchPlaceholder": "Search camps...",
+      "table": {
+        "id": "Camp ID",
+        "name": "Name",
+        "manager": "Manager",
+        "location": "Location",
+        "rating": "Rating",
+        "bookings": "Bookings",
+        "status": "Status",
+        "actions": "Actions",
+        "manage": "Manage",
+        "noCamps": "No camps found."
+      },
+      "dialog": {
+        "title": "Manage Camp: {{name}}",
+        "rating": "Rating",
+        "bookings": "Total Bookings",
+        "warningLabel": "Send Warning",
+        "warningPlaceholder": "Warning message (e.g., false amenities listed)...",
+        "warningBtn": "Send Warning",
+        "blockBtn": "Block Temporarily",
+        "banBtn": "Ban Permanently",
+        "unblockBtn": "Restore / Unblock Camp"
+      }
+    },
+    "kycTab": {
+      "title": "KYC Document Verification",
+      "subtitle": "Review and approve camp manager documents",
+      "table": {
+        "id": "User ID",
+        "manager": "Manager",
+        "camp": "Camp Name",
+        "type": "Document Type",
+        "submitted": "Submitted",
+        "status": "Status",
+        "actions": "Actions",
+        "approve": "Approve",
+        "reject": "Reject",
+        "noTasks": "No pending KYC tasks."
+      },
+      "docs": {
+        "title": "Required Documents",
+        "license": "Business License",
+        "tax": "Tax Identification Certificate",
+        "managerId": "Manager ID Verification",
+        "property": "Property Ownership/Lease Agreement",
+        "required": "Required",
+        "optional": "Optional"
+      }
+    },
+    "history": {
+      "title": "Recent Administrative Actions",
+      "noActions": "No recent camp actions recorded.",
+      "reason": "Reason: {{reason}}",
+      "actionBy": "Action by: {{name}}"
+    }
+  },
+  "user": {
+    "title": "User Management",
+    "subtitle": "Manage all user accounts across the platform",
+    "refresh": "Refresh",
+    "loading": "Loading...",
+    "deleteDialog": {
+      "title": "Confirm Permanent Deletion",
+      "subtitle": "This action cannot be undone and will remove all user records from our servers.",
+      "warningHeader": "Action Required: Irreversible Process",
+      "confirmMsg": "Are you sure you want to PERMANENTLY delete the account for \"{{name}}\"?",
+      "purgeMsg": "This user will be purged from the database immediately.",
+      "consequences": {
+        "title": "Consequences",
+        "item1": "All profile information, preferences, and linked data will be permanently erased.",
+        "item2": "The user will lose instant access to all platform features and services.",
+        "item3": "This deletion will be audited and linked to your administrator profile."
+      },
+      "cancel": "Cancel",
+      "purging": "Purging Data...",
+      "deleteBtn": "Confirm Delete"
+    },
+    "error": {
+      "load": "Failed to load users",
+      "suspend": "Failed to suspend user",
+      "ban": "Failed to ban user",
+      "unblock": "Failed to unblock user",
+      "warning": "Failed to send warning",
+      "create": "Failed to create user",
+      "revoke": "Failed to revoke role",
+      "delete": "Failed to delete user",
+      "update": "Failed to update user",
+      "approve": "Failed to approve manager",
+      "reasonRequired": "Please provide a ban reason",
+      "nameEmailRequired": "First name and email are required"
+    },
+    "success": {
+      "suspend": "User suspended",
+      "ban": "User permanently banned",
+      "unblock": "User unblocked and restored to active status",
+      "warning": "Warning sent to user",
+      "passwordGenerated": "Secure password generated",
+      "create": "New user account created",
+      "revoke": "Manager role revoked from user",
+      "deleteTitle": "Account Deleted",
+      "deleteDesc": "The user account has been permanently removed from the system.",
+      "update": "User details updated",
+      "approve": "Manager account approved"
+    },
+    "stats": {
+      "campers": "Total Campers",
+      "campersDesc": "Total camper users",
+      "managers": "Camp Managers",
+      "managersDesc": "Total manager accounts",
+      "suspended": "Suspended",
+      "suspendedDesc": "Temporarily blocked",
+      "banned": "Banned",
+      "bannedDesc": "Permanently banned"
+    },
+    "tabs": {
+      "campers": "Camper Accounts",
+      "managers": "Camp Managers",
+      "create": "Create User"
+    },
+    "camperTab": {
+      "title": "Camper Accounts",
+      "subtitle": "Manage customer accounts",
+      "searchPlaceholder": "Search users...",
+      "statusFilter": {
+        "all": "All Status",
+        "active": "Active",
+        "suspended": "Suspended",
+        "banned": "Banned"
+      },
+      "table": {
+        "id": "User ID",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "joined": "Joined",
+        "status": "Status",
+        "actions": "Actions",
+        "manage": "Manage",
+        "loading": "Loading campers...",
+        "noUsers": "No campers found."
+      },
+      "dialog": {
+        "title": "Manage User: {{name}}",
+        "edit": {
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "email": "Email",
+          "phone": "Phone",
+          "save": "Save Changes",
+          "cancel": "Cancel"
+        },
+        "info": {
+          "email": "Email",
+          "phone": "Phone",
+          "bookings": "Total Bookings",
+          "joined": "Member Since",
+          "editDetails": "Edit details"
+        },
+        "warning": {
+          "label": "Send Warning",
+          "placeholder": "Warning message for minor infractions...",
+          "btn": "Send Warning"
+        },
+        "actions": {
+          "suspend": "Suspend User",
+          "unblock": "Unblock User",
+          "banPlaceholder": "Reason for permanent ban...",
+          "banBtn": "Ban Permanently",
+          "deleteBtn": "Delete Account Permanently"
+        }
+      }
+    },
+    "managerTab": {
+      "title": "Camp Manager Accounts",
+      "subtitle": "Manage camp owner and operator accounts",
+      "searchPlaceholder": "Search managers...",
+      "table": {
+        "id": "Manager ID",
+        "name": "Name",
+        "email": "Email",
+        "camp": "Camp",
+        "joined": "Joined",
+        "kyc": "KYC Status",
+        "status": "Status",
+        "actions": "Actions",
+        "view": "View Details",
+        "loading": "Loading managers...",
+        "noUsers": "No managers found."
+      },
+      "dialog": {
+        "title": "Camp Manager: {{name}}",
+        "warning": {
+          "label": "Send Message / Warning",
+          "placeholder": "Send a direct message or warning...",
+          "btn": "Send Message"
+        },
+        "docs": {
+          "title": "Documentation",
+          "kyc": "KYC Status",
+          "approve": "Approve"
+        },
+        "actions": {
+          "revoke": "Revoke Manager Role",
+          "suspend": "Suspend Account",
+          "unblock": "Unblock Account",
+          "delete": "Delete Manager Account"
+        }
+      }
+    },
+    "createTab": {
+      "title": "Create New User Account",
+      "subtitle": "Provision a new administrative or service provider account",
+      "form": {
+        "firstName": "First Name",
+        "firstNamePlaceholder": "Enter first name",
+        "lastName": "Last Name",
+        "lastNamePlaceholder": "Enter last name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "role": "Account Role",
+        "roles": {
+          "camper": "Camper (Default)",
+          "manager": "Camp Manager",
+          "admin": "System Admin"
+        },
+        "password": "Initial Password",
+        "passwordPlaceholder": "Enter password or generate one",
+        "generate": "Generate Secure Password",
+        "createBtn": "Create User Account"
+      },
+      "credentials": {
+        "title": "Account Created Successfully",
+        "subtitle": "Please securely share these credentials with the user.",
+        "email": "Email",
+        "password": "Password",
+        "role": "Role",
+        "warning": "This password will not be shown again. Ensure you copy it now.",
+        "done": "Done"
+      }
+    },
+    "moderation": {
+      "title": "Recent Moderation Actions",
+      "noActions": "No recent actions recorded.",
+      "actionBy": "{{date}} by {{name}}"
+    }
+  },
+  "dashboard": {
+    "title": "System Overview",
+    "subtitle": "Real-time platform performance and status monitoring",
+    "errorLoad": "Failed to load dashboard metrics",
+    "loading": "Loading Dashboard Metrics...",
+    "totalRevenue": "Total Platform Revenue",
+    "activeUsers": "Total Active Users",
+    "occupancyRate": "Overall Occupancy Rate",
+    "conversionRate": "Booking Conversion Rate",
+    "revenueGrowth": "+12.5% from last month",
+    "usersGrowth": "+8.2% this week",
+    "occupancyGrowth": "+5.3% from last week",
+    "conversionGrowth": "-2.1% from last week",
+    "pendingCamps": "Pending Camp Approvals",
+    "pendingKYC": "Managers Awaiting KYC",
+    "systemUptime": "Overall System Uptime",
+    "charts": {
+      "revenue": "Revenue Trend (ETB)",
+      "occupancy": "Occupancy Rate (%)",
+      "resources": "Server Resource Usage",
+      "latency": "API Latency Percentiles (ms)",
+      "month": "Month",
+      "week": "Week",
+      "time": "Time"
+    },
+    "health": {
+      "title": "Container Health",
+      "webServer": "Web Server",
+      "database": "Database",
+      "redis": "Redis Cache",
+      "healthy": "Healthy",
+      "hitRatio": "Hit Ratio: {{ratio}}%"
+    },
+    "errors": {
+      "title": "Recent Error Summary",
+      "rate": "Error Rate",
+      "warnings": "Warning Count",
+      "critical": "Critical Errors",
+      "last24": "Last 24 hours",
+      "lastHour": "Last hour",
+      "last7Days": "Last 7 days"
+    }
+  },
+  "reports": {
+    "title": "Reports & Alerts",
+    "subtitle": "Generate technical reports and send notifications",
+    "loading": "Loading reports configuration...",
+    "success": {
+      "templateLoaded": "Template loaded successfully",
+      "templateCreated": "Template created successfully",
+      "reportStarted": "Report generation started - you'll receive it via email",
+      "alertSent": "Alert sent successfully"
+    },
+    "error": {
+      "fillFields": "Please fill in both title and message",
+      "templateCreate": "Failed to create template",
+      "fetch": "Failed to fetch reports and alerts data",
+      "generate": "Failed to generate report",
+      "requiredFields": "Please fill in all required fields",
+      "sendAlert": "Failed to send alert"
+    },
+    "tabs": {
+      "reports": "Technical Reports",
+      "alerts": "Send Alerts",
+      "templates": "Alert Templates",
+      "history": "Alert History"
+    },
+    "stats": {
+      "uptime": "System Uptime",
+      "responseTime": "API Response Time",
+      "errorRate": "Error Rate",
+      "last30Days": "Last 30 days",
+      "average": "Average (p50)",
+      "last24Hours": "Last 24 hours"
+    },
+    "uptimeChart": "System Uptime Trend",
+    "availableReports": "Available Reports",
+    "table": {
+      "name": "Report Name",
+      "type": "Type",
+      "schedule": "Schedule",
+      "lastRun": "Last Run",
+      "actions": "Actions",
+      "generate": "Generate Now",
+      "noReports": "No reports available."
+    },
+    "utilization": {
+      "title": "Resource Utilization",
+      "cpu": "CPU Usage",
+      "memory": "Memory Usage",
+      "disk": "Disk I/O",
+      "network": "Network",
+      "average": "Average",
+      "peak": "Peak",
+      "read": "Read",
+      "write": "Write",
+      "inbound": "Inbound",
+      "outbound": "Outbound"
+    },
+    "sendAlert": {
+      "title": "Send System Alert",
+      "desc": "Notify users about maintenance, features, or policy changes",
+      "formTitle": "Alert Title",
+      "placeholderTitle": "Enter alert title...",
+      "message": "Message",
+      "placeholderMessage": "Enter your message...",
+      "recipients": "Recipients",
+      "allUsers": "All Users",
+      "campersOnly": "Campers Only",
+      "managersOnly": "Camp Managers Only",
+      "activeOnly": "Active Users Only",
+      "delivery": "Delivery Methods",
+      "email": "Email",
+      "sms": "SMS",
+      "inApp": "In-App",
+      "btn": "Send Alert"
+    },
+    "templates": {
+      "title": "Pre-Approved Alert Templates",
+      "desc": "Quick-send common notifications",
+      "createBtn": "Create Template",
+      "dialogTitle": "Create New Alert Template",
+      "formTitle": "Template Title",
+      "placeholderTitle": "e.g., Warning: High Usage",
+      "messageBody": "Message Body",
+      "placeholderMessage": "Use [BRACKETS] for variables...",
+      "saveBtn": "Save Template",
+      "useBtn": "Use Template"
+    },
+    "history": {
+      "title": "Alert History",
+      "type": "Type",
+      "message": "Message",
+      "recipients": "Recipients",
+      "sentAt": "Sent At",
+      "status": "Status",
+      "noHistory": "No alert history found."
+    }
+  }
+}

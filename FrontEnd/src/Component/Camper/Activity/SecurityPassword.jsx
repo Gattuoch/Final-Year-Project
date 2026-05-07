@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../../../services/api";
 import { FiLock, FiShield, FiCheck } from "react-icons/fi";
 import Sidebar from "../Sidebar/Sidebar";
 import AccountSetting from "./AccountSetting";
@@ -28,15 +28,18 @@ export default function SecurityPassword() {
     
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      // Assuming a standard password change endpoint exists or using patch user
-      // Note: Usually requires a specific endpoint verifying 'currentPassword' first
-      alert("Password update logic would run here. (Backend endpoint required)");
-      
-      // Reset logic on success
-      setPasswords({ current: "", newPass: "", confirm: "" });
+      const res = await api.patch("/auth/profile", {
+        currentPassword: passwords.current,
+        newPassword: passwords.newPass
+      });
+
+      if (res.data.success) {
+        setPasswords({ current: "", newPass: "", confirm: "" });
+        alert("Password updated securely! 🔒");
+      }
     } catch (err) {
       console.error(err);
+      alert(err.response?.data?.message || err.response?.data?.error || "Failed to update password.");
     } finally {
       setLoading(false);
     }

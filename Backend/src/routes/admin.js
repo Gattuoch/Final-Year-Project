@@ -9,18 +9,18 @@ const router = express.Router();
 const BCRYPT_ROUNDS = 12;
 
 /**
- * Create internal user (only system_admin or super_admin can create others)
+ * Create internal user (only system_admin or system_admin can create others)
  * Admin provides name, email/phone, role
  * System generates a temporary password and flags mustResetPassword = true
  */
-router.post('/create-user', authenticateJWT, authorizeRoles('system_admin','super_admin'), async (req,res) => {
+router.post('/create-user', authenticateJWT, authorizeRoles('system_admin','system_admin'), async (req,res) => {
   try {
     const { fullName, email, phone, role } = req.body;
     if (!fullName || (!email && !phone) || !role) return res.status(400).json({ message: 'fullName,email/phone,role required' });
 
-    // verify role is allowed - system_admin creates internal roles; only super_admin can create system_admin
+    // verify role is allowed - system_admin creates internal roles; only system_admin can create system_admin
     const allowedRolesForCreator = {
-      super_admin: ['system_admin','super_admin'],
+      system_admin: ['system_admin','system_admin'],
       system_admin: ['camp_manager','event_manager','ticket_officer','security_officer','system_admin']
     };
     const creatorRole = req.user.role;
