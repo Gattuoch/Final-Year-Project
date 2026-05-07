@@ -23,28 +23,45 @@ import LogoutConfirm from "./LogoutConfirm";
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [counts, setCounts] = useState({ trips: 0, notifications: 0 });
+<<<<<<< HEAD
   const { user } = useUser(); // optional, can be used later
+=======
+  const { user } = useUser(); 
+>>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
   const navigate = useNavigate();
   const [showLogout, setShowLogout] = useState(false);
 
   const closeSidebar = () => setIsOpen(false);
 
+<<<<<<< HEAD
   // ✅ 1. DYNAMIC DATA FETCHING (using api instance)
+=======
+  // ✅ DYNAMIC DATA FETCHING (Using central API instance)
+>>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
   useEffect(() => {
     const fetchCounts = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
 
+<<<<<<< HEAD
         // Fetch bookings
         const bookingRes = await api.get("/bookings/my-bookings");
         const bookings = bookingRes.data?.bookings || [];
         
         const today = new Date();
+=======
+        const res = await api.get("/bookings/my-bookings");
+        const bookings = res.data?.bookings || res.data?.data || [];
+        
+        const today = new Date();
+        // Count Active Trips (Confirmed & Future/Current)
+>>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
         const activeTrips = bookings.filter(b => 
           b.status === 'confirmed' && new Date(b.checkOut) >= today
         ).length;
 
+<<<<<<< HEAD
         const unpaid = bookings.filter(b => b.paymentStatus === 'unpaid').length;
 
         // Fetch unread database notifications
@@ -62,6 +79,12 @@ export default function Sidebar() {
           trips: activeTrips, 
           notifications: unpaid + unreadNotes 
         });
+=======
+        // Count Notifications (Unpaid)
+        const unpaid = bookings.filter(b => b.paymentStatus === 'unpaid').length;
+
+        setCounts({ trips: activeTrips, notifications: unpaid });
+>>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
       } catch (err) {
         console.error("Sidebar stats error:", err);
       }
@@ -70,7 +93,10 @@ export default function Sidebar() {
     fetchCounts();
   }, []);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
   return (
     <>
       {/* ================= Mobile Overlay ================= */}
@@ -139,6 +165,16 @@ export default function Sidebar() {
               badge={counts.trips > 0 ? counts.trips : null}
               onClick={closeSidebar}
             />
+<<<<<<< HEAD
+=======
+            {/* Added from Code 1 */}
+            <NavItem
+              to="/camper-dashboard/tickets"
+              icon={TicketIcon}
+              label="Day Visits"
+              onClick={closeSidebar}
+            /> 
+>>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
           </Section>
 
           <Section title="PAYMENTS">
@@ -226,7 +262,8 @@ export default function Sidebar() {
   );
 }
 
-/* ================= Section ================= */
+/* ================= Helper Components ================= */
+
 function Section({ title, children }) {
   return (
     <div>
@@ -238,7 +275,6 @@ function Section({ title, children }) {
   );
 }
 
-/* ================= Nav Item ================= */
 function NavItem({ icon: Icon, label, to, badge, onClick, end = false }) {
   return (
     <NavLink
@@ -268,7 +304,6 @@ function NavItem({ icon: Icon, label, to, badge, onClick, end = false }) {
   );
 }
 
-/* ================= Logout Button ================= */
 function LogoutButton({ icon: Icon, label, onClick }) {
   return (
     <button

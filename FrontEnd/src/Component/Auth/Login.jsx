@@ -45,7 +45,22 @@ export const Login = () => {
     }
   };
 
+<<<<<<< HEAD
   // Move hooks above all logic to follow Rules of Hooks
+=======
+  // Wait for user loading and redirect if already logged in
+  if (loadingUser) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
+
+  if (user) {
+    // Already logged in → redirect to their dashboard
+    const dashboardPath = getDashboardPath(user.role);
+    return <Navigate to={dashboardPath} replace />;
+  }
+
+  // Rest of the component (unchanged except we use the helper)
+>>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImg((prev) => (prev + 1) % images.length);
@@ -104,6 +119,7 @@ export const Login = () => {
     }
   };
 
+<<<<<<< HEAD
   // Main Render Logic
   if (loadingUser) {
     return (
@@ -121,6 +137,9 @@ export const Login = () => {
     return <Navigate to={getDashboardPath(user.role)} replace />;
   }
 
+=======
+  // Return the same JSX (unchanged)
+>>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
   return (
     <>
       <Navbar />

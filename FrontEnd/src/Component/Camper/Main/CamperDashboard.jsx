@@ -306,4 +306,8 @@ const NotificationItem = ({ icon, title, text, time, color }) => {
       </div>
     </div>
   );
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8

@@ -1,5 +1,9 @@
 import SupportMessage from "../models/SupportMessage.js";
+<<<<<<< HEAD
 // import * as emailService from "../services/email.service.js";
+=======
+import * as emailService from "../services/email.service.js";
+>>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
 
 /**
  * POST /api/support
