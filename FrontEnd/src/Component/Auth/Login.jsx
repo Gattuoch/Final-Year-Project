@@ -5,14 +5,16 @@ import { HiMail, HiLockClosed, HiEye, HiEyeOff, HiCheckCircle, HiExclamationCirc
 import { motion, AnimatePresence } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
 import { useUser } from "../../context/UserContext"; // import context
+import { useLanguage } from "../../context/LanguageContext";
+import Navbar from "../Home/Navar";
 
 // Image Assets
 import camp0 from "../../assets/Camp.png";
 import camp1 from "../../assets/camp1.png";
 import camp2 from "../../assets/camp2.png";
-import Navbar from "../Home/Navar";
 
 export const Login = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { user, loadingUser, refreshUser } = useUser(); // get user state and loading
   const images = [camp0, camp1, camp2];
@@ -45,22 +47,7 @@ export const Login = () => {
     }
   };
 
-<<<<<<< HEAD
   // Move hooks above all logic to follow Rules of Hooks
-=======
-  // Wait for user loading and redirect if already logged in
-  if (loadingUser) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
-  }
-
-  if (user) {
-    // Already logged in → redirect to their dashboard
-    const dashboardPath = getDashboardPath(user.role);
-    return <Navigate to={dashboardPath} replace />;
-  }
-
-  // Rest of the component (unchanged except we use the helper)
->>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImg((prev) => (prev + 1) % images.length);
@@ -107,19 +94,18 @@ export const Login = () => {
       setLoading(false);
       const status = err.response?.status;
       if (status === 404) {
-        setError("Account does not exist. Please check your identifier.");
+        setError(t("auth.login.errorAccount") || "Account does not exist. Please check your identifier.");
       } else if (status === 401) {
-        setError("Wrong password. Please try again.");
+        setError(t("auth.login.errorPassword") || "Wrong password. Please try again.");
       } else if (status === 403) {
-        setError(err.response?.data?.error || "Access denied.");
+        setError(err.response?.data?.error || t("auth.login.errorDenied") || "Access denied.");
       } else {
-        setError("Unable to reach server or invalid response.");
+        setError(t("auth.login.errorServer") || "Unable to reach server or invalid response.");
         console.error("Login Error:", err);
       }
     }
   };
 
-<<<<<<< HEAD
   // Main Render Logic
   if (loadingUser) {
     return (
@@ -137,9 +123,6 @@ export const Login = () => {
     return <Navigate to={getDashboardPath(user.role)} replace />;
   }
 
-=======
-  // Return the same JSX (unchanged)
->>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
   return (
     <>
       <Navbar />
@@ -164,8 +147,8 @@ export const Login = () => {
                 >
                   <HiCheckCircle className="text-[#007ba7] text-[120px] mb-6 drop-shadow-xl" />
                 </motion.div>
-                <h1 className="text-4xl font-black text-slate-900 tracking-tight">Warm Welcome!</h1>
-                <p className="text-slate-500 mt-3 text-lg font-medium">Synchronizing your adventure...</p>
+                <h1 className="text-4xl font-black text-slate-900 tracking-tight">{t("auth.login.success") || "Warm Welcome!"}</h1>
+                <p className="text-slate-500 mt-3 text-lg font-medium">{t("auth.login.loading") || "Synchronizing your adventure..."}</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -186,7 +169,7 @@ export const Login = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/20" />
             <div className="absolute bottom-20 left-12 right-12 text-white z-10">
               <TypeAnimation
-                sequence={["Your journey begins here.", 1500, "The ultimate camping experience awaits.", 1500]}
+                sequence={[t("auth.login.journey") || "Your journey begins here.", 1500, t("auth.login.ultimate") || "The ultimate camping experience awaits.", 1500]}
                 wrapper="h2"
                 speed={50}
                 className="text-3xl font-extrabold tracking-tight leading-tight"
@@ -200,7 +183,7 @@ export const Login = () => {
             <div className="w-full max-w-sm mx-auto">
               <header className="mb-10">
                 <TypeAnimation
-                  sequence={["Welcome Back", 2000]}
+                  sequence={[t("auth.login.title") || "Welcome Back", 2000]}
                   wrapper="h1"
                   className="text-4xl font-black text-white tracking-[-0.05em]"
                   cursor={false}
@@ -230,7 +213,7 @@ export const Login = () => {
 
                 {!error && (
                   <p className="text-blue-50/80 mt-6 font-medium text-lg leading-relaxed">
-                    Enter your credentials to access your portal.
+                    {t("auth.login.subtitle") || "Enter your credentials to access your portal."}
                   </p>
                 )}
               </header>
@@ -238,14 +221,14 @@ export const Login = () => {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-1.5">
                   <label className="text-[11px] font-bold text-white/60 uppercase tracking-widest ml-1">
-                    Account Identifier
+                    {t("auth.login.identifier") || "Account Identifier"}
                   </label>
                   <div className="relative">
                     <HiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-sky-300 text-xl z-10 pointer-events-none" />
                     <input
                       type="text"
                       name="identifier"
-                      placeholder="Email or Phone"
+                      placeholder={t("auth.login.identifierPlaceholder") || "Email or Phone"}
                       value={formData.identifier}
                       onChange={handleChange}
                       className="w-full bg-white/5 border border-white/20 rounded-2xl pl-12 py-4 text-white placeholder:text-white/30 outline-none focus:bg-white/10 focus:border-sky-400 transition-all font-medium"
@@ -256,7 +239,7 @@ export const Login = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[11px] font-bold text-white/60 uppercase tracking-widest ml-1">
-                    Password
+                    {t("auth.login.password") || "Password"}
                   </label>
                   <div className="relative">
                     <HiLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-sky-300 text-xl z-10 pointer-events-none" />
@@ -281,10 +264,10 @@ export const Login = () => {
 
                 <div className="flex justify-end pb-2">
                   <a
-                    href="/forgot"
+                    href="/forgot-password"
                     className="text-xs font-bold text-white/70 hover:text-white transition-colors uppercase tracking-wider"
                   >
-                    Reset Password?
+                    {t("auth.login.forgotPassword") || "Reset Password?"}
                   </a>
                 </div>
 
@@ -302,19 +285,19 @@ export const Login = () => {
                       className="w-5 h-5 border-[3px] border-[#007ba7] border-t-transparent rounded-full"
                     />
                   ) : (
-                    "Login"
+                    t("auth.login.loginBtn") || "Login"
                   )}
                 </motion.button>
               </form>
 
               <footer className="mt-10 text-center">
                 <p className="text-blue-50/60 text-sm font-medium">
-                  New explorer?{" "}
+                  {t("auth.login.newExplorer") || "New explorer?"}{" "}
                   <a
                     href="/signUp"
                     className="text-white font-black ml-1 hover:underline underline-offset-4 tracking-tight"
                   >
-                    Create an Account
+                    {t("auth.login.createAccount") || "Create an Account"}
                   </a>
                 </p>
               </footer>

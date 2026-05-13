@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import CampVeiw from "../../assets/Hero-image.png";
 import toast from "react-hot-toast";
 import { HiLocationMarker, HiCalendar, HiUser, HiSearch } from "react-icons/hi";
+import { useLanguage } from "../../context/LanguageContext";
 
 // --------------------------
 // COUNTER COMPONENT
@@ -43,6 +44,7 @@ const SearchBar = () => {
   const [searched, setSearched] = useState(false);
   const [backendMessage, setBackendMessage] = useState("");
   const [loading, setLoading] = useState(false); // ⭐ ADDED
+  const { t } = useLanguage();
 
  const handleSearch = async () => {
   try {
@@ -94,18 +96,18 @@ const SearchBar = () => {
         className="w-full bg-white shadow-lg rounded-3xl p-6 mt-10 border border-gray-100"
       >
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-          Where do you want to camp?
+          {t("home.search.title") || "Where do you want to camp?"}
         </h2>
 
         <div className="grid md:grid-cols-5 gap-4 items-end">
           {/* LOCATION */}
           <motion.div whileHover={{ scale: 1.02 }} className="flex flex-col">
-            <label className="text-sm text-gray-600 mb-1">Location</label>
+            <label className="text-sm text-gray-600 mb-1">{t("home.search.location") || "Location"}</label>
             <div className="flex items-center border border-gray-300 rounded-xl px-3 py-3">
               <HiLocationMarker className="text-gray-500 w-5 h-5 mr-2" />
               <input
                 type="text"
-                placeholder="Where to?"
+                placeholder={t("home.search.locationPlaceholder") || "Where to?"}
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 className="w-full outline-none text-gray-700"
@@ -115,7 +117,7 @@ const SearchBar = () => {
 
           {/* CHECK-IN */}
           <motion.div whileHover={{ scale: 1.02 }} className="flex flex-col">
-            <label className="text-sm text-gray-600 mb-1">Check-in</label>
+            <label className="text-sm text-gray-600 mb-1">{t("home.search.checkIn") || "Check-in"}</label>
             <div className="flex items-center border border-gray-300 rounded-xl px-3 py-3">
               <HiCalendar className="text-gray-500 w-5 h-5 mr-2" />
               <input
@@ -129,7 +131,7 @@ const SearchBar = () => {
 
           {/* CHECK-OUT */}
           <motion.div whileHover={{ scale: 1.02 }} className="flex flex-col">
-            <label className="text-sm text-gray-600 mb-1">Check-out</label>
+            <label className="text-sm text-gray-600 mb-1">{t("home.search.checkOut") || "Check-out"}</label>
             <div className="flex items-center border border-gray-300 rounded-xl px-3 py-3">
               <HiCalendar className="text-gray-500 w-5 h-5 mr-2" />
               <input
@@ -143,7 +145,7 @@ const SearchBar = () => {
 
           {/* GUESTS */}
           <motion.div whileHover={{ scale: 1.02 }} className="flex flex-col">
-            <label className="text-sm text-gray-600 mb-1">Guests</label>
+            <label className="text-sm text-gray-600 mb-1">{t("home.search.guests") || "Guests"}</label>
             <div className="flex items-center border border-gray-300 rounded-xl px-3 py-3">
               <HiUser className="text-gray-500 w-5 h-5 mr-2" />
               <select
@@ -151,11 +153,11 @@ const SearchBar = () => {
                 value={guests}
                 onChange={(e) => setGuests(e.target.value)}
               >
-                <option value="1">1 Guest</option>
-                <option value="2">2 Guests</option>
-                <option value="3">3 Guests</option>
-                <option value="4">4 Guests</option>
-                <option value="5">5 Guests +</option>
+                <option value="1">{t("home.search.guestCount", {count: 1}) || "1 Guest"}</option>
+                <option value="2">{t("home.search.guestCountPlural", {count: 2}) || "2 Guests"}</option>
+                <option value="3">{t("home.search.guestCountPlural", {count: 3}) || "3 Guests"}</option>
+                <option value="4">{t("home.search.guestCountPlural", {count: 4}) || "4 Guests"}</option>
+                <option value="5">{t("home.search.guestCountPlus") || "5 Guests +"}</option>
               </select>
             </div>
           </motion.div>
@@ -167,7 +169,7 @@ const SearchBar = () => {
               className="w-full bg-green-700 hover:bg-green-800 text-white font-medium text-lg px-6 py-4 rounded-xl flex items-center justify-center gap-2 transition"
             >
               <HiSearch className="w-5 h-5" />
-              Search
+              {t("home.search.searchBtn") || "Search"}
             </button>
           </motion.div>
         </div>
@@ -179,7 +181,7 @@ const SearchBar = () => {
           {/* LOADING UI */}
           {loading && (
             <p className="text-center text-green-700 font-semibold animate-pulse text-lg">
-              Searching camps...
+              {t("home.search.searching") || "Searching camps..."}
             </p>
           )}
 
@@ -205,7 +207,9 @@ const SearchBar = () => {
 
           {/* NO DATA MESSAGE FROM BACKEND */}
           {!loading && results.length === 0 && (
-            <p className="text-center text-gray-500 font-medium">{backendMessage}</p>
+            <p className="text-center text-gray-500 font-medium">
+              {backendMessage || t("home.search.noResults") || "No camps found matching your criteria."}
+            </p>
           )}
         </div>
       )}
@@ -217,6 +221,7 @@ const SearchBar = () => {
 // HERO SECTION
 // --------------------------
 const Hero = () => {
+  const { t } = useLanguage();
 
   const [exploreResults, setExploreResults] = useState([]);
   const loadAllCamps = async () => {
@@ -267,14 +272,11 @@ const Hero = () => {
           className="space-y-6"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
-            Discover Your <br />
-            Perfect Camp <br />
-            Experience
+            {t("home.hero.title") || "Discover Your Perfect Camp Experience"}
           </h1>
 
           <p className="text-gray-600 text-lg md:text-xl">
-            Book unique camping spots across Ethiopia. From mountain retreats to
-            lakeside havens, find your next adventure with ease.
+            {t("home.hero.subtitle") || "Book unique camping spots across Ethiopia. From mountain retreats to lakeside havens, find your next adventure with ease."}
           </p>
 {/* EXPLORE CAMPS BUTTON */}
 <div className="flex gap-4 pt-4">
@@ -284,7 +286,7 @@ const Hero = () => {
     onClick={loadAllCamps}
     className="mt-6 bg-green-700 hover:bg-green-800 text-white font-medium px-6 py-3 rounded-xl shadow-md"
   >
-    Explore Camps
+    {t("home.hero.exploreBtn") || "Explore Camps"}
   </motion.button>
 </div>
 
@@ -324,21 +326,21 @@ const Hero = () => {
               <p className="text-3xl font-bold text-green-700">
                 <Counter end={500} />+
               </p>
-              <p className="text-gray-500 text-sm">Active Camps</p>
+              <p className="text-gray-500 text-sm">{t("home.hero.stats.activeCamps") || "Active Camps"}</p>
             </div>
 
             <div>
               <p className="text-3xl font-bold text-green-700">
                 <Counter end={10} />k+
               </p>
-              <p className="text-gray-500 text-sm">Happy Campers</p>
+              <p className="text-gray-500 text-sm">{t("home.hero.stats.happyCampers") || "Happy Campers"}</p>
             </div>
 
             <div>
               <p className="text-3xl font-bold text-green-700">
                 <Counter end={4.8} decimals={1} />★
               </p>
-              <p className="text-gray-500 text-sm">Average Rating</p>
+              <p className="text-gray-500 text-sm">{t("home.hero.stats.avgRating") || "Average Rating"}</p>
             </div>
           </div>
         </motion.div>

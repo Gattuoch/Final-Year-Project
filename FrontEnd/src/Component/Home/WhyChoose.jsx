@@ -1,13 +1,12 @@
 import React from "react";
 import { HiSearch, HiCreditCard } from "react-icons/hi";
 import { HiWallet, HiBell, HiClock, HiShieldCheck  } from "react-icons/hi2";
+import { useLanguage } from "../../context/LanguageContext";
 
 const features = [
   {
     id: 1,
-    title: "Advanced Search",
-    description:
-      "Find camps with powerful filters including location, price range, amenities, and real-time availability status.",
+    key: "advancedSearch",
     icon: (
       <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center">
         <HiSearch className="text-3xl text-green-700" />
@@ -16,9 +15,7 @@ const features = [
   },
   {
     id: 2,
-    title: "Secure Payments",
-    description:
-      "Integrated with Chapa and Flutterwave for safe transactions, instant confirmations, and automated receipts.",
+    key: "securePayments",
     icon: (
       <div className="w-14 h-14 rounded-full bg-green-200 flex items-center justify-center">
         <HiCreditCard className="text-3xl text-green-700" />
@@ -27,9 +24,7 @@ const features = [
   },
   {
     id: 3,
-    title: "Digital Wallet",
-    description:
-      "Built-in wallet system for faster payments, instant refunds, and seamless transaction management.",
+    key: "digitalWallet",
     icon: (
       <div className="w-14 h-14 rounded-full bg-yellow-100 flex items-center justify-center">
         <HiWallet className="text-3xl text-yellow-600" />
@@ -38,9 +33,7 @@ const features = [
   },
   {
     id: 4,
-    title: "Smart Notifications",
-    description:
-      "Automated email and SMS alerts for bookings, payments, check-ins, and important updates.",
+    key: "smartNotifications",
     icon: (
       <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center">
         <HiBell className="text-3xl text-green-700" />
@@ -49,9 +42,7 @@ const features = [
   },
   {
     id: 5,
-    title: "Real-time Booking",
-    description:
-      "Instant reservation confirmations with live availability calendar to prevent overbooking.",
+    key: "realtimeBooking",
     icon: (
       <div className="w-14 h-14 rounded-full bg-green-200 flex items-center justify-center">
         <HiClock className="text-3xl text-green-700" />
@@ -60,20 +51,19 @@ const features = [
   },
   {
     id: 6,
-    title: "Trust & Safety",
-    description:
-      "Comprehensive reporting system and user verification for a secure camping community.",
+    key: "trustSafety",
     icon: (
       <div className="w-14 h-14 rounded-full bg-yellow-100 flex items-center justify-center">
         <HiShieldCheck className="text-3xl text-yellow-600" />
       </div>
     ),
   },
-
 ];
 
 
 const WhyChoose = () => {
+  const { t } = useLanguage();
+
   return (
     <section className="w-full py-20 bg-green-50">
       <div className="container mx-auto px-6 lg:px-16">
@@ -81,10 +71,10 @@ const WhyChoose = () => {
         {/* Title Section */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-            Why Choose EthioCampGround?
+            {t("home.features.title") || "Why Choose EthioCampGround?"}
           </h2>
           <p className="text-gray-600 mt-4 text-lg">
-            Experience seamless booking with advanced features
+            {t("home.features.subtitle") || "Experience seamless booking with advanced features"}
           </p>
         </div>
 
@@ -95,17 +85,16 @@ const WhyChoose = () => {
               key={item.id}
               className="bg-white p-8 rounded-3xl shadow-sm  hover:shadow-lg transition"
             >
-              <div className="flex items-center justify-center w-16 h-16 rounded-full mx-auto mb-6"
-                   style={{ backgroundColor: item.bg }}>
+              <div className="flex items-center justify-center w-16 h-16 rounded-full mx-auto mb-6">
                 {item.icon}
               </div>
 
               <h3 className="text-xl font-semibold text-center text-gray-900">
-                {item.title}
+                {t(`home.features.${item.key}.title`)}
               </h3>
 
               <p className="text-gray-600 text-center mt-3">
-                {item.description}
+                {t(`home.features.${item.key}.desc`)}
               </p>
             </div>
           ))}

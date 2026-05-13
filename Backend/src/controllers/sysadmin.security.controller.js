@@ -46,9 +46,25 @@ export const getSecurityData = async (req, res) => {
       ]);
     }
 
+    const penetrationTestSetting = await getSetting("penetration_test", {
+      lastTest: {
+        conductor: "CyberSec Partners",
+        date: "2026-03-15",
+        status: "complete"
+      },
+      findings: {
+        total: 8,
+        remediated: 8,
+        status: "Complete"
+      }
+    });
+
+    console.log("Penetration Test Data from DB:", JSON.stringify(penetrationTestSetting.data, null, 2));
+
     res.json({
       policy: policySetting.data,
       blockedIPs: ipSetting.data,
+      penetrationTestData: penetrationTestSetting.data,
       incidents: incidents.map(i => ({
         id: i.incidentId,
         _id: i._id,
@@ -199,5 +215,72 @@ export const deleteScan = async (req, res) => {
     res.json({ message: "Scan deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete scan", error: error.message });
+  }
+};
+
+export const schedulePentest = async (req, res) => {
+  try {
+    const { conductor, date } = req.body;
+    
+    if (!conductor || !date) {
+      return res.status(400).json({ message: "Conductor and date are required" });
+    }
+
+    const setting = await Setting.findOneAndUpdate(
+      { name: "penetration_test" },
+      { 
+        data: {
+          lastTest: {
+            conductor,
+            date,
+            status: "scheduled"
+          },
+          findings: {
+            total: 0,
+            remediated: 0,
+            status: "Pending"
+          }
+        }
+      },
+      { new: true, upsert: true }
+    );
+
+    res.json({ message: "Penetration test scheduled successfully", data: setting.data });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to schedule penetration test", error: error.message });
+  }
+};
+
+export const completePentest = async (req, res) => {
+  try {
+    const { total, remediated } = req.body;
+    
+    if (total === undefined || remediated === undefined) {
+      return res.status(400).json({ message: "Total and remediated findings are required" });
+    }
+
+    const setting = await Setting.findOne({ name: "penetration_test" });
+    if (!setting) return res.status(404).json({ message: "No scheduled test found" });
+
+    const updatedData = {
+      ...setting.data,
+      lastTest: {
+        ...setting.data.lastTest,
+        status: "complete"
+      },
+      findings: {
+        total: parseInt(total),
+        remediated: parseInt(remediated),
+        status: "Complete"
+      }
+    };
+
+    setting.data = updatedData;
+    setting.markModified("data");
+    await setting.save();
+
+    res.json({ message: "Penetration test finalized", data: setting.data });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to complete penetration test", error: error.message });
   }
 };

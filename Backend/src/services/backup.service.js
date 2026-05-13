@@ -8,7 +8,7 @@ class BackupService {
 
     async start() {
         console.log('🚀 Backup Service started...');
-        
+
         // Initial seeding if no backups exist
         await this.seedInitialBackups();
 
@@ -24,7 +24,7 @@ class BackupService {
             if (count === 0) {
                 console.log('🌱 Seeding initial backup data...');
                 const now = new Date();
-                
+
                 // Create 5 incremental backups in the past
                 for (let i = 1; i <= 5; i++) {
                     const timestamp = new Date(now.getTime() - (i * 15 * 60 * 1000));

@@ -1,14 +1,31 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import api from "../../services/api";
 import { HiMail, HiLockClosed, HiKey } from "react-icons/hi";
 import Logo from "../../assets/login-image.png";
 
 export const ResetPassword = () => {
   const [formData, setFormData] = useState({
-    target: "",
+    identifier: "",
     code: "",
     newPassword: ""
   });
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const code = params.get("code");
+    const identifier = params.get("identifier");
+
+    if (code || identifier) {
+      setFormData(prev => ({
+        ...prev,
+        code: code || prev.code,
+        identifier: identifier || prev.identifier
+      }));
+    }
+  }, [location]);
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -23,8 +40,8 @@ export const ResetPassword = () => {
     setError("");
 
     try {
-      const res = await axios.post(
-        "https://ethio-camp-ground-backend-lega.onrender.com/api/auth/reset-password",
+      const res = await api.post(
+        "/auth/reset-password",
         formData
       );
       setMessage(res.data.message);
@@ -34,7 +51,7 @@ export const ResetPassword = () => {
       }, 2000);
 
     } catch (err) {
-      setError(err.response?.data?.message || "Reset failed");
+      setError(err.response?.data?.error || err.response?.data?.message || "Reset failed");
     }
   };
 
@@ -75,9 +92,9 @@ export const ResetPassword = () => {
               <HiMail className="absolute left-3 top-3.5 text-gray-400 text-lg" />
               <input
                 type="text"
-                name="target"
+                name="identifier"
                 placeholder="Enter email or phone"
-                value={formData.target}
+                value={formData.identifier}
                 onChange={handleChange}
                 className="w-full border rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                 required

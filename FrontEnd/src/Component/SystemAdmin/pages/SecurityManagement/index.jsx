@@ -6,7 +6,6 @@ import { SecurityPolicies } from "./components/SecurityPolicies";
 import { IPBlacklist } from "./components/IPBlacklist";
 import { SecurityIncidents } from "./components/SecurityIncidents";
 import { VulnerabilityScans } from "./components/VulnerabilityScans";
-
 export function SecurityManagement() {
   const [securityData, setSecurityData] = useState({
     policy: {
@@ -18,7 +17,11 @@ export function SecurityManagement() {
     },
     blockedIPs: [],
     incidents: [],
-    scans: []
+    scans: [],
+    penetrationTestData: {
+      lastTest: { conductor: "CyberSec Partners", date: "2026-03-15", status: "complete" },
+      findings: { total: 8, remediated: 8, status: "Complete" }
+    }
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -154,6 +157,7 @@ export function SecurityManagement() {
         <TabsContent value="scans" className="space-y-3 sm:space-y-4 md:space-y-6">
           <VulnerabilityScans 
             scans={securityData.scans} 
+            penetrationTestData={securityData.penetrationTestData}
             isLoading={isLoading} 
             onUpdate={fetchData}
           />

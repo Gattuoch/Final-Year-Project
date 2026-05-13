@@ -3,8 +3,10 @@ import { HiStar } from "react-icons/hi";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom"; // ✅ Use navigation
 import axios from "axios";
+import { useLanguage } from "../../context/LanguageContext";
 
 const FeaturedCamps = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [featuredCamps, setFeaturedCamps] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,16 +60,16 @@ const FeaturedCamps = () => {
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-            Featured Camps
+            {t("home.featured.title") || "Featured Camps"}
           </h2>
           <p className="text-gray-600 text-lg mt-3">
-            Explore our most popular camping destinations
+            {t("home.featured.subtitle") || "Explore our most popular camping destinations"}
           </p>
         </motion.div>
 
         {/* LOADING STATE */}
         {loading && (
-          <div className="text-center text-gray-500">Loading top spots...</div>
+          <div className="text-center text-gray-500">{t("home.featured.loading") || "Loading top spots..."}</div>
         )}
 
         {/* FEATURED CARDS */}
@@ -109,7 +111,7 @@ const FeaturedCamps = () => {
                   <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-50">
                     <p className="text-green-700 font-bold text-xl">
                       {camp.price} ETB
-                      <span className="text-gray-500 text-sm font-normal"> / night</span>
+                      <span className="text-gray-500 text-sm font-normal"> {t("home.featured.perNight") || "/ night"}</span>
                     </p>
 
                     <motion.button
@@ -118,7 +120,7 @@ const FeaturedCamps = () => {
                       onClick={() => handleBookClick(camp.id)}
                       className="bg-green-700 hover:bg-green-800 text-white px-5 py-2 rounded-xl shadow-md transition-colors"
                     >
-                      Book Now
+                      {t("home.featured.bookNow") || "Book Now"}
                     </motion.button>
                   </div>
                 </div>
@@ -140,7 +142,7 @@ const FeaturedCamps = () => {
             onClick={() => navigate("/camper-dashboard/campsite-directory")} // ✅ Links to full directory
             className="px-8 py-3 border-2 border-green-700 text-green-700 rounded-xl text-lg font-bold hover:bg-green-50 transition-all"
           >
-            View All Camps
+            {t("home.featured.viewAll") || "View All Camps"}
           </motion.button>
         </motion.div>
 

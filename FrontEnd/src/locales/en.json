@@ -4,6 +4,125 @@
     "am": "Amharic (አማርኛ)",
     "om": "Oromo (Afaan Oromoo)"
   },
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "camps": "Camps",
+    "about": "About",
+    "contact": "Contact",
+    "joinUs": "Join Us",
+    "login": "Login",
+    "createAccount": "Create Account",
+    "account": "Account",
+    "profile": "Profile",
+    "signOut": "Sign Out"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Enter your credentials to access your portal.",
+      "identifier": "Account Identifier",
+      "identifierPlaceholder": "Email or Phone",
+      "password": "Password",
+      "forgotPassword": "Reset Password?",
+      "loginBtn": "Login",
+      "newExplorer": "New explorer?",
+      "createAccount": "Create an Account",
+      "loading": "Synchronizing your adventure...",
+      "success": "Warm Welcome!",
+      "errorAccount": "Account does not exist. Please check your identifier.",
+      "errorPassword": "Wrong password. Please try again.",
+      "errorDenied": "Access denied.",
+      "errorServer": "Unable to reach server or invalid response.",
+      "journey": "Your journey begins here.",
+      "ultimate": "The ultimate camping experience awaits."
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Discover Your Perfect Camp Experience",
+      "subtitle": "Book unique camping spots across Ethiopia. From mountain retreats to lakeside havens, find your next adventure with ease.",
+      "exploreBtn": "Explore Camps",
+      "stats": {
+        "activeCamps": "Active Camps",
+        "happyCampers": "Happy Campers",
+        "avgRating": "Average Rating"
+      }
+    },
+    "search": {
+      "title": "Where do you want to camp?",
+      "location": "Location",
+      "locationPlaceholder": "Where to?",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "guests": "Guests",
+      "guestCount": "{{count}} Guest",
+      "guestCountPlural": "{{count}} Guests",
+      "guestCountPlus": "5 Guests +",
+      "searchBtn": "Search",
+      "searching": "Searching camps...",
+      "noResults": "No camps found matching your criteria."
+    },
+    "features": {
+      "title": "Why Choose EthioCampGround?",
+      "subtitle": "Experience seamless booking with advanced features",
+      "advancedSearch": {
+        "title": "Advanced Search",
+        "desc": "Find camps with powerful filters including location, price range, amenities, and real-time availability status."
+      },
+      "securePayments": {
+        "title": "Secure Payments",
+        "desc": "Integrated with Chapa and Flutterwave for safe transactions, instant confirmations, and automated receipts."
+      },
+      "digitalWallet": {
+        "title": "Digital Wallet",
+        "desc": "Built-in wallet system for faster payments, instant refunds, and seamless transaction management."
+      },
+      "smartNotifications": {
+        "title": "Smart Notifications",
+        "desc": "Automated email and SMS alerts for bookings, payments, check-ins, and important updates."
+      },
+      "realtimeBooking": {
+        "title": "Real-time Booking",
+        "desc": "Instant reservation confirmations with live availability calendar to prevent overbooking."
+      },
+      "trustSafety": {
+        "title": "Trust & Safety",
+        "desc": "Comprehensive reporting system and user verification for a secure camping community."
+      }
+    },
+    "featured": {
+      "title": "Featured Camps",
+      "subtitle": "Explore our most popular camping destinations",
+      "loading": "Loading top spots...",
+      "perNight": "/ night",
+      "bookNow": "Book Now",
+      "viewAll": "View All Camps"
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Book your perfect camping experience in three simple steps",
+      "step1": {
+        "title": "Search & Discover",
+        "desc": "Use our advanced filters to find camps that match your preferences, budget, and desired location."
+      },
+      "step2": {
+        "title": "Book & Pay",
+        "desc": "Select your dates, complete secure payment through our integrated gateways, and receive instant confirmation."
+      },
+      "step3": {
+        "title": "Enjoy Your Stay",
+        "desc": "Arrive at your camp, check in seamlessly, and enjoy your adventure with peace of mind."
+      }
+    }
+  },
+  "footer": {
+    "desc": "Your trusted platform for discovering and booking the best camping experiences across Ethiopia.",
+    "quickLinks": "Quick Links",
+    "support": "Support",
+    "contact": "Contact",
+    "rights": "All rights reserved."
+  },
   "sidebar": {
     "dashboard": "Dashboard",
     "security": "Security",

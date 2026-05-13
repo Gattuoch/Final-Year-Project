@@ -7,7 +7,7 @@ const PaymentSchema = new Schema({
 	user: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
 	gateway: { type: String, required: true }, // e.g. stripe, paypal
 	gatewayPaymentId: { type: String, required: true, index: true },
-	status: { type: String, enum: ['initiated','succeeded','failed','refunded'], required: true, index: true },
+	status: { type: String, enum: ['initiated', 'succeeded', 'failed', 'refunded'], required: true, index: true },
 	amount: { type: Number, required: true, min: 0 },
 	currency: { type: String, required: true, maxlength: 3 },
 	paidAt: { type: Date },

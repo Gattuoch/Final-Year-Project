@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Sparkles, X, Send, Bot, User, Zap, RefreshCw, Loader2 } from 'lucide-react';
+import { Sparkles, X, Send, Bot, User, Zap, RefreshCw, Loader2, Paperclip, Image as ImageIcon, FileText } from 'lucide-react';
 import API from '../../services/api';
 
 export default function AICopilot() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const isSysAdmin = location.pathname.includes('/super-admin');
+  const role = isSysAdmin ? 'sysadmin' : 'manager';
+  const storageKey = isSysAdmin ? 'sysadmin_ai_chat_history' : 'manager_ai_chat_history';
+
   const [messages, setMessages] = useState(() => {
-    const saved = localStorage.getItem('manager_ai_chat_history');
+    const saved = localStorage.getItem(storageKey);
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -18,17 +22,21 @@ export default function AICopilot() {
     return [
       {
         role: 'assistant',
-        content: 'Hello! I am your Camp Manager AI Assistant. How can I help you today? I can summarize bookings, suggest notifications, or analyze revenue trends.'
+        content: isSysAdmin 
+          ? 'Hello! I am your System Administrator AI Copilot. I can help you monitor system health, audit security logs, or analyze platform performance.'
+          : 'Hello! I am your Camp Manager AI Assistant. How can I help you today? I can summarize bookings, suggest notifications, or analyze revenue trends.'
       }
     ];
   });
 
   // Save to local storage whenever messages change
   useEffect(() => {
-    localStorage.setItem('manager_ai_chat_history', JSON.stringify(messages));
-  }, [messages]);
+    localStorage.setItem(storageKey, JSON.stringify(messages));
+  }, [messages, storageKey]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
   // Hidden strictly to manager routes
@@ -40,17 +48,39 @@ export default function AICopilot() {
   }, [messages, isTyping]);
 
   const handleSend = async () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() && !selectedFile) return;
 
     // Add user message
-    const userMsg = { role: 'user', content: inputValue };
+    const userMsg = { 
+      role: 'user', 
+      content: inputValue || (selectedFile ? `[Attached ${selectedFile.name}]` : ""),
+      hasFile: !!selectedFile,
+      fileName: selectedFile?.name
+    };
     setMessages((prev) => [...prev, userMsg]);
+    
+    const currentFile = selectedFile;
     setInputValue('');
+    setSelectedFile(null);
     setIsTyping(true);
 
     try {
+      let filePayload = {};
+      if (currentFile) {
+        const reader = new FileReader();
+        const fileContent = await new Promise((resolve) => {
+          reader.onload = (e) => resolve(e.target.result.split(',')[1]); // get base64 part
+          reader.readAsDataURL(currentFile);
+        });
+        filePayload = { fileData: fileContent, fileType: currentFile.type };
+      }
+
       // Connect to the new decoupled AI backend route
-      const response = await API.post('/ai/chat', { prompt: userMsg.content, role: 'manager' });
+      const response = await API.post('/ai/chat', { 
+        prompt: userMsg.content, 
+        role: role,
+        ...filePayload
+      });
       
       if (response.data && response.data.success) {
         setMessages((prev) => [...prev, { role: 'assistant', content: response.data.answer }]);
@@ -77,11 +107,28 @@ export default function AICopilot() {
     }
   };
 
-  const predefinedPrompts = [
-    "Summarize today's bookings",
-    "Analyze revenue trends",
-    "Draft weather notification"
-  ];
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("File size too large. Please select a file under 5MB.");
+        return;
+      }
+      setSelectedFile(file);
+    }
+  };
+
+  const predefinedPrompts = isSysAdmin 
+    ? [
+        "Check system security",
+        "Database performance report",
+        "Audit recent error logs"
+      ]
+    : [
+        "Summarize today's bookings",
+        "Analyze revenue trends",
+        "Draft weather notification"
+      ];
 
   if (!isManagerRoute) return null;
 
@@ -107,7 +154,9 @@ export default function AICopilot() {
               <Bot className="w-5 h-5 text-teal-50" />
             </div>
             <div>
-              <h3 className="font-bold text-white leading-none">EthioCamp AI</h3>
+              <h3 className="font-bold text-white leading-none">
+                {isSysAdmin ? "EthioCamp Admin AI" : "EthioCamp Manager AI"}
+              </h3>
               <span className="text-xs text-teal-100 flex items-center gap-1 mt-1">
                 <span className="w-2 h-2 rounded-full bg-green-400"></span> Online
               </span>
@@ -115,7 +164,12 @@ export default function AICopilot() {
           </div>
           <div className="flex items-center gap-1">
             <button 
-              onClick={() => setMessages([{ role: 'assistant', content: 'Hello! I am your Camp Manager AI Assistant. How can I help you today? I can summarize bookings, suggest notifications, or analyze revenue trends.' }])}
+              onClick={() => {
+                const initialMsg = isSysAdmin 
+                  ? 'Hello! I am your System Administrator AI Copilot. I can help you monitor system health, audit security logs, or analyze platform performance.'
+                  : 'Hello! I am your Camp Manager AI Assistant. How can I help you today? I can summarize bookings, suggest notifications, or analyze revenue trends.';
+                setMessages([{ role: 'assistant', content: initialMsg }]);
+              }}
               className="p-2 hover:bg-white/10 rounded-full text-white transition-colors"
               title="Clear Chat History"
             >
@@ -149,6 +203,12 @@ export default function AICopilot() {
                 }`}
               >
                 {msg.content}
+                {msg.hasFile && (
+                  <div className="mt-2 flex items-center gap-2 p-2 bg-black/5 rounded-lg border border-black/5">
+                    <FileText className="w-4 h-4 text-teal-600" />
+                    <span className="text-[10px] font-medium truncate max-w-[150px]">{msg.fileName}</span>
+                  </div>
+                )}
               </div>
 
               {msg.role === 'user' && (
@@ -192,27 +252,54 @@ export default function AICopilot() {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 bg-white shrink-0">
-          <div className="relative flex items-center">
-            <textarea
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Ask me anything..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none h-[48px] overflow-hidden leading-[1.5]"
-              rows={1}
-            />
-            <button
-              onClick={handleSend}
-              disabled={!inputValue.trim() || isTyping}
-              className={`absolute right-2 p-2 rounded-lg transition-colors flex items-center justify-center ${inputValue.trim() && !isTyping ? 'bg-teal-600 hover:bg-teal-700 text-white' : 'bg-slate-200 text-slate-400'}`}
+        <div className="p-4 bg-white shrink-0 border-t border-slate-100">
+          {selectedFile && (
+            <div className="mb-2 p-2 bg-teal-50 border border-teal-100 rounded-lg flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {selectedFile.type.startsWith('image/') ? <ImageIcon className="w-4 h-4 text-teal-600" /> : <Paperclip className="w-4 h-4 text-teal-600" />}
+                <span className="text-xs text-teal-700 font-medium truncate max-w-[200px]">{selectedFile.name}</span>
+              </div>
+              <button onClick={() => setSelectedFile(null)} className="p-1 hover:bg-teal-100 rounded-full text-teal-600">
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+          <div className="relative flex items-center gap-2">
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              className="p-2 hover:bg-slate-100 rounded-xl text-slate-500 transition-colors shrink-0"
+              title="Attach File"
             >
-              <Send className="w-4 h-4" />
+              <Paperclip className="w-5 h-5" />
             </button>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileChange} 
+              className="hidden" 
+              accept="image/*,text/*,.log,.json"
+            />
+            <div className="relative flex-1 flex items-center">
+              <textarea
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={selectedFile ? "Add a message about this file..." : "Ask me anything..."}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none h-[48px] overflow-hidden leading-[1.5]"
+                rows={1}
+              />
+              <button
+                onClick={handleSend}
+                disabled={(!inputValue.trim() && !selectedFile) || isTyping}
+                className={`absolute right-2 p-2 rounded-lg transition-colors flex items-center justify-center ${(inputValue.trim() || selectedFile) && !isTyping ? 'bg-teal-600 hover:bg-teal-700 text-white' : 'bg-slate-200 text-slate-400'}`}
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
           </div>
           <div className="text-center mt-2 flex items-center justify-center gap-1">
             <RefreshCw className="w-3 h-3 text-slate-400" />
-            <p className="text-[10px] text-slate-400">AI responses may be simulated or inaccurate</p>
+            <p className="text-[10px] text-slate-400">AI can now analyze images and text documents</p>
           </div>
         </div>
       </div>

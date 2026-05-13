@@ -1,15 +1,31 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
+import MLService from "../services/ml.service.js";
 dotenv.config();
 
 // Ensure the AI doesn't crash the server if key is missing during startup.
 const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
 
 export const handleAIChat = async (req, res) => {
-  const { prompt, role = "manager" } = req.body;
+  const { prompt, role = "manager", fileData, fileType } = req.body;
   
-  if (!prompt) {
-    return res.status(400).json({ success: false, message: "A prompt string is required." });
+  if (!prompt && !fileData) {
+    return res.status(400).json({ success: false, message: "A prompt string or file is required." });
+  }
+
+  const lowerInput = prompt?.toLowerCase() || "";
+  let mlResults = null;
+
+  // Trigger ML Audit for SysAdmin if requested
+  if (role === "sysadmin" && (lowerInput.includes("audit") || lowerInput.includes("anomaly") || lowerInput.includes("check system") || lowerInput.includes("ml"))) {
+    mlResults = await MLService.runAnomalyDetection(500);
+  }
+
+  // Handle Text File Upload (Simple read & append to prompt)
+  let enhancedPrompt = prompt;
+  if (fileData && fileType?.startsWith('text/')) {
+    const textContent = Buffer.from(fileData, 'base64').toString('utf-8');
+    enhancedPrompt = `${prompt}\n\n[FILE CONTENT ATTACHED]:\n${textContent}`;
   }
 
   if (!genAI || !process.env.GEMINI_API_KEY) {
@@ -17,9 +33,11 @@ export const handleAIChat = async (req, res) => {
     console.warn("No GEMINI_API_KEY found in .env. Returning simulated AI response.");
     
     let botContent = "I'm currently running in 'Simulation Mode' because my LLM API Key hasn't been set up yet!";
-    const lowerInput = prompt.toLowerCase();
     
-    if (role === "camper") {
+    if (fileData) {
+      const typeLabel = fileType?.startsWith('image/') ? 'image' : 'document';
+      botContent = `I see you've uploaded a ${typeLabel}. In 'Simulation Mode', I can detect that it's a ${fileType} file, but I need a GEMINI_API_KEY to perform a deep analysis of the content. How else can I help?`;
+    } else if (role === "camper") {
       if (lowerInput.includes('book') || lowerInput.includes('reserve')) {
         botContent = "To book a campsite, head over to the Campsite Directory, choose a site, and select your dates. How many people are in your group?";
       } else if (lowerInput.includes('cancel')) {
@@ -27,13 +45,19 @@ export const handleAIChat = async (req, res) => {
       } else {
         botContent = "Simulations for camper queries are limited here. Get ready to explore!";
       }
+    } else if (role === "sysadmin") {
+      if (mlResults && mlResults.success) {
+        botContent = `ML Audit Complete: ${mlResults.summary} I found ${mlResults.anomaly_count} anomalies. Recent unusual patterns include logs from ${mlResults.anomalies.length > 0 ? mlResults.anomalies[0].level : 'N/A'} level. Would you like a detailed report?`;
+      } else if (lowerInput.includes('security') || lowerInput.includes('vulnerability')) {
+        botContent = "System scan complete. 0 critical vulnerabilities found. 2 IP addresses were automatically blacklisted today due to suspicious login patterns.";
+      } else {
+        botContent = "System Administrator simulation mode active. I can help with security audits, system health, and database monitoring.";
+      }
     } else {
       if (lowerInput.includes('summary') || lowerInput.includes('bookings')) {
         botContent = "Here's a quick summary: You have 12 check-ins today and 5 check-outs. Your current camp occupancy rate is 78%, which is a 2% increase from yesterday.";
-      } else if (lowerInput.includes('notification')) {
-        botContent = "I recommend sending a weather alert for Bale Mountains. There is a 60% chance of rain tomorrow afternoon. Would you like me to draft that notification?";
-      } else if (lowerInput.includes('revenue')) {
-        botContent = "This week's revenue is currently 45,231 ETB, up 12.5% from last week. Glamping bookings are your highest driver of growth.";
+      } else {
+        botContent = "Camp Manager simulation mode active. I can help with bookings, revenue reports, and guest notifications.";
       }
     }
 
@@ -47,36 +71,52 @@ export const handleAIChat = async (req, res) => {
     let contextualPrompt = "";
     
     if (role === "camper") {
-      contextualPrompt = `You are a friendly, helpful AI assistant built into the EthioCamp Camper Dashboard. 
-      A camper has asked you: "${prompt}". 
-      Reply actively and warmly, helping them with bookings, discovering camp sites, or general camp questions. Keep responses under 3 short paragraphs.`;
+      contextualPrompt = `You are a friendly, helpful AI assistant built into the EthioCampGround Camper Dashboard. 
+      Reply actively and warmly. If the user provided an image, describe what you see in relation to camping or their question. 
+      User Message: "${enhancedPrompt}"`;
+    } else if (role === "sysadmin") {
+      const mlContext = mlResults ? `\n\n[ML ENGINE AUDIT DATA]: ${JSON.stringify(mlResults)}` : "";
+      contextualPrompt = `You are an expert System Administrator AI assistant for the EthioCampGround Platform. 
+      Your tone should be technical and precise. ${mlContext}
+      If a file or image is provided (logs, screenshots, or config files), perform a deep technical analysis and suggest fixes for any issues found.
+      User Message: "${enhancedPrompt}"`;
     } else {
-      contextualPrompt = `You are an AI assistant built into the EthioCamp Manager Dashboard. 
-      A camp manager has asked you: "${prompt}". 
-      Reply professionally, briefly, and helpfully. Keep responses under 3 short paragraphs.`;
+      contextualPrompt = `You are a professional AI Camp Management Consultant for the EthioCampGround Manager Dashboard. 
+      Your tone should be proactive and business-oriented. If an image is provided, analyze it for business insights or guest experience improvements.
+      User Message: "${enhancedPrompt}"`;
     }
 
-    const modelNames = ["gemini-flash-latest", "gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.0-flash-lite", "gemini-3.1-flash-live-preview"];
+    const modelNames = ["gemini-flash-latest", "gemini-2.0-flash", "gemini-1.5-flash"];
     let responseText = null;
     
     for (const modelName of modelNames) {
       try {
         const model = genAI.getGenerativeModel({ model: modelName });
-        const result = await model.generateContent(contextualPrompt);
+        
+        let result;
+        if (fileData && fileType?.startsWith('image/')) {
+          // Multimodal request (Image + Text)
+          const imagePart = {
+            inlineData: {
+              data: fileData, // base64 string
+              mimeType: fileType
+            }
+          };
+          result = await model.generateContent([contextualPrompt, imagePart]);
+        } else {
+          // Text-only request
+          result = await model.generateContent(contextualPrompt);
+        }
+        
         responseText = result.response.text();
-        // Option to log successful endpoint if needed: console.log(`[AI] Success using ${modelName}`);
-        break; // Success! Exit the fallback loop.
+        break;
       } catch (apiError) {
-        // Clean up error logging so it doesn't flood terminal with giant objects, safely handling undefined messages
-        const errorMsg = apiError?.message || apiError?.toString() || "Unknown API Error";
-        const shortError = errorMsg.split('\n')[0].replace('[GoogleGenerativeAI Error]: ', '').substring(0, 150);
-        console.warn(`[AI System] ${modelName} unavailable (${shortError}...). Using fallback.`);
+        console.warn(`[AI System] ${modelName} fallback...`);
       }
     }
     
     if (!responseText) {
-      console.error("[AI] All models failed due to high demand or quota limits.");
-      return res.status(503).json({ success: false, message: "The AI service is experiencing high demand. Please try again in a few minutes." });
+      return res.status(503).json({ success: false, message: "AI service unavailable." });
     }
     
     return res.json({ success: true, answer: responseText });

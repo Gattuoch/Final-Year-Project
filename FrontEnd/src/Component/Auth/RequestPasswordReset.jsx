@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { HiUser } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";   // <-- ADD THIS
 import Logo from "../../assets/login-image.png";
@@ -17,9 +17,9 @@ export const RequestPasswordReset = () => {
     setError("");
 
     try {
-      const res = await axios.post(
-        "https://ethio-camp-ground-backend-lega.onrender.com/api/auth/request-password-reset",
-        { target }
+      const res = await api.post(
+        "/auth/request-reset",
+        { identifier: target }
       );
       setMessage(res.data.message);
 
@@ -29,7 +29,7 @@ export const RequestPasswordReset = () => {
       }, 1200);
 
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to send reset code");
+      setError(err.response?.data?.error || err.response?.data?.message || "Failed to send reset code");
     }
   };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Sparkles, X, Send, Bot, User, Zap, RefreshCw, Loader2 } from 'lucide-react';
+import { Sparkles, X, Send, Bot, User, Zap, RefreshCw, Loader2, Paperclip, Image as ImageIcon, FileText } from 'lucide-react';
 import API from '../../services/api';
 
 export default function CamperAICopilot() {
@@ -29,6 +29,8 @@ export default function CamperAICopilot() {
   }, [messages]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
   // Only show on camper dashboard routes
@@ -40,16 +42,38 @@ export default function CamperAICopilot() {
   }, [messages, isTyping]);
 
   const handleSend = async () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() && !selectedFile) return;
 
     // Add user message
-    const userMsg = { role: 'user', content: inputValue };
+    const userMsg = { 
+      role: 'user', 
+      content: inputValue || (selectedFile ? `[Attached ${selectedFile.name}]` : ""),
+      hasFile: !!selectedFile,
+      fileName: selectedFile?.name
+    };
     setMessages((prev) => [...prev, userMsg]);
+    
+    const currentFile = selectedFile;
     setInputValue('');
+    setSelectedFile(null);
     setIsTyping(true);
 
     try {
-      const response = await API.post('/ai/chat', { prompt: userMsg.content, role: 'camper' });
+      let filePayload = {};
+      if (currentFile) {
+        const reader = new FileReader();
+        const fileContent = await new Promise((resolve) => {
+          reader.onload = (e) => resolve(e.target.result.split(',')[1]); // get base64 part
+          reader.readAsDataURL(currentFile);
+        });
+        filePayload = { fileData: fileContent, fileType: currentFile.type };
+      }
+
+      const response = await API.post('/ai/chat', { 
+        prompt: userMsg.content, 
+        role: 'camper',
+        ...filePayload 
+      });
       
       if (response.data && response.data.success) {
         setMessages((prev) => [...prev, { role: 'assistant', content: response.data.answer }]);
@@ -72,6 +96,17 @@ export default function CamperAICopilot() {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("File size too large. Please select a file under 5MB.");
+        return;
+      }
+      setSelectedFile(file);
     }
   };
 
@@ -147,6 +182,12 @@ export default function CamperAICopilot() {
                 }`}
               >
                 {msg.content}
+                {msg.hasFile && (
+                  <div className="mt-2 flex items-center gap-2 p-2 bg-black/5 rounded-lg border border-black/5">
+                    <FileText className="w-4 h-4 text-green-600" />
+                    <span className="text-[10px] font-medium truncate max-w-[150px]">{msg.fileName}</span>
+                  </div>
+                )}
               </div>
 
               {msg.role === 'user' && (
@@ -190,27 +231,54 @@ export default function CamperAICopilot() {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 bg-white shrink-0">
-          <div className="relative flex items-center">
-            <textarea
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Ask about campsites, bookings, etc..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none h-[48px] overflow-hidden leading-[1.5]"
-              rows={1}
-            />
-            <button
-              onClick={handleSend}
-              disabled={!inputValue.trim() || isTyping}
-              className={`absolute right-2 p-2 rounded-lg transition-colors flex items-center justify-center ${inputValue.trim() && !isTyping ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-slate-200 text-slate-400'}`}
+        <div className="p-4 bg-white shrink-0 border-t border-slate-100">
+          {selectedFile && (
+            <div className="mb-2 p-2 bg-green-50 border border-green-100 rounded-lg flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {selectedFile.type.startsWith('image/') ? <ImageIcon className="w-4 h-4 text-green-600" /> : <Paperclip className="w-4 h-4 text-green-600" />}
+                <span className="text-xs text-green-700 font-medium truncate max-w-[200px]">{selectedFile.name}</span>
+              </div>
+              <button onClick={() => setSelectedFile(null)} className="p-1 hover:bg-green-100 rounded-full text-green-600">
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+          <div className="relative flex items-center gap-2">
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              className="p-2 hover:bg-slate-100 rounded-xl text-slate-500 transition-colors shrink-0"
+              title="Attach File"
             >
-              <Send className="w-4 h-4" />
+              <Paperclip className="w-5 h-5" />
             </button>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileChange} 
+              className="hidden" 
+              accept="image/*,text/*,.log,.json"
+            />
+            <div className="relative flex-1 flex items-center">
+              <textarea
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={selectedFile ? "Add a message about this file..." : "Ask about campsites, bookings, etc..."}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none h-[48px] overflow-hidden leading-[1.5]"
+                rows={1}
+              />
+              <button
+                onClick={handleSend}
+                disabled={(!inputValue.trim() && !selectedFile) || isTyping}
+                className={`absolute right-2 p-2 rounded-lg transition-colors flex items-center justify-center ${(inputValue.trim() || selectedFile) && !isTyping ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-slate-200 text-slate-400'}`}
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
           </div>
           <div className="text-center mt-2 flex items-center justify-center gap-1">
             <RefreshCw className="w-3 h-3 text-slate-400" />
-            <p className="text-[10px] text-slate-400">AI responses may be simulated or inaccurate</p>
+            <p className="text-[10px] text-slate-400">AI can now analyze images and text documents</p>
           </div>
         </div>
       </div>

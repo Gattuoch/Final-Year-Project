@@ -4,6 +4,109 @@
     "am": "Amhaariffa (አማርኛ)",
     "om": "Afaan Oromoo"
   },
+  "nav": {
+    "home": "Mana",
+    "features": "Amaloota",
+    "camps": "Kaampoota",
+    "about": "Waa'ee keenya",
+    "contact": "Nu qunnamaa",
+    "joinUs": "Nuun walitti hidhamaa",
+    "login": "Seenaa",
+    "createAccount": "Akkaawuntii Uumi",
+    "account": "Akkaawuntii",
+    "profile": "Piroofayilii",
+    "signOut": "Ba'i"
+  },
+  "auth": {
+    "login": {
+      "title": "Baga Nagaan Deebitan",
+      "subtitle": "Gara keessummeessaa keessanitti seenuuf ragaa keessan galchaa.",
+      "identifier": "Eenyummaa Akkaawuntii",
+      "identifierPlaceholder": "Iimeeyilii ykn Bilbila",
+      "password": "Iggitaa",
+      "forgotPassword": "Iggitaa Dagattanii?",
+      "loginBtn": "Seenaa",
+      "newExplorer": "Barbaadaa haaraa?",
+      "createAccount": "Akkaawuntii Uumaa",
+      "loading": "Gootummaa keessan walitti fufsiisaa jira...",
+      "success": "Baga Nagaan Dhuftan!",
+      "errorAccount": "Akkaawuntii kun hin jiru. Maaloo eenyummaa keessan mirkaneessaa.",
+      "errorPassword": "Iggitaa dogoggoraa. Maaloo irra deebi'ii yaali.",
+      "errorDenied": "Hayyamni dhowwatameera.",
+      "errorServer": "Deebii argachuu hin dandeenye.",
+      "journey": "Imalli keessan asitti eegala.",
+      "ultimate": "Muuxannoo kaampii gaarii isin eeggata."
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Muuxannoo Kaampii Keessan Kan Mudaa Hin Qabne Argadhaa",
+      "subtitle": "Ityoophiyaa keessatti bakkeewwan kaampii adda ta'an qabadhaa. Tulluwwan irraa hanga harawwanitti, gootummaa keessan itti aanu salphaatti argadhaa.",
+      "exploreBtn": "Kaampoota Galmeessi",
+      "stats": {
+        "activeCamps": "Kaampoota Hojirra Jiran",
+        "happyCampers": "Kaampoota Gammadan",
+        "avgRating": "Sadarkaa Giddu-galeessaa"
+      }
+    },
+    "search": {
+      "title": "Eessa deemuu barbaadda?",
+      "location": "Bakka",
+      "locationPlaceholder": "Eessa?",
+      "checkIn": "Guyyaa Seensaa",
+      "checkOut": "Guyyaa Ba'iinsaa",
+      "guests": "Keessummoota",
+      "guestCount": "Keessummaa {{count}}",
+      "guestCountPlural": "Keessummoota {{count}}",
+      "guestCountPlus": "Keessummoota 5+",
+      "searchBtn": "Barbaadi",
+      "searching": "Kaampoota barbaadaa jira...",
+      "noResults": "Kaampiin ulaagaa keessan waliin deemu hin argamne."
+    },
+    "features": {
+      "title": "Maaliif EthioCampGround Filattu?",
+      "subtitle": "Amaloota olaanaa waliin buukingii walitti fufiinsa qabu dhandhamadhaa",
+      "advancedSearch": {
+        "title": "Barbaacha Olaanaa",
+        "desc": "Bakka, gatii, tajaajiloota fi haala argama yeroo dhugaa dabalatee meeshaalee calaluu humna qabaniin kaampoota argadhaa."
+      },
+      "securePayments": {
+        "title": "Kaffaltii Nageenya Qabu",
+        "desc": "Daddabarsa maallaqaa nageenya qabu, mirkaneessaa ariifachiisaa fi nagahee ofiin hojjetamuuf Chapa fi Flutterwave waliin kan walitti hidhame."
+      },
+      "digitalWallet": {
+        "title": "Waaletii Diijitaalaa",
+        "desc": "Kaffaltii ariifachiisaa, deebii maallaqaa battalaa fi bulchiinsa daddabarsa maallaqaa walitti fufiinsa qabuuf sirna waaletii keessatti ijaarame."
+      },
+      "smartNotifications": {
+        "title": "Beeksisa Qaroo",
+        "desc": "Buukingii, kaffaltii, seensa fi haaromsa barbaachisoo ta'aniif iimeeyilii fi beeksisa SMS ofiin hojjetamu."
+      },
+      "realtimeBooking": {
+        "title": "Buukingii Yeroo Dhugaa",
+        "desc": "Baay'ina buukingii to'achuuf kaalandaarii argama yeroo dhugaa waliin mirkaneessaa buukingii battalaa."
+      },
+      "trustSafety": {
+        "title": "Amanamtummaa & Nageenya",
+        "desc": "Hawaasa kaampii nageenya qabuuf sirna gabaasa waliigalaa fi mirkaneessaa fayyadamaa."
+      }
+    },
+    "featured": {
+      "title": "Kaampoota Filataman",
+      "subtitle": "Bakkeewwan kaampii keenya warra baay'ee beekamoo ta'an keşşummeessaa",
+      "loading": "Bakkeewwan filataman fe'aa jira...",
+      "perNight": "/ halkan",
+      "bookNow": "Amma Qabadhu",
+      "viewAll": "Kaampoota Hundumaa Ilaali"
+    }
+  },
+  "footer": {
+    "desc": "Ityoophiyaa keessatti muuxannoo kaampii gaarii argachuu fi buukingii gochuuf waltajjii keessan kan amanamaa dha.",
+    "quickLinks": "Liinkiiwwan Saffisaa",
+    "support": "Deeggarsa",
+    "contact": "Nu qunnamaa",
+    "rights": "Mirgi hunduu seeraan kan eegame dha."
+  },
   "sidebar": {
     "dashboard": "Daashboordii",
     "security": "Nageenya",

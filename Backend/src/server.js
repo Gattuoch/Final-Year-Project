@@ -30,7 +30,6 @@ import createuserRoutes from "./routes/createuser.controller.js";
 import supportRoutes from "./routes/supportRoutes.js";
 
 import usersProfileRoutes from "./routes/users.js"
-<<<<<<< HEAD
 import ticketRoutes from "./routes/ticketRoutes.js";
 import aiRoutes from "./routes/ai.routes.js";
 import sysadminCampRoutes from "./routes/sysadmin.camp.routes.js";
@@ -49,8 +48,6 @@ import backupService from "./services/backup.service.js";
 import reportScheduler from "./services/reportScheduler.service.js";
 
 
-=======
->>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
 
 // --- UTILS ---
 import seedSystemAdmin from "./utils/createSystemAdmin.js";
@@ -73,15 +70,15 @@ app.use((req, res, next) => {
 const stripe = new Stripe(process.env.STRIPE_SECRET_TEST);
 
 // ====== MIDDLEWARES ======
-app.use(cors({ 
+app.use(cors({
   origin: ["http://localhost:5173", "http://localhost:3000"],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: "cross-origin" } })); 
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(morgan("dev"));
 app.use(metricsMiddleware);
 app.disable("etag");
@@ -103,7 +100,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/support", supportRoutes);
 
 // Core Features
-app.use("/api/camps", campRoutes); 
+app.use("/api/camps", campRoutes);
 app.use("/api/campHomeRoutes", campRoutes); // Legacy Alias
 app.use("/api/tents", tentRoutes);
 app.use("/api/bookings", bookingRoutes);
@@ -166,7 +163,7 @@ app.post("/api/chapa/initialize", async (req, res) => {
       "https://api.chapa.co/v1/transaction/initialize",
       {
         amount, currency, email, first_name, last_name, phone_number, tx_ref,
-        return_url:"",
+        return_url: "",
         customization: { title: "EthioCampsPay", description: "Camp Reservation Payment" },
       },
       { headers: { Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}`, "Content-Type": "application/json" } }

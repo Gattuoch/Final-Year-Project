@@ -53,15 +53,15 @@ export const register = async (req, res) => {
 
     // 2. Validate req.body (now includes the file paths)
     const { error } = registerValidator.validate(req.body, { abortEarly: false });
-    if (error) return res.status(400).json({ 
-      success: false, 
-      error: error.details.map(d => d.message).join(", ") 
+    if (error) return res.status(400).json({
+      success: false,
+      error: error.details.map(d => d.message).join(", ")
     });
 
-    let { 
-      fullName, email, password, role, phone, 
-      businessName, description, location, 
-      licenseUrl, govIdUrl, contactEmail, country 
+    let {
+      fullName, email, password, role, phone,
+      businessName, description, location,
+      licenseUrl, govIdUrl, contactEmail, country
     } = req.body;
 
     const normalizedPhone = normalizePhone(phone);
@@ -86,14 +86,14 @@ export const register = async (req, res) => {
 
     // ✅ Attach Business Info if Manager
     if (role === "camp_manager") {
-      userData.businessInfo = { 
-        businessName, 
-        description, 
-        location, 
+      userData.businessInfo = {
+        businessName,
+        description,
+        location,
         licenseUrl, // Saved path from Multer
         govIdUrl,    // Saved path from Multer
-        contactEmail: contactEmail || normalizedEmail, 
-        status: "pending" 
+        contactEmail: contactEmail || normalizedEmail,
+        status: "pending"
       };
     }
 
@@ -111,10 +111,10 @@ export const register = async (req, res) => {
     if (normalizedEmail) {
       try { await emailService.sendVerificationEmail(normalizedEmail, code); } catch (e) { console.error("Email send failed", e); }
     }
-    
+
     // --- SMS Notification ---
     if (normalizedPhone) {
-      try { await sendSMS(normalizedPhone, `Your EthioCampGround code is ${code}`); } 
+      try { await sendSMS(normalizedPhone, `Your EthioCampGround code is ${code}`); }
       catch (e) { console.error("SMS Failed", e); }
     }
 
@@ -134,17 +134,17 @@ export const login = async (req, res) => {
     const { identifier, password } = req.body;
     const normalized = normalizeIdentifier(identifier);
 
-    const user = await User.findOne({ 
-      $or: [{ email: normalized }, { phone: normalized }] 
+    const user = await User.findOne({
+      $or: [{ email: normalized }, { phone: normalized }]
     }).select("+passwordHash");
-    
+
     if (!user) return res.status(401).json({ success: false, error: "Invalid credentials" });
 
     const match = await bcrypt.compare(password, user.passwordHash);
     if (!match) return res.status(401).json({ success: false, error: "Invalid credentials" });
 
     if (user.isBanned || user.isActive === false) {
-        return res.status(403).json({ success: false, error: "Account disabled/banned" });
+      return res.status(403).json({ success: false, error: "Account disabled/banned" });
     }
 
     // Role Specific Security
@@ -154,20 +154,20 @@ export const login = async (req, res) => {
       }
     }
 
-  // include both `id` and `sub` for compatibility with different middlewares
-  const accessToken = jwt.sign({ id: user._id, sub: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
-  const refreshToken = jwt.sign({ id: user._id, sub: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
-const tokenHash = crypto
-  .createHash("sha256")
-  .update(refreshToken)
-  .digest("hex");
+    // include both `id` and `sub` for compatibility with different middlewares
+    const accessToken = jwt.sign({ id: user._id, sub: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const refreshToken = jwt.sign({ id: user._id, sub: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
+    const tokenHash = crypto
+      .createHash("sha256")
+      .update(refreshToken)
+      .digest("hex");
 
-await RefreshToken.create({
-  user: user._id,
-  tokenHash,
-  expiresAt: new Date(Date.now() + msFromDuration("30d")),
-  createdByIp: req.ip,
-});
+    await RefreshToken.create({
+      user: user._id,
+      tokenHash,
+      expiresAt: new Date(Date.now() + msFromDuration("30d")),
+      createdByIp: req.ip,
+    });
 
 
 
@@ -191,17 +191,17 @@ export const verifyOTP = async (req, res) => {
 
     target = normalizeIdentifier(target);
     const otp = await OTP.findOne({ target, code: code.trim(), type, used: false });
-    
+
     if (!otp || otp.expiresAt < new Date()) return res.status(400).json({ success: false, error: "Invalid/Expired OTP" });
 
     otp.used = true;
     await otp.save();
 
     let user = await User.findOneAndUpdate(
-        { $or: [{ email: target }, { phone: target }] }, 
-        { isVerified: true },
-        { new: true }
-      );
+      { $or: [{ email: target }, { phone: target }] },
+      { isVerified: true },
+      { new: true }
+    );
 
     try {
       if (user?.email) await emailService.sendMail({
@@ -211,10 +211,10 @@ export const verifyOTP = async (req, res) => {
       });
     } catch (e) { console.error("Verification email failed", e); }
 
-    return res.json({ 
-      success: true, 
+    return res.json({
+      success: true,
       message: "OTP verified successfully",
-      role: user ? user.role : null 
+      role: user ? user.role : null
     });
   } catch (err) {
     res.status(500).json({ success: false, error: "Verification failed" });
@@ -276,25 +276,25 @@ export const refresh = async (req, res) => {
     }
 
     // Issue new access token and rotate refresh token
-  // include both `id` and `sub` to make the new tokens compatible
-  const accessToken = jwt.sign({ id: payload.id || payload.sub, sub: payload.id || payload.sub, role: payload.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
-  const newRefresh = jwt.sign({ id: payload.id || payload.sub, sub: payload.id || payload.sub }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
+    // include both `id` and `sub` to make the new tokens compatible
+    const accessToken = jwt.sign({ id: payload.id || payload.sub, sub: payload.id || payload.sub, role: payload.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const newRefresh = jwt.sign({ id: payload.id || payload.sub, sub: payload.id || payload.sub }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
 
     // mark old refresh token revoked and save new one
     stored.revoked = true;
     await stored.save();
 
-   const tokenHash = crypto
-  .createHash("sha256")
-  .update(refreshToken)
-  .digest("hex");
+    const tokenHash = crypto
+      .createHash("sha256")
+      .update(refreshToken)
+      .digest("hex");
 
-await RefreshToken.create({
-  user: user._id,
-  tokenHash,
-  expiresAt: new Date(Date.now() + msFromDuration("30d")),
-  createdByIp: req.ip,
-});
+    await RefreshToken.create({
+      user: user._id,
+      tokenHash,
+      expiresAt: new Date(Date.now() + msFromDuration("30d")),
+      createdByIp: req.ip,
+    });
 
 
     return res.json({ success: true, accessToken, refreshToken: newRefresh });
@@ -318,14 +318,34 @@ export const requestPasswordReset = async (req, res) => {
     await OTP.create({ target, code, type: 'password_reset', expiresAt: new Date(Date.now() + 15 * 60 * 1000) });
 
     // Email or SMS the code
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?code=${code}&identifier=${encodeURIComponent(target)}`;
+
     if (user.email) {
       try {
-        await emailService.sendMail({
+        const info = await emailService.sendMail({
           to: user.email,
-          subject: 'Password reset code - EthioCamp',
-          html: `<p>Your password reset code is <strong>${code}</strong>. It expires in 15 minutes.</p>`,
+          subject: 'Reset your EthioCamp Password',
+          html: `
+            <div style="font-family: sans-serif; color: #333;">
+              <h2>Password Reset Request</h2>
+              <p>We received a request to reset your password. You can do this directly by clicking the button below:</p>
+              <a href="${resetUrl}" style="display: inline-block; padding: 12px 24px; background-color: #007ba7; color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold;">Reset Password</a>
+              <p>Or use this code on the reset page: <strong style="font-size: 1.2em; color: #007ba7;">${code}</strong></p>
+              <p>This code will expire in 15 minutes.</p>
+              <p>If you didn't request this, you can safely ignore this email.</p>
+              <hr />
+              <p style="font-size: 0.8em; color: #666;">EthioCampGround Team</p>
+            </div>
+          `,
         });
-      } catch (e) { console.error('Password reset email failed', e); }
+        
+        if (!info) {
+          return res.status(500).json({ success: false, error: 'Failed to send reset email. Please contact support.' });
+        }
+      } catch (e) { 
+        console.error('Password reset email failed', e);
+        return res.status(500).json({ success: false, error: 'Email delivery failed' });
+      }
     }
     if (user.phone) {
       try { await sendSMS(user.phone, `Your reset code: ${code}`); } catch (e) { console.error('Password reset SMS failed', e); }

@@ -9,7 +9,9 @@ import {
   resolveIncident,
   deleteIncident,
   scheduleScan,
-  deleteScan
+  deleteScan,
+  schedulePentest,
+  completePentest
 } from "../controllers/sysadmin.security.controller.js";
 
 const router = express.Router();
@@ -24,5 +26,7 @@ router.put("/incidents/:id/resolve", resolveIncident);
 router.delete("/incidents/:id", deleteIncident);
 router.post("/scans", scheduleScan);
 router.delete("/scans/:id", deleteScan);
+router.post("/pentest", schedulePentest);
+router.put("/pentest/complete", completePentest);
 
 export default router;

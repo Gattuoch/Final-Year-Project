@@ -15,13 +15,21 @@ export const LanguageProvider = ({ children }) => {
   useEffect(() => {
     // Fetch user's preferred language from backend config
     const fetchLanguage = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setIsLoading(false);
+        return;
+      }
       try {
         const res = await api.get('/sysadmin/config');
         if (res.data && res.data.success && res.data.data.settings?.language) {
           setLanguage(res.data.data.settings.language);
         }
       } catch (error) {
-        console.error('Failed to load system language:', error);
+        // Only log if it's not a 401 (which is expected for logged-out users)
+        if (error.response?.status !== 401) {
+           console.error('Failed to load system language:', error);
+        }
       } finally {
         setIsLoading(false);
       }

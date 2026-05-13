@@ -1,20 +1,25 @@
 import nodemailer from "nodemailer";
 
 const getTransporter = () => {
+	const emailUser = process.env.EMAIL_USER;
 	const emailPass = process.env.EMAIL_APP_PASSWORD || process.env.EMAIL_PASS;
-	if (process.env.EMAIL_USER && emailPass) {
-		return nodemailer.createTransport({
-			service: "gmail",
-			auth: { user: process.env.EMAIL_USER, pass: emailPass },
-		});
-	}
 
+	// Try Brevo first as it's often more reliable for transactional emails and was verified to work
 	if (process.env.BREVO_USER && process.env.BREVO_PASS) {
 		return nodemailer.createTransport({
 			host: "smtp-relay.brevo.com",
 			port: 587,
 			secure: false,
 			auth: { user: process.env.BREVO_USER, pass: process.env.BREVO_PASS },
+		});
+	}
+
+	if (emailUser && emailPass) {
+		return nodemailer.createTransport({
+			host: "smtp.gmail.com",
+			port: 465,
+			secure: true,
+			auth: { user: emailUser, pass: emailPass },
 		});
 	}
 
@@ -33,13 +38,27 @@ const getTransporter = () => {
 export const sendMail = async ({ to, subject, html, text, attachments }) => {
 	const transporter = getTransporter();
 	if (!transporter) {
-		console.warn("No mail transporter configured; skipping email to", to);
-		throw new Error("Email transport is not configured. Please set SMTP or email provider credentials.");
+		console.warn("❌ No mail transporter configured; skipping email to", to);
+		return null; // Don't throw, just log
 	}
 
-	const from = process.env.EMAIL_FROM || process.env.BREVO_USER || process.env.SMTP_USER;
-	const info = await transporter.sendMail({ from, to, subject, html, text, attachments });
-	return info;
+	// Determine the best 'from' address based on the provider
+	let from = "EthioCamp <no-reply@ethiocamp.com>";
+	
+	if (transporter.options.host?.includes("brevo")) {
+		from = process.env.EMAIL_FROM || process.env.BREVO_USER;
+	} else if (process.env.EMAIL_USER) {
+		from = process.env.EMAIL_USER;
+	}
+	
+	try {
+		const info = await transporter.sendMail({ from, to, subject, html, text, attachments });
+		console.log(`✅ Email sent to ${to}: ${info.messageId}`);
+		return info;
+	} catch (err) {
+		console.error(`❌ Failed to send email to ${to}:`, err.message);
+		return null;
+	}
 };
 
 export const sendVerificationEmail = async (to, code) => {

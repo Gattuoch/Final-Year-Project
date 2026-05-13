@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { HiMenu, HiX, HiChevronDown, HiUserCircle, HiLogout, HiUser } from "react-icons/hi";
+import { HiMenu, HiX, HiChevronDown, HiUserCircle, HiLogout, HiUser, HiGlobeAlt } from "react-icons/hi";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useLanguage } from "../../context/LanguageContext";
 import logo from "../../assets/EthioCampGround header.png";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const { language, changeLanguage, t } = useLanguage();
   const [activeLink, setActiveLink] = useState("/");
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -44,11 +47,17 @@ const Navbar = () => {
   };
 
   const Navlinks = [
-    { href: "/", label: "Home" },
-    { href: "/features", label: "Features" },
-    { href: "/camps", label: "Camps" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
+    { href: "/", label: t("nav.home") || "Home" },
+    { href: "/features", label: t("nav.features") || "Features" },
+    { href: "/camps", label: t("nav.camps") || "Camps" },
+    { href: "/about", label: t("nav.about") || "About" },
+    { href: "/contact", label: t("nav.contact") || "Contact" },
+  ];
+
+  const languages = [
+    { code: "en", label: "English", flag: "🇺🇸" },
+    { code: "am", label: "አማርኛ", flag: "🇪🇹" },
+    { code: "om", label: "Oromoo", flag: "🇪🇹" },
   ];
 
   // Logic to show the first letter of Name or Email in the profile circle
@@ -112,6 +121,39 @@ const Navbar = () => {
             </Link>
           ))}
 
+          {/* DESKTOP: Language Switcher */}
+          <div className="relative ml-4">
+            <button
+              onClick={() => setIsLanguageOpen(!isLanguageOpen)}
+              onBlur={() => setTimeout(() => setIsLanguageOpen(false), 200)}
+              className="flex items-center gap-2 text-gray-600 hover:text-green-950 font-medium transition-colors"
+            >
+              <HiGlobeAlt className="w-5 h-5" />
+              <span>{languages.find(l => l.code === language)?.label || "English"}</span>
+              <HiChevronDown className={`transition-transform duration-300 ${isLanguageOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            {isLanguageOpen && (
+              <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-xl shadow-xl py-2 z-[80] animate-in fade-in zoom-in-95 duration-200">
+                {languages.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      changeLanguage(lang.code);
+                      setIsLanguageOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors flex items-center gap-3 ${
+                      language === lang.code ? "text-green-950 font-bold bg-green-50/50" : "text-gray-600"
+                    }`}
+                  >
+                    <span>{lang.flag}</span>
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* DESKTOP: Account Dropdown */}
           <div className="relative ml-4">
             <button
@@ -126,7 +168,7 @@ const Navbar = () => {
               ) : (
                 <HiUserCircle className="w-5 h-5" />
               )}
-              <span className="font-bold tracking-wide">{user ? "Account" : "Join Us"}</span>
+              <span className="font-bold tracking-wide">{user ? t("nav.account") : t("nav.joinUs")}</span>
               <HiChevronDown className={`transition-transform duration-300 ${isAccountOpen ? "rotate-180" : ""}`} />
             </button>
           </div>
@@ -138,10 +180,10 @@ const Navbar = () => {
             {!user ? (
               <>
                 <Link to="/login" onClick={() => setIsAccountOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors font-medium">
-                  <HiUser className="text-green-900" /> Login
+                  <HiUser className="text-green-900" /> {t("nav.login")}
                 </Link>
                 <Link to="/SignUp" onClick={() => setIsAccountOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors font-medium">
-                  <HiUserCircle className="text-green-900" /> Create Account
+                  <HiUserCircle className="text-green-900" /> {t("nav.createAccount")}
                 </Link>
               </>
             ) : (
@@ -153,10 +195,10 @@ const Navbar = () => {
                   <p className="text-[10px] text-gray-500 truncate">{user.email}</p>
                 </div>
                 <Link to="/camper-dashboard" onClick={() => setIsAccountOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors font-medium">
-                  <HiUser className="text-gray-400" /> Profile
+                  <HiUser className="text-gray-400" /> {t("nav.profile")}
                 </Link>
                 <button onClick={handleLogout} className="w-full text-left flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors font-medium">
-                  <HiLogout /> Sign Out
+                  <HiLogout /> {t("nav.signOut")}
                 </button>
               </>
             )}
@@ -182,9 +224,31 @@ const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
+            {/* Mobile Language Options */}
+            <div className="pt-4 border-t border-gray-100">
+              <p className="text-xs font-black text-gray-400 uppercase mb-3 px-1">Language</p>
+              <div className="grid grid-cols-3 gap-2">
+                {languages.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      changeLanguage(lang.code);
+                      setIsMenuOpen(false);
+                    }}
+                    className={`py-2 px-3 rounded-xl border text-center text-sm font-bold transition-all ${
+                      language === lang.code 
+                        ? "bg-green-950 text-white border-green-950" 
+                        : "bg-gray-50 text-gray-600 border-gray-100"
+                    }`}
+                  >
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
       </div>
     </nav>
   );

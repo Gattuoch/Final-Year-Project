@@ -9,11 +9,8 @@ import {
   FaBell,
 } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
-<<<<<<< HEAD
 import { FaUserShield, FaInfoCircle } from "react-icons/fa";
 
-=======
->>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
 import { useUser } from "../../../context/UserContext";
 import api from "../../../services/api";
 import Sidebar from "../Sidebar/Sidebar";
@@ -24,7 +21,6 @@ export default function Notifications() {
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
 
-<<<<<<< HEAD
   useEffect(() => {
     const fetchAllData = async () => {
       try {
@@ -121,64 +117,6 @@ export default function Notifications() {
         setNotifications(combined);
       } catch (err) {
         console.error("Critical error loading notifications:", err);
-=======
- useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const res = await api.get("/bookings/my-bookings");
-        
-        // Updated to use res.data.bookings with a fallback empty array
-        const bookings = res.data?.bookings || [];
-        
-        const generated = bookings.map((booking) => {
-          const isPaid = booking.paymentStatus === "paid";
-          const isConfirmed = booking.status === "confirmed";
-          const campName = booking.tentId?.name || booking.campId?.name || "Campsite";
-
-          let type = "system";
-          let title = "Update on your booking";
-          let desc = `Status update for ${campName}`;
-          let icon = <FaExclamationTriangle className="text-yellow-600" />;
-          let color = "bg-yellow-100";
-
-          if (isPaid && isConfirmed) {
-            type = "bookings";
-            title = "Booking Confirmed! 🎉";
-            desc = `Your stay at ${campName} is confirmed. Get ready for your trip!`;
-            icon = <FaCalendarCheck className="text-emerald-600" />;
-            color = "bg-emerald-100";
-          } else if (!isPaid && booking.status !== "cancelled") {
-            type = "payments";
-            title = "Payment Pending";
-            desc = `Please complete your payment of ${booking.totalPrice?.toLocaleString()} ETB for ${campName}.`;
-            icon = <FaCreditCard className="text-blue-600" />;
-            color = "bg-blue-100";
-          } else if (booking.status === "cancelled") {
-            type = "system";
-            title = "Booking Cancelled";
-            desc = `Your reservation at ${campName} has been cancelled.`;
-            icon = <FaExclamationTriangle className="text-red-600" />;
-            color = "bg-red-100";
-          }
-
-          return {
-            id: booking._id,
-            type,
-            title,
-            desc,
-            time: new Date(booking.updatedAt || booking.createdAt).toLocaleDateString(),
-            timestamp: new Date(booking.updatedAt || booking.createdAt).getTime(),
-            unread: !isPaid && booking.status !== "cancelled",
-            icon,
-            color,
-          };
-        });
-
-        generated.sort((a, b) => b.timestamp - a.timestamp);
-        setNotifications(generated);
-      } catch (err) {
-        console.error("Error loading notifications:", err);
->>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
         toast.error("Failed to load notifications.");
       } finally {
         setLoading(false);
@@ -187,10 +125,6 @@ export default function Notifications() {
 
     fetchAllData();
   }, []);
-<<<<<<< HEAD
-
-=======
->>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
   const filteredNotifications =
     activeTab === "all" ? notifications : notifications.filter((n) => n.type === activeTab);
 
@@ -298,10 +232,6 @@ export default function Notifications() {
                           {n.time}
                         </span>
                       </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> 3977542d1f9d7d51358c5b10c489cc675e88f1d8
                       <p className={`mt-1 text-sm leading-relaxed ${n.unread ? "text-gray-600 font-medium" : "text-gray-500"}`}>
                         {n.desc}
                       </p>
